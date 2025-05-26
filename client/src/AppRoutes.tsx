@@ -1,5 +1,5 @@
 import Home from "./pages/Home";
-import DeveloperPage from "./pages/DeveloperPage";
+import DeveloperPage from "./pages/developerPage";
 
 export const routeList = [
   //{path:"example",element:<Example/>,name:"論理名"}
