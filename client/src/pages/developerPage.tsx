@@ -152,11 +152,11 @@ const DeveloperPage = () => {
             </div>
 
             <div className="text-[20px] w-[300px] h-[150px]">
-              <p>UserName:{account ? testAccount.name : opAccount.name}</p>
-              <p>Email:{account ? testAccount.email : opAccount.email}</p>
-              <p>Auth:{`${account ? testAccount.auth : opAccount.auth}`}</p>
+              <p>UserName:{!account ? testAccount.name : opAccount.name}</p>
+              <p>Email:{!account ? testAccount.email : opAccount.email}</p>
+              <p>Auth:{`${!account ? testAccount.auth : opAccount.auth}`}</p>
               <p>
-                explain:{account ? testAccount.explain : opAccount.explain}
+                explain:{!account ? testAccount.explain : opAccount.explain}
               </p>{" "}
             </div>
             <button

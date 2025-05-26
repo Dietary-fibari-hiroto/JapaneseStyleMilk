@@ -1,17 +1,25 @@
 import Home from "./pages/Home";
 import DeveloperPage from "./pages/DeveloperPage";
+import { AnimatePresence } from "framer-motion";
+import { Routes, Route, useLocation } from "react-router-dom";
 
 export const routeList = [
   //{path:"example",element:<Example/>,name:"論理名"}
   { path: "/", element: <Home />, name: "ホームページ" },
-  { path: "/develop", eelement: <DeveloperPage />, name: "開発者ページ" },
+  { path: "/develop", element: <DeveloperPage />, name: "開発者ページ" },
 ];
 
 const AppRoutes = () => {
+  const location = useLocation();
+
   return (
-    <div>
-      <DeveloperPage />
-    </div>
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        {routeList.map(({ path, element }, index) => (
+          <Route element={element} />
+        ))}
+      </Routes>
+    </AnimatePresence>
   );
 };
 
