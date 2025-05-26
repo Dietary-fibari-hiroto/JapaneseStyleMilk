@@ -1,5 +1,5 @@
 import Home from "./pages/Home";
-import DeveloperPage from "./pages/DeveloperPage";
+import DeveloperPage from "./pages/developerPage";
 import { AnimatePresence } from "framer-motion";
 import { Routes, Route, useLocation } from "react-router-dom";
 
