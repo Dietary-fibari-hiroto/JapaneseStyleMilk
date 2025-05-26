@@ -16,7 +16,7 @@ const AppRoutes = () => {
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
         {routeList.map(({ path, element }, index) => (
-          <Route element={element} />
+          <Route key={index} element={element} />
         ))}
       </Routes>
     </AnimatePresence>
