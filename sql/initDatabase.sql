@@ -6,3 +6,6 @@ CREATE DATABASE ***_db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 USE ***_db;
 **/
 
+CREATE DATABASE langbate_db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+
+use langbate_db;
