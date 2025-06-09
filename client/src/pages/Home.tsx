@@ -3,7 +3,7 @@ import { useRef } from 'react';
 
 import React, { useEffect, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
-// Chat.tsx に追記
+
 
 
 const socket: Socket = io('http://localhost:5500');//接続するサーバー
