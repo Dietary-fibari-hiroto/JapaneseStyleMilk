@@ -29,23 +29,37 @@ CREATE TABLE account_states(
 )ENGINE=InnoDB;
 
 
-/*フレンド*/
-CREATE TABLE friends(
-    account_id INT NOT NULL,
-    friend_id INT NOT NULL,
-    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (account_id) REFERENCES accounts(id),
-    FOREIGN KEY (friend_id) REFERENCES accounts(id),
-    PRIMARY KEY (account_id,friend_id)
+CREATE TABLE friendships(
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    requester_id INT NOT NULL,
+    addressee_id INT NOT NULL,
+    status INT NOT NULL DEFAULT 0,
+    requested_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    responded_at DATETIME NULL DEFAULT NULL,
+    FOREIGN KEY (requester_id) REFERENCES accounts(id),
+    FOREIGN KEY (addressee_id) REFERENCES accounts(id),
+    UNIQUE (requester_id,addressee_id)
 )ENGINE=InnoDB;
 
-/*フレンドチャット*/
-CREATE TABLE friend_chats(
+CREATE TABLE chat_rooms(
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    friend_id INT NOT NULL,
-    text TEXT NOT NULL,
+    user1_id INT NOT NULL,
+    user2_id INT NOT NULL,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (friend_id) REFERENCES accounts(id)
+    FOREIGN KEY (user1_id) REFERENCES accounts(id),
+    FOREIGN KEY (user2_id) REFERENCES accounts(id),
+    UNIQUE (user1_id,user2_id)
+)ENGINE=InnoDB;
+
+
+CREATE TABLE chat_messages(
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    chat_room_id INT NOT NULL,
+    sender_id INT NOT NULL,
+    message TEXT NOT NULL,
+    sent_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (chat_room_id) REFERENCES chat_rooms(id),
+    FOREIGN KEY (sender_id) REFERENCES accounts(id)
 )ENGINE=InnoDB;
 
 /*アカウントとランクの紐づけ*/
@@ -203,3 +217,6 @@ CREATE TABLE topic_tags(
     FOREIGN KEY (topic_id) REFERENCES debate_topics(id),
     FOREIGN KEY (tag_id) REFERENCES tags(id)
 )ENGINE=InnoDB;
+
+
+/*end*/
