@@ -3,6 +3,7 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import accountRoutes from './src/api/accounts/routes/accountRoutes';
+import authRoutes from './src/api/auth/routes/authRoutes';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -14,6 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // ルートの設定
 app.use('/api/accounts', accountRoutes);
+app.use('/api/auth', authRoutes);
 
 // エラーハンドリング
 app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
