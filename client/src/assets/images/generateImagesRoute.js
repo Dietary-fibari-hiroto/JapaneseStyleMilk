@@ -2,7 +2,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const rootDir = "./photos"; // ルートディレクトリ
+const rootDir = "./"; // ルートディレクトリ
 const output = ["const ResImagesRoute = {"];
 
 const sanitizeKey = (filename) =>
@@ -19,7 +19,7 @@ const walkDir = (dir) => {
       const ext = path.extname(entry.name).toLowerCase();
       if ([".jpg", ".jpeg", ".png", ".webp", ".gif", ".svg"].includes(ext)) {
         const key = sanitizeKey(entry.name);
-        const relativePath = `.${path.sep}${path
+        const relativePath = `./${path
           .relative(__dirname, fullPath)
           .replace(/\\/g, "/")}`;
         output.push(`  ${key}: require("${relativePath}"),`);
@@ -34,5 +34,5 @@ output.push("};");
 output.push("");
 output.push("export default ResImagesRoute;");
 
-fs.writeFileSync("ImagesRoute.tsx", output.join("\n"), "utf8");
+fs.writeFileSync("ImagesRoute.ts", output.join("\n"), "utf8");
 console.log("✅ ResImagesRoute.js を生成しました！");
