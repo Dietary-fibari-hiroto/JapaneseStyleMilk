@@ -6,6 +6,7 @@ import {
   DevateHistoryPage,
 } from "./pages";
 import Test from "./test/Test";
+import Test2 from "./test/Test2";
 import DeveloperPage from "./pages/developerPage";
 import { AnimatePresence } from "framer-motion";
 import { Routes, Route, useLocation } from "react-router-dom";
@@ -15,6 +16,7 @@ export const routeList = [
   { path: "/", element: <Home />, name: "ホームページ" },
   { path: "/develop", element: <DeveloperPage />, name: "開発者ページ" },
   { path: "/test", element: <Test />, name: "テストページ" },
+  { path: "/test2", element: <Test2 />, name: "テストページ2" },
 
   /**
    * 以下、アプリケーションページ
