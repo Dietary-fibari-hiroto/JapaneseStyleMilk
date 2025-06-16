@@ -5,6 +5,7 @@ import {
   EvaluationPage,
   DevateHistoryPage,
 } from "./pages";
+import Test from "./test/Test";
 import DeveloperPage from "./pages/developerPage";
 import { AnimatePresence } from "framer-motion";
 import { Routes, Route, useLocation } from "react-router-dom";
@@ -13,6 +14,8 @@ export const routeList = [
   //{path:"example",element:<Example/>,name:"論理名"}
   { path: "/", element: <Home />, name: "ホームページ" },
   { path: "/develop", element: <DeveloperPage />, name: "開発者ページ" },
+  { path: "/test", element: <Test />, name: "テストページ" },
+
   /**
    * 以下、アプリケーションページ
    */
