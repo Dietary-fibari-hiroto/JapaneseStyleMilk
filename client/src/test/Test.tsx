@@ -1,10 +1,9 @@
-import ResImagesRoute from "../assets/images/ImagesRoute";
-import NavItem from "../components/common/NavItem";
+import Sidebar from "../components/common/Sidebar";
 
 const Test = () => {
   return (
     <div>
-      <NavItem pathname="/home" icon={ResImagesRoute.home_icon} name="ホーム" />
+      <Sidebar />
     </div>
   );
 };

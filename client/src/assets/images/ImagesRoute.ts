@@ -1,8 +1,8 @@
-type ResImagesRouteType = {
+type ImagesRouteType = {
   [key: string]: string;
 };
 
-const ResImagesRoute: ResImagesRouteType = {
+const ImagesRoute: ImagesRouteType = {
   avatar_black_blue_bg: require("./Avatars/avatar_black_blue_bg.svg").default,
   avatar_black_green_bg: require("./Avatars/avatar_black_green_bg.svg").default,
   avatar_black_grey_bg: require("./Avatars/avatar_black_grey_bg.svg").default,
@@ -72,4 +72,4 @@ const ResImagesRoute: ResImagesRouteType = {
   IMG_7009_Enhanced_NR: require("./test/IMG_7009-Enhanced-NR.jpg").default,
 };
 
-export default ResImagesRoute;
+export default ImagesRoute;
