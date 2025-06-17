@@ -55,8 +55,6 @@ const AppRoutes = () => {
             <Route key={path} path={path} element={element} />
           ))}
         </Route>
-      </Routes>
-      <Routes location={location} key={location.pathname}>
         <Route path={"/develop"} element={<DeveloperPage />} />
       </Routes>
     </AnimatePresence>
