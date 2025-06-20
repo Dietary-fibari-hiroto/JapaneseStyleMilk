@@ -1,5 +1,5 @@
 // ボタン型定義
-type ButtonProps = {
+type PrimaryButtonProps = {
     size: 'Meddium' | 'Large',  // サイズ
     color: 'Main' | 'Sub',      // 色
     shape: 'Round' | 'Square',  // 形
@@ -24,7 +24,16 @@ const ButtonStyle = {
     }
 }
 
-const Button = ({size, color, shape, label}:ButtonProps) => {
+
+/**
+ * 主要ボタン コンポーネント
+ * @param size ボタンの大きさ 'Meddium' | 'Large'
+ * @param color ボタンの色 'Main' | 'Sub'
+ * @param shape ボタンの形 'Round' | 'Square'
+ * @param label 表示する文字列　string
+ * @returns 指定したスタイルのボタン
+ */
+const PrimaryButton = ({size, color, shape, label}:PrimaryButtonProps) => {
     return(    
         <button
             className={`${ButtonStyle.Size[size]} ${ButtonStyle.Color[color]} ${ButtonStyle.Shape[shape]} font-bold`}
@@ -32,4 +41,4 @@ const Button = ({size, color, shape, label}:ButtonProps) => {
     )
 }
 
-export default Button;
+export default PrimaryButton;
