@@ -5,7 +5,7 @@ const app = express();
 const server = require('http').createServer(app);
 const io = require('socket.io')(server, {
   cors: {
-    origin: '*',//テスト用にすべてのポートにしてます。http://サーバーip:3000で接続できます
+    origin: '*',
     methods: ['GET', 'POST'],
   }
 });
@@ -66,7 +66,6 @@ console.log('Client connected from IP:', socket.handshake.address);
       console.log('answer');
       socket.to(room).emit('answer', description);
     } else if (description.type === 'candidate') {
-      console.log('candidate');
       socket.to(room).emit('candidate', description);
     } else {
       console.log('[ERROR] Unknown message type:', description.type);
