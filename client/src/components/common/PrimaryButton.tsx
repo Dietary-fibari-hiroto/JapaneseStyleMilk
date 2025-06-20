@@ -14,8 +14,8 @@ const ButtonStyle = {
     },
 
     'Color': {
-        'Main': 'text-[#FAFAFA] bg-[#7949F9]',
-        'Sub': 'text-[#151515] bg-[#FAFAFA]'
+        'Main': 'text-[--text-button-primary_button] bg-[--surface-button-primary_button] hover:bg-[--surface-button-primary_button_hover]',
+        'Sub': 'text-[--text-button-secondary_button] bg-[--surface-button-secondary_button] hover:bg-[--surface-button-secondary_button_hover]'
     },
 
     'Shape': {
@@ -30,13 +30,18 @@ const ButtonStyle = {
  * @param size ボタンの大きさ 'Meddium' | 'Large'
  * @param color ボタンの色 'Main' | 'Sub'
  * @param shape ボタンの形 'Round' | 'Square'
- * @param label 表示する文字列　string
+ * @param label 表示する文字列　string型
  * @returns 指定したスタイルのボタン
  */
 const PrimaryButton = ({size, color, shape, label}:PrimaryButtonProps) => {
     return(    
         <button
-            className={`${ButtonStyle.Size[size]} ${ButtonStyle.Color[color]} ${ButtonStyle.Shape[shape]} font-bold`}
+            // 指定: サイズ、色、形
+            // 固定: 太字, アニメーション速度(300s)
+            className={`
+                ${ButtonStyle.Size[size]} ${ButtonStyle.Color[color]} ${ButtonStyle.Shape[shape]}
+                font-bold transition duration-300
+            `}
         >{label}</button>
     )
 }
