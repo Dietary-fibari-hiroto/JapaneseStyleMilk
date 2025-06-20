@@ -30,8 +30,7 @@ const NavContainer = styled.button<{ isOpen: boolean; isPath: boolean }>`
   display: flex;
   align-items: center;
   justify-content: start;
-
-  transition: all 0.1s ease-in;
+  transition: background 0s;
   &:hover {
     background: var(--surface-nav_hover);
   }
