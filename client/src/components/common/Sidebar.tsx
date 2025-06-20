@@ -2,6 +2,7 @@ import { useState } from "react";
 import ImagesRoute from "../../assets/images/ImagesRoute";
 import styled from "styled-components";
 import NavItem from "./NavItem";
+import UpgradeCard from "./UpgradeCard";
 
 //後でAPI接続する時に使うために変数化した。
 const testItem = { name: "山田ジョン", rank: "ゴールドランク" };
@@ -15,8 +16,8 @@ const navList = [
 ];
 
 //サイドバーのcss定義
-const AsideBar = styled.aside<{ isOpen: boolean }>`
-  width: ${(props) => (props.isOpen ? "280px" : "72px")};
+const AsideBar = styled.aside<{ $isOpen: boolean }>`
+  width: ${({ $isOpen }) => ($isOpen ? "280px" : "72px")};
   height: 100lvh;
   background: var(--surface-sidebar);
   display: flex;
@@ -28,12 +29,12 @@ const AsideBar = styled.aside<{ isOpen: boolean }>`
   transition: width 0.3s ease;
 
   .close-hidden {
-    opacity: ${(props) => (props.isOpen ? 1 : 0)};
-    visibility: ${(props) => (props.isOpen ? "visible" : "hidden")};
+    opacity: ${({ $isOpen }) => ($isOpen ? 1 : 0)};
+    visibility: ${({ $isOpen }) => ($isOpen ? "visible" : "hidden")};
     transition: opacity 0.3s 0.3s, visibility 0s 0s;
   }
   .close-hidden > * {
-    display: ${(props) => (props.isOpen ? "" : "none")};
+    display: ${({ $isOpen }) => ($isOpen ? "" : "none")};
   }
   .horizontal-element {
     display: flex;
@@ -51,7 +52,7 @@ const AsideBar = styled.aside<{ isOpen: boolean }>`
     padding: 16px;
   }
   * {
-    transition: all 0.3s 0.2s ease;
+    transition: width 0.3s 0.2s, transform 0.3s 0.2s;
   }
 `;
 
@@ -64,9 +65,9 @@ const Sidebar = () => {
   };
 
   return (
-    <AsideBar isOpen={isOpen}>
+    <AsideBar $isOpen={isOpen}>
       {/*Navigateあたり*/}
-      <section className="space-y-[16px] ">
+      <section className="relative space-y-[16px]">
         <div className="horizontal-element">
           <button
             onClick={handleOpen}
@@ -89,6 +90,10 @@ const Sidebar = () => {
           {navList.map((nav, index) => (
             <NavItem key={index} isOpen={isOpen} {...nav} />
           ))}
+        </div>
+
+        <div className="px-[6px]">
+          <UpgradeCard isOpen={isOpen} />
         </div>
       </section>
       {/*userプロフィールあたり*/}

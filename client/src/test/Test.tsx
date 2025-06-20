@@ -1,9 +1,9 @@
-import Sidebar from "../components/common/Sidebar";
+import { AccountPopUpCard } from "../components";
 
 const Test = () => {
   return (
     <div>
-      <Sidebar />
+      <AccountPopUpCard />
     </div>
   );
 };
