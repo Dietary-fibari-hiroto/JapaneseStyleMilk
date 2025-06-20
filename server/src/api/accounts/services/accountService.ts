@@ -55,4 +55,15 @@ export class AccountService {
   async findByEmail(email: string) {
     return Account.findOne({ where: { email } });
   }
+
+  async editAccount(accountData: CreateAccountDTO) {
+    const hashedPassword = await bcrypt.hash(accountData.password, 10);
+    return Account.update(
+      {
+        ...accountData,
+        password: hashedPassword,
+      },
+      { where: { id: accountData.id } }
+    );
+  }
 } 

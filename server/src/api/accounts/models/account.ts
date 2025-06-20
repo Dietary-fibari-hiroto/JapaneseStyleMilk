@@ -15,6 +15,7 @@ export interface AccountAttributes {
 export interface AccountCreationAttributes extends Optional<AccountAttributes, 'id' | 'created_at'> {}
 
 export interface CreateAccountDTO {
+  id: number;
   name: string;
   email: string;
   password: string;
