@@ -69,6 +69,7 @@ const ImagesRoute: ImagesRouteType = {
   cancel: require("./test/cancel.png").default,
   choiceBar: require("./test/choiceBar.png").default,
   choiceWrap: require("./test/choiceWrap.png").default,
+  light_mode_icon: require("./Icons/light_mode_icon.svg").default,
   IMG_7009_Enhanced_NR: require("./test/IMG_7009-Enhanced-NR.jpg").default,
 };
 

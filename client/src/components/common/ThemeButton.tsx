@@ -20,19 +20,25 @@ const ThemeButtonContainer = styled.button<{ $select: boolean }>`
   }
 `;
 
+/**使い方
+ *         <ThemeButton
+          title="ダークモード"
+          img={ImagesRoute.dark_mode_icon}
+          mode={naightMode}
+          onClick={() => setNightMode((prev) => true)}
+        />
+ */
 type Props = {
   mode: boolean;
+  img: string;
+  title: string;
+  onClick: () => void;
 };
-const ThemeButton = ({ mode }: Props) => {
-  const [select, setSelect] = useState(false);
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    setSelect((prev) => !prev);
-  };
+const ThemeButton = ({ mode, img, title, onClick }: Props) => {
   return (
-    <ThemeButtonContainer onClick={handleClick} $select={select}>
-      <img className="pr-[12px]" src={ImagesRoute.dark_mode_icon} />
-      <p>ライトモード</p>
+    <ThemeButtonContainer onClick={onClick} $select={mode}>
+      <img className="pr-[12px]" src={img} />
+      <p>{title}</p>
     </ThemeButtonContainer>
   );
 };

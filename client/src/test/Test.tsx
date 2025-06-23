@@ -1,9 +1,9 @@
-import { AccountPopUpCard } from "../components";
+import { PopUpUserCard, VoiceToChat } from "../components";
 
 const Test = () => {
   return (
     <div>
-      <AccountPopUpCard />
+      <VoiceToChat />
     </div>
   );
 };
