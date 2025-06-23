@@ -5,6 +5,9 @@
 * Desc : ユーザーカードコンポーネント (ディベート時使用)
 */
 
+import Avatar from "./Avatar"
+import AvatarImage from "../../assets/images/Avatars/avatar_black_green_bg.svg";
+
 // カードの色一覧
 const CardColors = {
     "red" : "--surface-user-card-user_card_red",
@@ -36,14 +39,16 @@ const UserCard = ({color}:UserCardProps) => {
         <div 
             // 固定: サイズ、角丸め
             className={`
-                w-[400px] h-[279px] rounded-[12px]
+                w-[400px] h-[279px] rounded-[12px] flex justify-center items-center
             `}
 
             // 指定: 背景色
             style={{
                 backgroundColor: `var(${CardColors[color]})`
             }}
-        ></div>
+        >
+            <Avatar image={AvatarImage} size="xl" />
+        </div>
     )
 }
 
