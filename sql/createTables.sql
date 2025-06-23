@@ -134,6 +134,8 @@ CREATE TABLE debate_texts(
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     debate_history_id INT NOT NULL,
     text TEXT NOT NULL,
+    turn_number INT NOT NULL,
+    sequence_in_turn INT NOT NULL,
     FOREIGN KEY (debate_history_id) REFERENCES debate_histories(id)
 )ENGINE=InnoDB;
 
