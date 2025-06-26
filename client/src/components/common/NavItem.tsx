@@ -1,6 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
 
 type ComponentProps = {
   path: string;
@@ -8,18 +7,14 @@ type ComponentProps = {
   name: string;
   isOpen: boolean;
 };
-/**
- *
- * @argument path 引数と滞在しているurlが同じ場合bgに変更を加える
- * @argument icon imgタグで使う
- * @argument name 表示名
- * @argument isOpen サイドバーがOpen状態かどうか
- * @returns
- * <NavItem pathname = "/" icon ={ImagesRoute} name = "home"/>
- */
 
-//CSSプロパティ
-const NavContainer = styled.button<{ isOpen: boolean; isPath: boolean }>`
+// styled-componentsのshouldForwardPropでDOM渡しを防止
+const NavContainer = styled.button.withConfig({
+  shouldForwardProp: (prop) => !["isOpen", "isPath"].includes(prop),
+})<{
+  isOpen: boolean;
+  isPath: boolean;
+}>`
   background: ${(props) => (props.isPath ? "var(--surface-nav_selected)" : "")};
   border-radius: 8px;
   color: var(--text-nav);
@@ -31,9 +26,11 @@ const NavContainer = styled.button<{ isOpen: boolean; isPath: boolean }>`
   align-items: center;
   justify-content: start;
   transition: background 0s;
+
   &:hover {
     background: var(--surface-nav_hover);
   }
+
   > * + * {
     margin-left: 16px;
   }
@@ -52,6 +49,7 @@ const NavItem = ({ path, icon, name, isOpen }: ComponentProps) => {
     e.preventDefault();
     navigate(path);
   };
+
   return (
     <NavContainer
       onClick={handleClickButton}
