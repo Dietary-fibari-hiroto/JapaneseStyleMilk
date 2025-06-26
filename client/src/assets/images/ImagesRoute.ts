@@ -66,6 +66,12 @@ const ImagesRoute: ImagesRouteType = {
   trophy_big: require("./Icons/trophy_big.png").default,
   trophy_icon: require("./Icons/trophy_icon.svg").default,
   upgrade_Icon: require("./Icons/upgrade_Icon.svg").default,
+  flag_button: require("./Icons/flag_button.svg").default,
+  send_button: require("./Icons/send_button.svg").default,
+  cancel_button: require("./Icons/cancel_button.svg").default,
+  mic_button: require("./Icons/mic_button.svg").default,
+  not_mic_button: require("./Icons/not_mic_button.svg").default,
+
   cancel: require("./test/cancel.png").default,
   choiceBar: require("./test/choiceBar.png").default,
   choiceWrap: require("./test/choiceWrap.png").default,

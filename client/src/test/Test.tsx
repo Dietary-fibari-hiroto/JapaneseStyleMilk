@@ -1,9 +1,14 @@
-import { PopUpUserCard, VoiceToChat } from "../components";
+import {
+  CountDown,
+  DebateButton,
+  PopUpUserCard,
+  VoiceToChat,
+} from "../components";
 
 const Test = () => {
   return (
     <div>
-      <VoiceToChat />
+      <DebateButton />
     </div>
   );
 };
