@@ -3,12 +3,13 @@ import {
   DebateButton,
   PopUpUserCard,
   VoiceToChat,
+  Loading,
 } from "../components";
 
 const Test = () => {
   return (
     <div>
-      <DebateButton />
+      <Loading />
     </div>
   );
 };
