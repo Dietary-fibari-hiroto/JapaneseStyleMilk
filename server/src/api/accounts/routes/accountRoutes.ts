@@ -16,4 +16,8 @@ router.post('/', asyncHandler(async (req, res) => {
   await accountController.createAccount(req, res);
 }));
 
+router.put('/:id', asyncHandler(async (req, res) => {
+  await accountController.editAccount(req, res);
+}));
+
 export default router; 
