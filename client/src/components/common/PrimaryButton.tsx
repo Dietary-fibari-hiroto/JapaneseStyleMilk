@@ -40,9 +40,9 @@ const PrimaryButton = ({ size, color, shape, label }: PrimaryButtonProps) => {
       // 指定: サイズ、色、形
       // 固定: 太字, アニメーション速度(300s)
       className={`
-                ${ButtonStyle.Size[size]} ${ButtonStyle.Color[color]} ${ButtonStyle.Shape[shape]}
-                font-bold transition duration-300
-            `}
+        ${ButtonStyle.Size[size]} ${ButtonStyle.Color[color]} ${ButtonStyle.Shape[shape]}
+        font-bold transition duration-300
+      `}
     >
       {label}
     </button>

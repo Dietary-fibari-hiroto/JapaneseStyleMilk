@@ -274,7 +274,6 @@
   --surface-date_pointer_circle: var(--color-neutral-950);
   --surface-button-theme_button_selected: var(--color-neutral-350);
   --text-card-matching-card-header: var(--color-neutral-50);
-  --text-date: var(--color-neutral-700);
   --text-header_primary: var(--color-neutral-1100);
   --text-x_axis_number: var(--color-neutral-700);
   --border-upgrade_card: var(--color-neutral-300);
@@ -306,6 +305,23 @@
   --border-score_card-composition: var(--color-pink-500);
   --border-score_card-argument: var(--color-green-600);
   --border-score_card-proficiency: var(--color-orange-400);
+  --text-link: var(--color-main-default);
+  --text-placeholder: var(--color-neutral-default);
+  --text-error: var(--color-error-default);
+  --text-success: var(--color-success-default);
+  --border-input_box: var(--color-neutral-default);
+  --border-error: var(--color-error-default);
+  --border-success: var(--color-success-default);
+  --surface-button-debate_button: var(--color-main-default);
+  --surface-button-debate_button_no_action: var(--color-neutral-default);
+  --default: var(--color-neutral-800);
+  --surface-check_box_checked: var(--color-main-default);
+  --border-requirement_bullet: var(--color-neutral-800);
+  --surface-success: var(--color-success-default);
+  --surface-debate_position_tag: var(--color-neutral-1100);
+  --text-debate_position_text: var(--color-yellow-500);
+  --surface-button-disabled: var(--color-neutral-400);
+  --surface-error: var(--color-error-default);
 
   /* RESPONSIVE */
   --header-xxl: 56px;
