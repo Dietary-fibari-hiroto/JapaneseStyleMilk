@@ -63,7 +63,7 @@ const ImagesRoute: ImagesRouteType = {
   medal_icon: require("./Icons/medal_icon.svg").default,
   profile_icon: require("./Icons/profile_icon.svg").default,
   setting_icon: require("./Icons/setting_icon.svg").default,
-  trophy_big: require("./Icons/trophy_big.png").default,
+  trophy_big: require("./Icons/trophy_big.png"),
   trophy_icon: require("./Icons/trophy_icon.svg").default,
   upgrade_Icon: require("./Icons/upgrade_Icon.svg").default,
   flag_button: require("./Icons/flag_button.svg").default,

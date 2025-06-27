@@ -4,12 +4,14 @@ import {
   PopUpUserCard,
   VoiceToChat,
   Loading,
+  SecondaryButton,
+  ResultCard,
 } from "../components";
 
 const Test = () => {
   return (
-    <div>
-      <Loading />
+    <div className="bg-[#cccccc]">
+      <ResultCard win={true} />
     </div>
   );
 };

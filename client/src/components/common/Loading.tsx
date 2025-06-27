@@ -27,6 +27,7 @@ const LoadingContainer = styled.div<{}>`
 const Loading = () => {
   //モーションの間隔秒数(ms)
   const motionInterval = 500;
+  //プロセスカウンター
   const [count, setCount] = useState(1);
   const [motionProcess, setMotionProcess] = useState({
     first: true,
