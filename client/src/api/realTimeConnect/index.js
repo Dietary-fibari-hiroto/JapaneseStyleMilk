@@ -4,11 +4,11 @@ import socketClient from 'socket.io-client';
 
 const SERVER = "http://localhost:5001";
 const socket = socketClient(SERVER);
-const room = 'hoge';
+
 
 const constraints = {
-  video: true,
-  audio: false,
+  video: false,
+  audio: true,
 };
 
 const config = {
@@ -16,6 +16,8 @@ const config = {
 };
 
 export default function CallConnect() {
+  const room = React.useMemo(() => Math.random().toString(36).substring(2, 10), []);
+
   const localVideoRef = React.useRef(null);
   const remoteVideoRef = React.useRef(null);
 
@@ -26,13 +28,14 @@ export default function CallConnect() {
   const peerConnection = React.useRef(null);
   const isStarted = React.useRef(false);
 
+  //初期化
   React.useEffect(() => {
     navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
       localStream.current = stream;
       localVideoRef.current.srcObject = stream;
       setCanCalling(true);
     });
-
+  //WebRTC
     const adapterScript = document.createElement('script');
     adapterScript.src = 'https://webrtc.github.io/adapter/adapter-latest.js';
     adapterScript.async = true;
@@ -41,6 +44,7 @@ export default function CallConnect() {
   }, []);
 
   React.useEffect(() => {
+    //ルーム人数を確認、入室の判断
     socket.on('knocked response', (numClients, room) => {
       if (numClients === 0) {
         socket.emit('create', room);
@@ -59,6 +63,7 @@ export default function CallConnect() {
       if (!isStarted.current) startConnect();
     });
 
+    //接続要求
     socket.on('offer', async (desc) => {
       if (!isStarted.current) startConnect();
       await peerConnection.current.setRemoteDescription(desc);
@@ -71,6 +76,7 @@ export default function CallConnect() {
       await peerConnection.current.setRemoteDescription(desc);
     });
 
+    //P2P通信を確立するためICEを追加
     socket.on('candidate', async (desc) => {
       try {
         await peerConnection.current.addIceCandidate(new RTCIceCandidate(desc));
@@ -84,6 +90,7 @@ export default function CallConnect() {
     };
   }, []);
 
+  //接続
   const startConnect = async () => {
     createPeerConnection();
     localStream.current.getTracks().forEach((track) => {
