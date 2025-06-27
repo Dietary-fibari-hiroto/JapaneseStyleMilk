@@ -1,17 +1,9 @@
-import {
-  CountDown,
-  DebateButton,
-  PopUpUserCard,
-  VoiceToChat,
-  Loading,
-  SecondaryButton,
-  ResultCard,
-} from "../components";
+import { MatcingCard } from "../components";
 
 const Test = () => {
   return (
     <div className="bg-[#cccccc]">
-      <ResultCard win={true} />
+      <MatcingCard />
     </div>
   );
 };

@@ -8,8 +8,8 @@ const EllipseMotion = keyframes`
   100% {    transform:translateY(0%);
     }
 `;
-const LoadingContainer = styled.div<{}>`
-  width: 100px;
+const LoadingContainer = styled.div<{ $miniMode?: boolean }>`
+  width: ${({ $miniMode }) => ($miniMode ? "60px" : "100px")};
   display: flex;
   justify-content: space-between;
 
@@ -18,13 +18,16 @@ const LoadingContainer = styled.div<{}>`
   }
 
   > div {
-    width: 20px;
-    height: 20px;
+    width: ${({ $miniMode }) => ($miniMode ? "12px" : "20px")};
+    height: ${({ $miniMode }) => ($miniMode ? "12px" : "20px")};
     border-radius: 10px;
     background: #000000;
   }
 `;
-const Loading = () => {
+type MiniMode = {
+  miniMode?: boolean;
+};
+const Loading = ({ miniMode = false }: MiniMode) => {
   //モーションの間隔秒数(ms)
   const motionInterval = 500;
   //プロセスカウンター
@@ -60,7 +63,7 @@ const Loading = () => {
   }, [count]);
 
   return (
-    <LoadingContainer>
+    <LoadingContainer $miniMode={miniMode}>
       <div className={motionProcess.first ? "motion" : ""} />
       <div className={motionProcess.second ? "motion" : ""} />
       <div className={motionProcess.third ? "motion" : ""} />
