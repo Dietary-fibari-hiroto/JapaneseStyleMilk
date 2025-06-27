@@ -23,11 +23,7 @@ const ResultCard = ({ win }: Props) => {
         <p className="text-body-l font-medium">フィードバック確認しますか？</p>
         <div className="flex-all-center space-x-[24px]">
           <SecondaryButton type={true} text="はい" onClick={handleYes} />
-          <SecondaryButton
-            type={false}
-            text="いいえ"
-            onClick={() => console.log()}
-          />
+          <SecondaryButton type={false} text="いいえ" onClick={handleNO} />
         </div>
       </div>
     </div>
