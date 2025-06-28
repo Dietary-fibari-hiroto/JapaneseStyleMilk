@@ -4,6 +4,7 @@ import {
   DashBoardPage,
   EvaluationPage,
   DevateHistoryPage,
+  Register,
 } from "./pages";
 import Test from "./test/Test";
 import Test2 from "./test/Test2";
@@ -11,12 +12,18 @@ import DeveloperPage from "./pages/developerPage";
 import { AnimatePresence } from "framer-motion";
 import { Routes, Route, useLocation } from "react-router-dom";
 import MainLayout from "./components/layout/MainLayout";
-
+import { AuthLayout } from "./components";
+export const developPathList = [
+  { path: "/test", element: <Test />, name: "テストページ" },
+  { path: "/test2", element: <Test2 />, name: "テストページ2" },
+  { path: "/develop", element: <DeveloperPage />, name: "developerページ" },
+];
+export const authPathList = [
+  { path: "/register", element: <Register />, name: "アカウント登録" },
+];
 export const routeList = [
   //{path:"example",element:<Example/>,name:"論理名"}
   { path: "/", element: <Home />, name: "ホームページ" },
-  { path: "/test", element: <Test />, name: "テストページ" },
-  { path: "/test2", element: <Test2 />, name: "テストページ2" },
 
   /**
    * 以下、アプリケーションページ
@@ -55,7 +62,18 @@ const AppRoutes = () => {
             <Route key={path} path={path} element={element} />
           ))}
         </Route>
-        <Route path={"/develop"} element={<DeveloperPage />} />
+        <Route>
+          {" "}
+          {developPathList.map(({ path, element }) => (
+            <Route key={path} path={path} element={element} />
+          ))}
+        </Route>
+        <Route element={<AuthLayout />}>
+          {" "}
+          {authPathList.map(({ path, element }) => (
+            <Route key={path} path={path} element={element} />
+          ))}
+        </Route>
       </Routes>
     </AnimatePresence>
   );

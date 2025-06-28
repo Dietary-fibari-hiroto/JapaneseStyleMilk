@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import testImages from "../assets/images/test/testImages";
 
-import { routeList } from "../AppRoutes";
+import { routeList, authPathList, developPathList } from "../AppRoutes";
 
 const testAccount = {
   name: "テスト",
@@ -92,6 +92,26 @@ const DeveloperPage = () => {
             <p>Path</p>
             <p>Name</p>
           </div>
+          {developPathList.map((route, index) => (
+            <Link
+              key={index}
+              to={route.path}
+              className="rounded-[10px] border-b w-[500px] flex justify-start items-center text-black bg-white space-x-[100px] pl-[10px] py-[10px] hover:scale-105 transition-transform duration-300"
+            >
+              <p className="text-[20px]">{route.path}</p>
+              <p className="text-[15px]">{route.name}</p>
+            </Link>
+          ))}
+          {authPathList.map((route, index) => (
+            <Link
+              key={index}
+              to={route.path}
+              className="rounded-[10px] border-b w-[500px] flex justify-start items-center text-black bg-white space-x-[100px] pl-[10px] py-[10px] hover:scale-105 transition-transform duration-300"
+            >
+              <p className="text-[20px]">{route.path}</p>
+              <p className="text-[15px]">{route.name}</p>
+            </Link>
+          ))}{" "}
           {routeList.map((route, index) => (
             <Link
               key={index}

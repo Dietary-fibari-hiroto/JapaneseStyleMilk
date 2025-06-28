@@ -13,3 +13,8 @@ export { default as DebateResultDataCard } from "./feature/Dashboard/Debateresul
 export { default as MonthSelector } from "./feature/Dashboard/MonthSelector";
 export { default as DebateHistory } from "./feature/Dashboard/DebateHistory";
 export { default as MatcingCard } from "./modal/MatchingCard";
+export { default as InputBox } from "./common/InputBox";
+export { default as PasswordInput } from "./common/PasswordInput";
+export { default as RequirementBullet } from "./common/RequirementBullet";
+export { default as BirthdayInput } from "./common/BirthdayInput";
+export { default as AuthLayout } from "./layout/AuthLayout";
