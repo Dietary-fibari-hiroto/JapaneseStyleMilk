@@ -79,7 +79,7 @@ const RegisterForm = () => {
         onChange={handleChange}
         applyToFormData={applyToFormData}
       />
-      <div className="w-full space-y-[20px]">
+      <div className="w-full flex-all-center flex-col space-y-[20px]">
         <div className="flex-all-center space-x-[10px]">
           <button
             type="button"

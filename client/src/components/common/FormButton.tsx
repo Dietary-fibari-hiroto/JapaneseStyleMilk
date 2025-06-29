@@ -9,7 +9,7 @@ const FormButton = ({ isValid, isConnecting = false }: Props) => {
   return (
     <button
       type="submit"
-      className={`w-full h-[52px] ${
+      className={`min-w-[373px] h-[52px] ${
         isValid
           ? "bg-[--surface-button-primary_button]"
           : "bg-[--surface-button-disabled]"

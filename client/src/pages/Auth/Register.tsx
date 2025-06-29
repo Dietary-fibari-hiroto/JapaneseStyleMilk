@@ -65,7 +65,7 @@ const Register = () => {
           <FormButton isValid={isFormValid} isConnecting={isConnecting} />
           <div className="flex-all-center text-body-r space-x-[5px]">
             <p>すでにアカウントをお持ちですか？</p>
-            <Link className="text-[--text-link] font-bold" to="">
+            <Link to="/login" className="text-[--text-link] font-bold">
               ログイン
             </Link>
           </div>
