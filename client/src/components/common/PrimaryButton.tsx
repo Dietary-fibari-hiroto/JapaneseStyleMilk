@@ -4,6 +4,7 @@ type PrimaryButtonProps = {
   color: "Main" | "Sub"; // 色
   shape: "Round" | "Square"; // 形
   label: string; // ボタン内文字列
+  onClick?: () => void;
 };
 
 // ボタンスタイル型定義 (サイズ, 色, 形)
@@ -34,9 +35,16 @@ const ButtonStyle = {
 
  * @returns 指定したスタイルのボタン
  */
-const PrimaryButton = ({ size, color, shape, label }: PrimaryButtonProps) => {
+const PrimaryButton = ({
+  size,
+  color,
+  shape,
+  label,
+  onClick,
+}: PrimaryButtonProps) => {
   return (
     <button
+      onClick={onClick}
       // 指定: サイズ、色、形
       // 固定: 太字, アニメーション速度(300s)
       className={`

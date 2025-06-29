@@ -1,6 +1,5 @@
-import styled from "styled-components";
-import { useEffect, useState } from "react";
-import { motion, AnimatePresence, animate, MotionConfig } from "framer-motion";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import clsx from "clsx";
 import Loading from "../common/Loading";
 import Avatar from "../common/Avatar";
@@ -54,84 +53,112 @@ const MatcingCard = () => {
 
   //マッチングの状態
   const [matchState, setMatchState] = useState<MatchingState>(
-    MatchingState.Success
+    MatchingState.Waiting
   );
+
+  //動作確認用
+  useEffect(() => {
+    const test = setTimeout(() => {
+      setMatchState(MatchingState.Success);
+    }, 3000);
+    return () => clearTimeout(test);
+  }, [matchState]);
 
   //はい、いいえボタンの挙動
   const handleYes = () => {};
-  const handleNo = () => {};
+  const handleNo = () => {
+    //動作確認用
+    setMatchState(MatchingState.Waiting);
+  };
 
   return (
-    <div
-      className={`absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] w-[780px] ${
-        matchState === MatchingState.Success ? "h-[696px]" : "h-[540px]"
-      } py-[32px] px-[56px] bg-[--surface-matching_card_frame] rounded-[32px] space-y-[28px] transition-all duration-[0.3s] ease-in-out`}
+    <motion.div
+      {...animationConfig}
+      className="fixed top-0 left-0 h-full w-full"
     >
-      <div className={clsx(contentStyle, "")}>
-        <p className="text-header-r text-[#FAFAFA] font-bold">ディベート相手</p>
-        <div className="w-[668px] h-[280px] bg-[--surface-opponent_matching_card] rounded-[16px] flex-all-center">
-          <AnimatePresence mode="wait">
-            {matchState === MatchingState.Waiting && (
-              <motion.div {...animationConfig}>
-                <Loading />
-              </motion.div>
-            )}
-            {matchState === MatchingState.Success && (
-              <motion.div {...animationConfig}>
-                <Avatar image={userIcon} size="xl" />
-              </motion.div>
-            )}
-            {matchState === MatchingState.Fail && (
-              <motion.div {...animationConfig}>
-                <div>fail</div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+      <div
+        style={{ backdropFilter: "blur(5px)" }}
+        className="absolute z-[3] top-0 left-0 bg-[#00000033]  w-screen h-screen "
+      ></div>
+      <div
+        className={`absolute z-[5] top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] w-[780px] ${
+          matchState === MatchingState.Success ? "h-[696px]" : "h-[540px]"
+        } py-[32px] px-[56px] bg-[--surface-matching_card_frame] rounded-[32px] space-y-[28px] transition-all duration-[0.3s] ease-in-out`}
+      >
+        <div className={clsx(contentStyle, "")}>
+          <p className="text-header-r text-[#FAFAFA] font-bold">
+            ディベート相手
+          </p>
+          <div className="w-[668px] h-[280px] bg-[--surface-opponent_matching_card] rounded-[16px] flex-all-center">
+            <AnimatePresence mode="wait">
+              {matchState === MatchingState.Waiting && (
+                <motion.div {...animationConfig}>
+                  <Loading />
+                </motion.div>
+              )}
+              {matchState === MatchingState.Success && (
+                <motion.div {...animationConfig}>
+                  <Avatar image={userIcon} size="xl" />
+                </motion.div>
+              )}
+              {matchState === MatchingState.Fail && (
+                <motion.div {...animationConfig}>
+                  <div>fail</div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
-      </div>
-      <div className={clsx(contentStyle, "")}>
-        <p className="text-header-r text-[#FAFAFA] font-bold">ディベート内容</p>
-        <div className="w-[668px] h-[52px] bg-[--surface-opponent_matching_card] rounded-[16px] flex-all-center">
+        <div className={clsx(contentStyle, "")}>
+          <p className="text-header-r text-[#FAFAFA] font-bold">
+            ディベート内容
+          </p>
+          <div className="w-[668px] h-[52px] bg-[--surface-opponent_matching_card] rounded-[16px] flex-all-center">
+            <AnimatePresence mode="wait">
+              {matchState === MatchingState.Waiting && (
+                <motion.div {...animationConfig}>
+                  <Loading miniMode={true} />
+                </motion.div>
+              )}
+              {matchState === MatchingState.Success && (
+                <motion.div {...animationConfig}>
+                  <div className="flex items-center space-x-[10px]">
+                    <p className="fofnt-medium">ディベート内容</p>
+                    <ProsCons witch={testProsCons} />
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+        <div className={clsx(contentStyle, "")}>
           <AnimatePresence mode="wait">
-            {matchState === MatchingState.Waiting && (
-              <motion.div {...animationConfig}>
-                <Loading miniMode={true} />
-              </motion.div>
-            )}
             {matchState === MatchingState.Success && (
-              <motion.div {...animationConfig}>
-                <div className="flex items-center space-x-[10px]">
-                  <p className="fofnt-medium">ディベート内容</p>
-                  <ProsCons witch={testProsCons} />
+              <motion.div
+                {...animationConfig}
+                className="flex-all-center flex-col space-y-[24px]"
+              >
+                <p className="text-[#fafafa] text-header-r font-bold">
+                  このトピックで進めますか？
+                </p>{" "}
+                <div className="flex-all-center space-x-[24px]">
+                  <SecondaryButton
+                    type={true}
+                    text="はい"
+                    onClick={handleYes}
+                  />
+                  <SecondaryButton
+                    type={false}
+                    text="いいえ"
+                    onClick={handleNo}
+                  />
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
         </div>
       </div>
-      <div className={clsx(contentStyle, "")}>
-        <AnimatePresence mode="wait">
-          {matchState === MatchingState.Success && (
-            <motion.div
-              {...animationConfig}
-              className="flex-all-center flex-col space-y-[24px]"
-            >
-              <p className="text-[#fafafa] text-header-r font-bold">
-                このトピックで進めますか？
-              </p>{" "}
-              <div className="flex-all-center space-x-[24px]">
-                <SecondaryButton type={true} text="はい" onClick={handleYes} />
-                <SecondaryButton
-                  type={false}
-                  text="いいえ"
-                  onClick={handleNo}
-                />
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </div>
+    </motion.div>
   );
 };
 

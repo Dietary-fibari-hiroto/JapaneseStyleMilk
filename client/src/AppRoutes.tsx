@@ -34,7 +34,7 @@ export const authPathList = [
 ];
 export const routeList = [
   //{path:"example",element:<Example/>,name:"論理名"}
-  { path: "/", element: <Home />, name: "ホームページ" },
+  { path: "/home", element: <Home />, name: "ホームページ" },
 
   /**
    * 以下、アプリケーションページ
