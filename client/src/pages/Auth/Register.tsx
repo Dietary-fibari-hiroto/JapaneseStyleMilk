@@ -1,6 +1,8 @@
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "../../hooks";
-import { InputBox } from "../../components";
-const inputCategory = [
+import { AuthFormContainer, FormButton, AuthInputList } from "../../components";
+const inputConfigs = [
   {
     name: "email",
     type: "email",
@@ -19,10 +21,31 @@ const inputCategory = [
   },
 ];
 const Register = () => {
-  const { formData, handleChange, applyToFormData } = useForm(inputCategory);
+  const navigate = useNavigate();
+  const { formData, handleChange, applyToFormData } = useForm(inputConfigs);
+  const [isFormValid, setIsFormValid] = useState(false);
+  const [isConnecting, setIsConnecting] = useState(false);
+  useEffect(() => {
+    const allValid = inputConfigs.every(({ name, rules }) => {
+      const value = formData[name];
+      return rules.every((rule) => rule.validate(value));
+    });
+    setIsFormValid(allValid);
+  }, [formData]);
 
+  const handleRegister = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsConnecting(true);
+    //テスト用のセットタイムアウト
+    setTimeout(() => {
+      navigate("/register/form", { state: formData });
+    }, 3000);
+    /**
+     * ここにAPI通信などなど処理記述予定
+     */
+  };
   return (
-    <div className="flex-all-center flex-col space-y-[44px]">
+    <AuthFormContainer onSubmit={handleRegister}>
       <div className="text-center ">
         <p className="text-header-l font-bold text-[--text-header_primary]">
           LANGBATEへようこそ
@@ -31,23 +54,24 @@ const Register = () => {
           楽しく本格的なディベートで、英語力を磨こう。
         </p>
       </div>
-      <form>
-        {inputCategory.map((config) => {
-          return (
-            <InputBox
-              key={config.name}
-              name={config.name}
-              type={config.type}
-              value={formData[config.name]}
-              onChange={handleChange}
-              label={config.label}
-              rules={config.rules}
-              placeholder={config.placeholder}
-            />
-          );
-        })}
-      </form>
-    </div>
+      <div className="space-y-[32px]">
+        <AuthInputList
+          inputConfigs={inputConfigs}
+          formData={formData}
+          onChange={handleChange}
+          applyToFormData={applyToFormData}
+        />
+        <div className="space-y-[12px]">
+          <FormButton isValid={isFormValid} isConnecting={isConnecting} />
+          <div className="flex-all-center text-body-r space-x-[5px]">
+            <p>すでにアカウントをお持ちですか？</p>
+            <Link className="text-[--text-link] font-bold" to="">
+              ログイン
+            </Link>
+          </div>
+        </div>
+      </div>
+    </AuthFormContainer>
   );
 };
 export default Register;

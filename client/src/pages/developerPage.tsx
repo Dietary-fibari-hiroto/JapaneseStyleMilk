@@ -92,6 +92,7 @@ const DeveloperPage = () => {
             <p>Path</p>
             <p>Name</p>
           </div>
+          <p className="text-white">デベロッパー</p>
           {developPathList.map((route, index) => (
             <Link
               key={index}
@@ -101,7 +102,8 @@ const DeveloperPage = () => {
               <p className="text-[20px]">{route.path}</p>
               <p className="text-[15px]">{route.name}</p>
             </Link>
-          ))}
+          ))}{" "}
+          <p className="text-white">ログイン関連</p>
           {authPathList.map((route, index) => (
             <Link
               key={index}
@@ -112,6 +114,7 @@ const DeveloperPage = () => {
               <p className="text-[15px]">{route.name}</p>
             </Link>
           ))}{" "}
+          <p className="text-white">アプリ内ページ</p>
           {routeList.map((route, index) => (
             <Link
               key={index}

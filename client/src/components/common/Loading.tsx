@@ -8,7 +8,10 @@ const EllipseMotion = keyframes`
   100% {    transform:translateY(0%);
     }
 `;
-const LoadingContainer = styled.div<{ $miniMode?: boolean }>`
+const LoadingContainer = styled.div<{
+  $miniMode?: boolean;
+  $isWhite?: boolean;
+}>`
   width: ${({ $miniMode }) => ($miniMode ? "60px" : "100px")};
   display: flex;
   justify-content: space-between;
@@ -21,13 +24,14 @@ const LoadingContainer = styled.div<{ $miniMode?: boolean }>`
     width: ${({ $miniMode }) => ($miniMode ? "12px" : "20px")};
     height: ${({ $miniMode }) => ($miniMode ? "12px" : "20px")};
     border-radius: 10px;
-    background: #000000;
+    background: ${({ $isWhite }) => ($isWhite ? "#ffffff" : "#000000")};
   }
 `;
 type MiniMode = {
   miniMode?: boolean;
+  isWhite?: boolean;
 };
-const Loading = ({ miniMode = false }: MiniMode) => {
+const Loading = ({ miniMode = false, isWhite = false }: MiniMode) => {
   //モーションの間隔秒数(ms)
   const motionInterval = 500;
   //プロセスカウンター
@@ -63,7 +67,7 @@ const Loading = ({ miniMode = false }: MiniMode) => {
   }, [count]);
 
   return (
-    <LoadingContainer $miniMode={miniMode}>
+    <LoadingContainer $miniMode={miniMode} $isWhite={isWhite}>
       <div className={motionProcess.first ? "motion" : ""} />
       <div className={motionProcess.second ? "motion" : ""} />
       <div className={motionProcess.third ? "motion" : ""} />

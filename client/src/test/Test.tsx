@@ -1,6 +1,6 @@
 import { useForm } from "../hooks";
 import { InputBox, PasswordInput, BirthdayInput } from "../components";
-const inputCategory = [
+const inputConfigs = [
   {
     name: "email",
     type: "email",
@@ -46,7 +46,7 @@ const inputCategory = [
 
 const Test = () => {
   const { formData, handleChange, resetForm, applyToFormData } =
-    useForm(inputCategory);
+    useForm(inputConfigs);
 
   const handleTest = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -54,7 +54,7 @@ const Test = () => {
   };
   return (
     <form className="bg-[#cccccc]" onSubmit={handleTest}>
-      {inputCategory.map((config) => {
+      {inputConfigs.map((config) => {
         if (config.type === "password") {
           return (
             <PasswordInput
