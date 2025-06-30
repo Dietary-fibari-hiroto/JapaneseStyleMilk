@@ -34,7 +34,7 @@ const UpgradeCard = ({ isOpen }: Props) => {
     <ContainerDiv $isOpen={isOpen}>
       <div className="w-[196px] h-[106px]">
         <img className="size-[44px]" src={ImagesRoute.upgrade_Icon} />
-        <p>プロにアップグレード</p>
+        <p className="text-header-xs text-[--text-header-primary] font-bold pt-[12px]">プロにアップグレード</p>
         <p>たくさんの得点を解放しよう！</p>
       </div>
       <PrimaryButton
