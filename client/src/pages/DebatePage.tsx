@@ -12,8 +12,7 @@ const DevatePage = () => {
         <VersusAvatars />
 
         {/* ディベート状態表示・変更ボタン */}
-        <DebateButton />
-
+        <div className="flex-all-center"><DebateButton /></div>
       </div>
     </>
     
