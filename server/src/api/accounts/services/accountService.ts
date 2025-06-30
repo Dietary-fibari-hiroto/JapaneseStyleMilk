@@ -73,4 +73,6 @@ export class AccountService {
       where: { account_id: accountId }
     });
   }
+  
+  
 } 

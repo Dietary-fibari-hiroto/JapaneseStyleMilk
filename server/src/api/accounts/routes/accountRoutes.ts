@@ -1,6 +1,7 @@
-import { Router, Request, Response, NextFunction } from 'express';
+import { Router, Request, Response, NextFunction, RequestHandler } from 'express';
 import { AccountController } from '../controllers/accountController';
 import { AccountService } from '../services/accountService';
+import { authMiddleware } from '../../auth/middlewares/authMiddleware';
 
 const router = Router();
 const accountService = new AccountService();
@@ -23,6 +24,10 @@ router.put('/:id', asyncHandler(async (req, res) => {
 // GET /accounts/:id/total-evaluation
 router.get('/:id/total-evaluation', asyncHandler(async (req, res) => {
   await accountController.getTotalEvaluation(req, res);
+}));
+
+router.get('/', authMiddleware as RequestHandler, asyncHandler(async (req, res) => {
+  await accountController.getMe(req, res);
 }));
 
 export default router; 

@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { AccountService } from '../services/accountService';
 import { CreateAccountDTO } from '../models/account';
+import Account from '../models/account';
 
 export class AccountController {
   constructor(private accountService: AccountService) {}
@@ -61,4 +62,38 @@ export class AccountController {
       res.status(500).json({ error: '総合評価の取得に失敗しました' });
     }
   }
+
+  async getMe(req: Request, res: Response) {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ message: '認証情報がありません' });
+    }
+    try {
+      const user = await Account.findByPk(req.user.id, {
+        attributes: { exclude: ['password'] }
+      });
+      if (!user) {
+        return res.status(404).json({ message: 'ユーザーが見つかりません' });
+      }
+      res.json(user);
+    } catch (err) {
+      res.status(500).json({ message: 'サーバーエラー' });
+    }
+  }
 }
+
+export const getMe = async (req: Request, res: Response) => {
+  if (!req.user || !req.user.id) {
+    return res.status(401).json({ message: '認証情報がありません' });
+  }
+  try {
+    const user = await Account.findByPk(req.user.id, {
+      attributes: { exclude: ['password'] }
+    });
+    if (!user) {
+      return res.status(404).json({ message: 'ユーザーが見つかりません' });
+    }
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ message: 'サーバーエラー' });
+  }
+};
