@@ -9,12 +9,12 @@ import { useEffect, useState } from "react";
 
 // 表示ラベル定義
 const TurnList = [
-    {label: "シンキングタイム", time: 5000},
-    {label: "Round1", time: 4000},
     {label: "シンキングタイム", time: 2000},
-    {label: "Round2", time: 4000},
-    {label: "シンキングタイム", time: 2100},
-    {label: "Round3", time: 4100},
+    {label: "Round1", time: 5000},
+    {label: "シンキングタイム", time: 2000},
+    {label: "Round2", time: 5000},
+    {label: "シンキングタイム", time: 2000},
+    {label: "Round3", time: 5000},
 ]
 
 // 引数定義
@@ -31,7 +31,7 @@ type SectionHeaderProps = {
  */
 const SectionHeader = ({mode, name}: SectionHeaderProps) => {
     /* 以下 アニメーション設定 (後で修正) */
-    const [turn, setTurn] = useState(0);// ターン管理
+    const [currentTurn, setCurrentTurn] = useState(0);// ターン管理
     const firstWate = 5000;              // 最初の待ち時間(debag:1/10)
 
     // 待機時間設定
@@ -41,7 +41,7 @@ const SectionHeader = ({mode, name}: SectionHeaderProps) => {
     // アニメーション時間管理(非同期)
     const animationManager = async() =>{
         const nextTurn = () => {
-            setTurn((prev) => prev + 1);
+            setCurrentTurn((prev) => prev + 1);
         };
         await wateTime(firstWate);
 
@@ -66,7 +66,7 @@ const SectionHeader = ({mode, name}: SectionHeaderProps) => {
                 <div className="transition">
                     {/* ターン見出し生成 */}
                     { TurnList.map((element, index) => {
-                        console.log(element.label, ` translate-y-[${turn*100}%]`)
+                        console.log(element.label, ` translate-y-[${currentTurn*100}%]`)
                         return(
                             <p
                                 key={`SectionHeader-${index}`}
@@ -79,7 +79,7 @@ const SectionHeader = ({mode, name}: SectionHeaderProps) => {
 
                                 // アニメーション方向・距離・時間
                                 style={{
-                                    transform: `translateY(-${turn * 100}%)`,
+                                    transform: `translateY(-${currentTurn * 100}%)`,
                                     transitionDuration: "300ms",
                                     
                                 }}
