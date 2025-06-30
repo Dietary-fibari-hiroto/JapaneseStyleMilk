@@ -1,5 +1,5 @@
 import { useReducer, useState } from "react";
-import ImagesRoute from "../../assets/images/ImagesRoute";
+import ImagesRoute from "../../../assets/images/ImagesRoute";
 import { useEffect } from "react";
 import styled from "styled-components";
 

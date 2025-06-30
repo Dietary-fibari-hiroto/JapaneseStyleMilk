@@ -1,17 +1,5 @@
-import {
-  CountDown,
-  DebateButton,
-  PopUpUserCard,
-  VoiceToChat,
-  Loading,
-} from "../components";
-
 const Test = () => {
-  return (
-    <div>
-      <Loading />
-    </div>
-  );
+  return <div></div>;
 };
 
 export default Test;
