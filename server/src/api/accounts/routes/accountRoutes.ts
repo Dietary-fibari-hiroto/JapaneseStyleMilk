@@ -20,4 +20,9 @@ router.put('/:id', asyncHandler(async (req, res) => {
   await accountController.editAccount(req, res);
 }));
 
+// GET /accounts/:id/total-evaluation
+router.get('/:id/total-evaluation', asyncHandler(async (req, res) => {
+  await accountController.getTotalEvaluation(req, res);
+}));
+
 export default router; 
