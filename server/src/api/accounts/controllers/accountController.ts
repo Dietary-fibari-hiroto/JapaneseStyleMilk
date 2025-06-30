@@ -33,4 +33,32 @@ export class AccountController {
       res.status(500).json({ error: 'アカウントの編集に失敗しました' });
     }
   }
-} 
+
+  async getTotalEvaluation(req: Request, res: Response) {
+    try {
+      const accountId = Number(req.params.id);
+      
+      if (!accountId) {
+        return res.status(400).json({ error: 'アカウントIDが必要です' });
+      }
+
+      const totalEvaluation = await this.accountService.getTotalEvaluation(accountId);
+      
+      if (!totalEvaluation) {
+        return res.status(404).json({ error: '総合評価が見つかりません' });
+      }
+
+      res.json({
+        account_id: totalEvaluation.account_id,
+        total_score: totalEvaluation.total_score,
+        advice: totalEvaluation.advice,
+        winning_streak: totalEvaluation.winning_streak,
+        wins: totalEvaluation.wins,
+        loses: totalEvaluation.loses,
+      });
+    } catch (error) {
+      console.error('総合評価取得エラー:', error);
+      res.status(500).json({ error: '総合評価の取得に失敗しました' });
+    }
+  }
+}

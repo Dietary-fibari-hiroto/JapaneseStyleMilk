@@ -4,6 +4,7 @@ import express from 'express';
 import cors from 'cors';
 import accountRoutes from './src/api/accounts/routes/accountRoutes';
 import authRoutes from './src/api/auth/routes/authRoutes';
+import historyRoutes from './src/api/history/routes/historyRoutes';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -16,6 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 // ルートの設定
 app.use('/api/accounts', accountRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/history', historyRoutes);
 
 // エラーハンドリング
 app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
