@@ -54,6 +54,7 @@ const VersusAvatars = () => {
             conversation.map((text, index) => {
               return(
                 <p
+                  key={`debateLine-${index}`}
                   style={{
                     transform: `translateY(-${lineFeed*100}%)`,
                     transitionDuration: "300ms",
