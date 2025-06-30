@@ -9,7 +9,7 @@ const DebateButtonContainer = styled.div<{
   $cancelOpen: boolean;
   $flafOpen: boolean;
 }>`
-  max-width: 192px;
+  max-width: 260px;
   height: 200px;
   white-space: nowrap;
   display: flex;
@@ -67,8 +67,8 @@ const DebateButtonContainer = styled.div<{
     transition: width 0.3s ease, padding 0.3s ease;
   }
   .icon {
-    min-width: 36px;
-    min-height: 36px;
+    width: 36px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
