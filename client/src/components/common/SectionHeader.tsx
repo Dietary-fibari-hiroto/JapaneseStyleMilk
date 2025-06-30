@@ -62,11 +62,11 @@ const SectionHeader = ({mode, name}: SectionHeaderProps) => {
 
     if (mode === "anime") {
         return(
-            <div className="h-[92px] w-[820px] relative" style={{overflow: "hidden"}}>
+            <div className="h-[92px] w-[820px] relative overflow-hidden">
                 <div className="transition">
                     {/* ターン見出し生成 */}
                     { TurnList.map((element, index) => {
-                        console.log(element.label, ` translate-y-[${currentTurn*100}%]`)
+                        // console.log(element.label, ` translate-y-[${currentTurn*100}%]`)
                         return(
                             <p
                                 key={`SectionHeader-${index}`}
