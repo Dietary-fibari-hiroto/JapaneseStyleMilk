@@ -2,6 +2,7 @@ import { Router, Request, Response, NextFunction, RequestHandler } from 'express
 import { AccountController } from '../controllers/accountController';
 import { AccountService } from '../services/accountService';
 import { authMiddleware } from '../../auth/middlewares/authMiddleware';
+import { checkEmailExists } from '../controllers/accountController';
 
 const router = Router();
 const accountService = new AccountService();
@@ -29,5 +30,7 @@ router.get('/:id/total-evaluation', asyncHandler(async (req, res) => {
 router.get('/', authMiddleware as RequestHandler, asyncHandler(async (req, res) => {
   await accountController.getMe(req, res);
 }));
+
+router.post('/check-email', asyncHandler(checkEmailExists));
 
 export default router; 

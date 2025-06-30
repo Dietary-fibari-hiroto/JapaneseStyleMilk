@@ -97,3 +97,16 @@ export const getMe = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'サーバーエラー' });
   }
 };
+
+export const checkEmailExists = async (req: Request, res: Response) => {
+  const { email } = req.body;
+  if (!email) {
+    return res.status(400).json({ message: 'emailは必須です' });
+  }
+  try {
+    const user = await Account.findOne({ where: { email } });
+    res.json({ exists: !!user });
+  } catch (err) {
+    res.status(500).json({ message: 'サーバーエラー' });
+  }
+};
