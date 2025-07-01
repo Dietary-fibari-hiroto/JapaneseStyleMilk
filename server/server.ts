@@ -11,7 +11,12 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // グローバルミドルウェアの設定
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3000", // フロントのURLを明示！
+    credentials: true, // 認証情報（cookie等）を許可
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(logger);

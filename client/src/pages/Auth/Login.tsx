@@ -1,12 +1,7 @@
 import { login } from "../../api/auth";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import {
-  AuthFormContainer,
-  AuthInputList,
-  CheckBox,
-  FormButton,
-} from "../../components";
+import { AuthFormContainer, AuthInputList, FormButton } from "../../components";
 import { useForm } from "../../hooks";
 import { useAccount } from "../../contexts/AccountContext";
 

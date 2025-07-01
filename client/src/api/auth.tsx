@@ -11,7 +11,11 @@ export const login = async ({
   email,
   password,
 }: Pick<AccountType, "email" | "password">) => {
-  const res = await axiosInstance.post("/auth/login", { email, password });
+  const res = await axiosInstance.post(
+    "/auth/login",
+    { email, password },
+    { withCredentials: true }
+  );
   const { token, account } = res.data;
   localStorage.setItem("token", token);
   localStorage.setItem("account", account);
