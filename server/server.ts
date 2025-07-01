@@ -7,6 +7,8 @@ import authRoutes from "./src/api/auth/routes/authRoutes";
 import historyRoutes from "./src/api/history/routes/historyRoutes";
 import logger from "./src/middlewares/logger";
 
+import path from "path";
+
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -20,6 +22,8 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(logger);
+
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // ルートの設定
 app.use("/api/accounts", accountRoutes);
