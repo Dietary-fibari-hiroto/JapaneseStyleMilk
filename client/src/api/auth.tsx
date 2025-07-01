@@ -40,3 +40,12 @@ export const register = async (accountData: AccountType) => {
     throw error;
   }
 };
+
+export const checkEmail = async ({ email }: Pick<AccountType, "email">) => {
+  try {
+    const res = await axiosInstance.post(`/accounts/check-email`, { email });
+    return res.data;
+  } catch (error) {
+    console.log("サーバーエラー:", error);
+  }
+};

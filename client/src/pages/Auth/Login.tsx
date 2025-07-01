@@ -1,8 +1,8 @@
 import { login } from "../../api/auth";
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthFormContainer, AuthInputList, FormButton } from "../../components";
-import { useForm } from "../../hooks";
+import { useForm, useApiError } from "../../hooks";
 import { useAccount } from "../../contexts/AccountContext";
 
 const inputConfigs = [
@@ -34,6 +34,8 @@ const inputConfigs = [
   },
 ];
 const Login = () => {
+  const navigate = useNavigate();
+  const { errorMessage, handleApiError } = useApiError();
   const { setUser, user } = useAccount();
   const [isFormValid, setIsFormValid] = useState(false);
 
@@ -48,8 +50,9 @@ const Login = () => {
     try {
       const data = await login({ email: email, password: password });
       console.log("ログイン成功:", data);
+      navigate("/home");
     } catch (error) {
-      console.log("ログイン失敗:", error);
+      handleApiError(error);
       setIsConnecting(false);
     }
   };
@@ -65,13 +68,14 @@ const Login = () => {
   }, [formData]);
   return (
     <AuthFormContainer onSubmit={handleRegister}>
-      <div className="text-center ">
+      <div className="text-center flex-all-center flex-col">
         <p className="text-header-l font-bold text-[--text-header_primary]">
           おかえりなさい！
         </p>
         <p className="text-body-r text-[--text-body]">
           また一緒に始めましょう。ログインして続けてください。
         </p>
+        <p className="text-[#FF0000] break-words">{errorMessage}</p>
       </div>
       <AuthInputList
         inputConfigs={inputConfigs}
@@ -82,7 +86,7 @@ const Login = () => {
       <div className="flex items-justify-start w-full translate-y-[-200%] text-body-s text-[--text-link]">
         パスワードを忘れた方はこちら
       </div>
-      <div className="w-full space-y-[20px]">
+      <div className="w-full space-y-[20px] flex-all-center flex-col">
         <FormButton isValid={isFormValid} isConnecting={isConnecting} />
         <p>
           まだアカウントをお持ちでない方は、

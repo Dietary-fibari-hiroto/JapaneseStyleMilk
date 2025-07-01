@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthFormContainer, AuthInputList, FormButton } from "../../components";
-import { useForm } from "../../hooks";
+import { useForm, useApiError } from "../../hooks";
 
 const inputConfigs = [
   {
@@ -38,10 +38,22 @@ const inputConfigs = [
 ];
 
 const RegisterForm = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [isFormValid, setIsFormValid] = useState(false);
   const [isAgree, setIsAgree] = useState(false);
   const [agreedWithoutClick, setAgreedWithoutClick] = useState(false);
   const { formData, handleChange, applyToFormData } = useForm(inputConfigs);
+
+  //registerpageで検証したemailをformDataに格納
+  const email = location.state.email;
+  useEffect(() => {
+    if (email) {
+      applyToFormData("email", email);
+    }
+  }, [email]);
+
+  //登録処理
   const handleRegister = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -50,9 +62,11 @@ const RegisterForm = () => {
       setAgreedWithoutClick(true);
       return;
     }
-    console.log("成功");
     //以下に登録等の処理を記述
+    navigate("/register/selectavatar", { state: formData });
   };
+
+  //バリデート管理
   useEffect(() => {
     const allValid = inputConfigs
       .filter((config) => config.rules) // rulesがあるやつだけ

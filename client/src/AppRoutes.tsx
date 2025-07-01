@@ -7,6 +7,7 @@ import {
   Register,
   RegisterForm,
   Login,
+  SelectAvatar,
 } from "./pages";
 import Test from "./test/Test";
 import Test2 from "./test/Test2";
@@ -29,6 +30,11 @@ export const authPathList = [
     path: "/register/form",
     element: <RegisterForm />,
     name: "アカウント詳細登録",
+  },
+  {
+    path: "/register/selectavatar",
+    element: <SelectAvatar />,
+    name: "アバター選択画面",
   },
   { path: "/login", element: <Login />, name: "ログイン" },
 ];

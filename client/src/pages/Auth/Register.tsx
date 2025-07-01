@@ -1,6 +1,7 @@
+import { checkEmail } from "../../api/auth";
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useForm } from "../../hooks";
+import { useForm, useApiError } from "../../hooks";
 import { AuthFormContainer, FormButton, AuthInputList } from "../../components";
 const inputConfigs = [
   {
@@ -22,6 +23,7 @@ const inputConfigs = [
 ];
 const Register = () => {
   const navigate = useNavigate();
+  const { errorMessage, handleApiError, handleCustomMessage } = useApiError();
   const { formData, handleChange, applyToFormData } = useForm(inputConfigs);
   const [isFormValid, setIsFormValid] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
@@ -33,16 +35,21 @@ const Register = () => {
     setIsFormValid(allValid);
   }, [formData]);
 
-  const handleRegister = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsConnecting(true);
-    //テスト用のセットタイムアウト
-    setTimeout(() => {
+    try {
+      const exists = await checkEmail({ email: formData.email });
+
+      if (exists.exists) {
+        handleCustomMessage("このメールアドレスは既に使われています。");
+        setIsConnecting(false);
+        return;
+      }
       navigate("/register/form", { state: formData });
-    }, 3000);
-    /**
-     * ここにAPI通信などなど処理記述予定
-     */
+    } catch (error) {
+      handleApiError(error);
+    }
   };
   return (
     <AuthFormContainer onSubmit={handleRegister}>
@@ -54,6 +61,8 @@ const Register = () => {
           楽しく本格的なディベートで、英語力を磨こう。
         </p>
       </div>
+      <p className="text-[#FF0000] break-words w-[373px]">{errorMessage}</p>
+
       <div className="space-y-[32px]">
         <AuthInputList
           inputConfigs={inputConfigs}
@@ -61,7 +70,7 @@ const Register = () => {
           onChange={handleChange}
           applyToFormData={applyToFormData}
         />
-        <div className="space-y-[12px]">
+        <div className="space-y-[12px] flex-all-center flex-col">
           <FormButton isValid={isFormValid} isConnecting={isConnecting} />
           <div className="flex-all-center text-body-r space-x-[5px]">
             <p>すでにアカウントをお持ちですか？</p>
