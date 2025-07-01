@@ -36,7 +36,19 @@ const AccountProvider: React.FC<AccountProviderProps> = ({ children }) => {
   useEffect(() => {
     const id = localStorage.getItem("accountId");
     if (id) setAccountId(id);
-    console.log("context:", id);
+    console.log("context,Id:", id);
+
+    const userData = localStorage.getItem("user");
+    if (userData) {
+      try {
+        const parsed = JSON.parse(userData);
+        setUser(parsed);
+      } catch (err) {
+        console.error("ユーザーデータの読み込みに失敗しました", err);
+        localStorage.removeItem("user"); // 壊れてたら削除
+      }
+    }
+    console.log("context,user:", userData);
   }, []);
 
   useEffect(() => {

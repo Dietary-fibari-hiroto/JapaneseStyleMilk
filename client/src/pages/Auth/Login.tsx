@@ -1,3 +1,4 @@
+import { login } from "../../api/auth";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -7,6 +8,7 @@ import {
   FormButton,
 } from "../../components";
 import { useForm } from "../../hooks";
+import { useAccount } from "../../contexts/AccountContext";
 
 const inputConfigs = [
   {
@@ -37,19 +39,24 @@ const inputConfigs = [
   },
 ];
 const Login = () => {
+  const { setUser, user } = useAccount();
   const [isFormValid, setIsFormValid] = useState(false);
-  const [isAgree, setIsAgree] = useState(false);
+
   const [isConnecting, setIsConnecting] = useState(false);
   const { formData, handleChange, applyToFormData } = useForm(inputConfigs);
-  const handleRegister = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    //同意していない場合はsubmitをはじく
-
     setIsConnecting(true);
-    //テスト用のセットタイムアウト
-    setTimeout(() => {}, 3000);
     //以下に登録等の処理を記述
+    const { email, password } = formData;
+    try {
+      const data = await login({ email: email, password: password });
+      console.log("ログイン成功:", data);
+    } catch (error) {
+      console.log("ログイン失敗:", error);
+      setIsConnecting(false);
+    }
   };
   useEffect(() => {
     const allValid = inputConfigs

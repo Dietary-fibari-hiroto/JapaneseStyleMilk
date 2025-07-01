@@ -1,10 +1,13 @@
 import { BrowserRouter as Router } from "react-router-dom";
 import AppRoutes from "./AppRoutes";
+import AccountProvider from "./contexts/AccountContext";
 
 function App() {
   return (
     <Router>
-      <AppRoutes />
+      <AccountProvider>
+        <AppRoutes />
+      </AccountProvider>
     </Router>
   );
 }
