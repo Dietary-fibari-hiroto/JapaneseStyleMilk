@@ -5,7 +5,7 @@ import { useForm, useApiError } from "../../hooks";
 
 const inputConfigs = [
   {
-    name: "accountName",
+    name: "name",
     type: "text",
     label: "名前",
     placeholder: "竹中半兵衛",
@@ -30,12 +30,20 @@ const inputConfigs = [
       },
     ],
   },
+];
+const birthday = [
   {
     name: "birthday",
     type: "birthday",
     label: "生年月日",
   },
 ];
+const btest: Record<string, string> = {
+  name: "山田太郎",
+  email: "yamada@example.com",
+  password: "password123",
+  img_url: "https://example.com/avatar.png", // string なのでURL文字列でOK
+};
 
 const RegisterForm = () => {
   const location = useLocation();
@@ -92,6 +100,12 @@ const RegisterForm = () => {
         formData={formData}
         onChange={handleChange}
         applyToFormData={applyToFormData}
+      />{" "}
+      <AuthInputList
+        inputConfigs={birthday}
+        formData={btest}
+        onChange={() => {}}
+        applyToFormData={() => {}}
       />
       <div className="w-full flex-all-center flex-col space-y-[20px]">
         <div className="flex-all-center space-x-[10px]">

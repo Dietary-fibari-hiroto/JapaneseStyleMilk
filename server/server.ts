@@ -6,7 +6,7 @@ import accountRoutes from "./src/api/accounts/routes/accountRoutes";
 import authRoutes from "./src/api/auth/routes/authRoutes";
 import historyRoutes from "./src/api/history/routes/historyRoutes";
 import logger from "./src/middlewares/logger";
-
+import uploadRouter from "./src/api/accounts/routes/uploadRoutes";
 import path from "path";
 
 const app = express();
@@ -22,10 +22,11 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(logger);
-
+//静的ファイル公開
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // ルートの設定
+app.use("/api/upload", uploadRouter);
 app.use("/api/accounts", accountRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/history", historyRoutes);

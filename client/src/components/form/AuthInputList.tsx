@@ -49,7 +49,7 @@ const AuthInputList = ({
             <BirthdayInput
               key={config.name}
               name={config.name}
-              onBirthdayChange={applyToFormData}
+              onBirthdayChange={/*applyToFormData*/ () => {}}
               label={config.label}
             />
           );
