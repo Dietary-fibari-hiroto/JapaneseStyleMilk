@@ -1,13 +1,14 @@
 **/.env
 **/node_modules
 
+
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
 /client/node_modules
 /client/.pnp
 /client/.pnp.js
-
+/server/upload/*
 # testing
 /client/coverage
 
