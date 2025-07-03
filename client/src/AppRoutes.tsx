@@ -8,6 +8,7 @@ import {
   RegisterForm,
   Login,
   SelectAvatar,
+  WelcomePage,
 } from "./pages";
 import Test from "./test/Test";
 import Test2 from "./test/Test2";
@@ -36,6 +37,7 @@ export const authPathList = [
     element: <SelectAvatar />,
     name: "アバター選択画面",
   },
+  { path: "/register/welcome", element: <WelcomePage />, name: "ウェルカム" },
   { path: "/login", element: <Login />, name: "ログイン" },
 ];
 export const routeList = [

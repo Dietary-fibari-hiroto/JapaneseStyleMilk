@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { AuthFormContainer, FormButton } from "../../components";
 import { useForm } from "../../hooks";
 import Avatar from "../../components/common/Avatar";
@@ -26,6 +26,7 @@ const avatarList = [
 const SelectAvatar = () => {
   const { formData, applyToFormData, handleChange } = useForm(inputCategory);
   const location = useLocation();
+  const navigate = useNavigate();
   const [image, setImage] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [selectImage, setSelectImage] = useState("");
@@ -65,6 +66,7 @@ const SelectAvatar = () => {
       console.log("haittery");
       const res = await register(formData as AccountType);
     } catch (error) {}
+    navigate("/register/welcome");
   };
 
   useEffect(() => {
@@ -100,7 +102,7 @@ const SelectAvatar = () => {
         </p>
       </div>
       <div>
-        <Avatar image={`${selectImage}`} size="xl" />
+        <img src={`${selectImage}`} className="size-[158px] rounded-full" />
       </div>
       <div className="flex justify-start flex-wrap  w-[500px] gap-[30px]">
         {" "}
@@ -109,18 +111,13 @@ const SelectAvatar = () => {
             type="button"
             className="size-auto "
             onClick={() => {
-              setSelectImage(
-                `http://localhost:4000/uploads/avatars/${filename}`
-              );
+              setSelectImage(`${process.env.REACT_APP_IMAGE_URL}/${filename}`);
               setSelectAvatar(filename);
               setImage(null);
             }}
             key={filename}
           >
-            <Avatar
-              image={`http://localhost:4000/uploads/avatars/${filename}`}
-              size="large"
-            />
+            <Avatar image={`${filename}`} size="large" />
           </button>
         ))}
         <button

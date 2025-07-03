@@ -5,6 +5,7 @@ import { AuthFormContainer, AuthInputList, FormButton } from "../../components";
 import { useForm, useApiError } from "../../hooks";
 import { useAccount } from "../../contexts/AccountContext";
 
+//inputの設定
 const inputConfigs = [
   {
     name: "email",
@@ -35,13 +36,15 @@ const inputConfigs = [
 ];
 const Login = () => {
   const navigate = useNavigate();
-  const { errorMessage, handleApiError } = useApiError();
-  const { setUser, user } = useAccount();
-  const [isFormValid, setIsFormValid] = useState(false);
-
-  const [isConnecting, setIsConnecting] = useState(false);
+  const { setLoginState } = useAccount();
   const { formData, handleChange, applyToFormData } = useForm(inputConfigs);
-  const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
+  //ページ内で使用する状態管理
+  const { errorMessage, handleApiError } = useApiError(); //エラーメッセージ
+  const [isFormValid, setIsFormValid] = useState(false); //フォームの制約管理
+  const [isConnecting, setIsConnecting] = useState(false); //Api接続状態管理
+
+  //ログイン処理
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     setIsConnecting(true);
@@ -50,12 +53,16 @@ const Login = () => {
     try {
       const data = await login({ email: email, password: password });
       console.log("ログイン成功:", data);
+      //useAccount発火フラグ
+      setLoginState(true);
       navigate("/home");
     } catch (error) {
       handleApiError(error);
       setIsConnecting(false);
     }
   };
+
+  //inputのバリデーション制約
   useEffect(() => {
     const allValid = inputConfigs
       .filter((config) => config.rules) // rulesがあるやつだけ
@@ -66,8 +73,9 @@ const Login = () => {
 
     setIsFormValid(allValid);
   }, [formData]);
+
   return (
-    <AuthFormContainer onSubmit={handleRegister}>
+    <AuthFormContainer onSubmit={handleLogin}>
       <div className="text-center flex-all-center flex-col">
         <p className="text-header-l font-bold text-[--text-header_primary]">
           おかえりなさい！

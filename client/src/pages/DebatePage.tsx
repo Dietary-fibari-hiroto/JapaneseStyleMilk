@@ -9,13 +9,14 @@ const DevatePage = () => {
         <SectionHeader mode="anime" />
 
         {/* 自分と対戦相手のアバター */}
-        <VersusAvatars />
+        <VersusAvatars img_url="gray.jpg" />
 
         {/* ディベート状態表示・変更ボタン */}
-        <div className="flex-all-center"><DebateButton /></div>
+        <div className="flex-all-center">
+          <DebateButton />
+        </div>
       </div>
     </>
-    
   );
 };
 

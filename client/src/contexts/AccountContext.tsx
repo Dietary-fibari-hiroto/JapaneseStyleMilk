@@ -5,20 +5,16 @@ import {
   useEffect,
   ReactNode,
 } from "react";
-
+import { getMe } from "../api/auth";
+import { Account } from "../types";
 //ユーザー情報の型
-type User = {
-  id: string;
-  name: string;
-  img_url: string;
-  email?: string;
-};
+
 //実際に保持するユーザー情報の型
 interface AccountContextType {
-  user: User | null;
-  setUser: (user: User | null) => void;
-  accountId: string | undefined;
-  setAccountId: (id: string | undefined) => void;
+  account: Account | null;
+  setAccount: (account: Account | null) => void;
+  loginState: boolean;
+  setLoginState: (loginState: boolean) => void;
 }
 //Contextの初期化(undefinedを許容し、カスタムフックで扱う)
 export const AccountContext = createContext<AccountContextType | undefined>(
@@ -31,33 +27,28 @@ interface AccountProviderProps {
 }
 
 const AccountProvider: React.FC<AccountProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [accountId, setAccountId] = useState<string | undefined>(undefined);
-  useEffect(() => {
-    const id = localStorage.getItem("accountId");
-    if (id) setAccountId(id);
-    console.log("context,Id:", id);
+  const [account, setAccount] = useState<Account | null>(null);
+  const [loginState, setLoginState] = useState(false);
 
-    const userData = localStorage.getItem("user");
-    if (userData) {
+  useEffect(() => {
+    const fetchMe = async () => {
       try {
-        const parsed = JSON.parse(userData);
-        setUser(parsed);
-      } catch (err) {
-        console.error("ユーザーデータの読み込みに失敗しました", err);
-        localStorage.removeItem("user"); // 壊れてたら削除
+        const data = await getMe();
+        setAccount(data);
+      } catch (error) {
+        console.log("getMe失敗", error);
+        setAccount(null);
       }
-    }
-    console.log("context,user:", userData);
-  }, []);
+    };
+    fetchMe();
+    console.log("fetchMe実行完了");
+    setLoginState(false);
+  }, [loginState]);
 
-  useEffect(() => {
-    if (user) {
-      localStorage.setItem("user", JSON.stringify(user));
-    }
-  }, [user]);
   return (
-    <AccountContext.Provider value={{ user, setUser, accountId, setAccountId }}>
+    <AccountContext.Provider
+      value={{ account, setAccount, loginState, setLoginState }}
+    >
       {children}
     </AccountContext.Provider>
   );

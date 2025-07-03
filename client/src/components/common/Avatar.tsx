@@ -35,9 +35,9 @@ const Avatar = ({ image, size }: AvatarProps) => {
       // 指定: サイズ
       // 固定: 角丸め(最大)
       className={`
-                ${AvatarSizes[size]} rounded-full overflow-hidden bg-black`}
+                ${AvatarSizes[size]} rounded-full overflow-hidden bg-black flex flex-shrink-0`}
       // 画像パス指定
-      src={image}
+      src={`${process.env.REACT_APP_IMAGE_URL}/${image}`}
       alt="ユーザーアイコンの画像"
     />
   );

@@ -6,8 +6,7 @@ const storage = multer.diskStorage({
     cb(null, path.join(__dirname, "../../uploads/images"));
   },
   filename: (_req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, uniqueSuffix + path.extname(file.originalname));
+    cb(null, file.originalname); // ← 元のファイル名そのまま使う！
   },
 });
 

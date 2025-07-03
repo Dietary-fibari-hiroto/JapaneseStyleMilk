@@ -1,11 +1,16 @@
 import Loading from "./Loading";
 
 type Props = {
-  isValid: boolean;
+  isValid?: boolean;
   isConnecting?: boolean;
+  label?: string;
 };
 
-const FormButton = ({ isValid, isConnecting = false }: Props) => {
+const FormButton = ({
+  isValid = true,
+  isConnecting = false,
+  label = "次へ",
+}: Props) => {
   return (
     <button
       type="submit"
@@ -16,7 +21,11 @@ const FormButton = ({ isValid, isConnecting = false }: Props) => {
       } rounded-[8px] text-[--text-button-primary_button] text-header-s font-bold flex-all-center`}
       disabled={!isValid}
     >
-      {isConnecting ? <Loading miniMode={true} isWhite={true} /> : <p>次へ</p>}
+      {isConnecting ? (
+        <Loading miniMode={true} isWhite={true} />
+      ) : (
+        <p>{label}</p>
+      )}
     </button>
   );
 };

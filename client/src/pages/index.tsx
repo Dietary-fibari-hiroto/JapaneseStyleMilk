@@ -8,3 +8,4 @@ export { default as Register } from "./Auth/Register";
 export { default as RegisterForm } from "./Auth/RegisterForm";
 export { default as Login } from "./Auth/Login";
 export { default as SelectAvatar } from "./Auth/SelectAvatar";
+export { default as WelcomePage } from "./Auth/WelcomePage";
