@@ -102,6 +102,8 @@ export default function CallConnect() {
     socket.emit('message', peerConnection.current.localDescription);
   };
 
+
+
   const createPeerConnection = () => {
     peerConnection.current = new RTCPeerConnection(config);
     peerConnection.current.onicecandidate = (e) => {

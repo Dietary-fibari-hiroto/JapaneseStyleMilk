@@ -1,19 +1,20 @@
 'use strict'
+import {app} from "../../server"
 
-const express = require('express');
-const app = express();
-const server = require('http').createServer(app);
-const io = require('socket.io')(server, {
+import http from 'http';
+import { Server as SocketIOServer } from 'socket.io';
+const server = http.createServer(app);
+
+const io = new SocketIOServer(server, {
   cors: {
     origin: '*',
     methods: ['GET', 'POST'],
   }
 });
 
-const PORT = process.env.PORT || 5001;
 
 io.on('connection', (socket) => {
-console.log('Client connected from IP:', socket.handshake.address);
+  console.log('Client connected from IP:', socket.handshake.address);
   console.log('A client connected: ' + socket.id);
 
   socket.on('knock', (room) => {
@@ -77,6 +78,5 @@ console.log('Client connected from IP:', socket.handshake.address);
   });
 });
 
-server.listen(PORT, () => {
-  console.log('Listening... PORT: ' + PORT);
-});
+
+
