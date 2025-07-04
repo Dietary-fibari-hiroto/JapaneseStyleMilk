@@ -1,0 +1,6 @@
+export interface Account {
+  id: number;
+  name: string;
+  email: string;
+  img_url: string;
+}

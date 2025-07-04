@@ -77,6 +77,8 @@ const ImagesRoute: ImagesRouteType = {
   choiceWrap: require("./test/choiceWrap.png").default,
   light_mode_icon: require("./Icons/light_mode_icon.svg").default,
   IMG_7009_Enhanced_NR: require("./test/IMG_7009-Enhanced-NR.jpg").default,
+
+  upload_wh_icon: require("./Icons/upload_wh_icon.png"),
 };
 
 export default ImagesRoute;

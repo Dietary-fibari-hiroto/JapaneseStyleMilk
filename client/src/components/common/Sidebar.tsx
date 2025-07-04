@@ -4,6 +4,9 @@ import styled from "styled-components";
 import NavItem from "./NavItem";
 import UpgradeCard from "./UpgradeCard";
 
+import { useAccount } from "../../contexts/AccountContext";
+import Avatar from "./Avatar";
+
 //後でAPI接続する時に使うために変数化した。
 const testItem = { name: "山田ジョン", rank: "ゴールドランク" };
 
@@ -57,6 +60,7 @@ const AsideBar = styled.aside<{ $isOpen: boolean }>`
 `;
 
 const Sidebar = () => {
+  const { account } = useAccount();
   //バーがオープンしたときに使う状態管理
   const [isOpen, setIsOpen] = useState(true);
   const handleOpen = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -100,12 +104,9 @@ const Sidebar = () => {
       <section className="horizontal-element bg-[--surface-user_profile] h-[78px] ">
         <div className="flex justify-start items-center space-x-[12px]">
           {" "}
-          <img
-            className="size-[44px] flex flex-shrink-0 rounded-[50%] "
-            src={ImagesRoute.avatar_large_pink}
-          />
+          <Avatar size="small" image={`${account?.img_url}`} />
           <div className={` space-y-[4px] close-hidden`}>
-            <p className={`font-bold `}>{testItem.name}</p>
+            <p className={`font-bold `}>{account?.name}</p>
             <p>{testItem.rank}</p>
           </div>
         </div>

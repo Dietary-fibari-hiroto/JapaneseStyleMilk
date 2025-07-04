@@ -14,7 +14,7 @@ const AuthFormContainer = ({ children, onSubmit }: Child) => {
     <motion.div {...animationConfig}>
       <form
         onSubmit={onSubmit}
-        className="flex-all-center flex-col space-y-[44px]"
+        className="flex items-center flex-col space-y-[44px] w-[600px]"
       >
         {children}
       </form>

@@ -9,7 +9,7 @@ const DebateButtonContainer = styled.div<{
   $cancelOpen: boolean;
   $flafOpen: boolean;
 }>`
-  min-width: 192px;
+  max-width: 260px;
   height: 200px;
   white-space: nowrap;
   display: flex;
@@ -125,7 +125,7 @@ const DebateButton = () => {
       $miniMode={state.miniMode}
       $cancelOpen={state.cancelOpen}
       $flafOpen={state.flagOpen}
-      id="flex w-[192px] items-center justify-between"
+      // id="flex max-w-[192px] items-center justify-between"
     >
       <button
         id="flag-button"

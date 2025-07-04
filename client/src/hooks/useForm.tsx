@@ -1,6 +1,6 @@
 import { useState, ChangeEvent } from "react";
 
-interface Field {
+export interface Field {
   name: string;
 }
 type FormData = Record<string, string>;
