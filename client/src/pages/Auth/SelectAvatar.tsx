@@ -33,6 +33,7 @@ const SelectAvatar = () => {
   const [selectAvatar, setSelectAvatar] = useState("");
   const [isFormValid, setIsFormValid] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
+
   //前ページのformDataを受け取る
   const data = location.state;
   useEffect(() => {
@@ -43,7 +44,7 @@ const SelectAvatar = () => {
   }, [data]);
   const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (image) {
+    if (image !== null) {
       const imageData = new FormData();
       imageData.append("image", image);
 
@@ -57,13 +58,9 @@ const SelectAvatar = () => {
       } catch (error) {
         console.log("アップロード失敗");
       }
-    } else {
-      applyToFormData("img_url", selectAvatar);
     }
-
     //アカウント登録
     try {
-      console.log("haittery");
       const res = await register(formData as AccountType);
     } catch (error) {}
     navigate("/register/welcome");
@@ -79,7 +76,6 @@ const SelectAvatar = () => {
   const handleImageChenge = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      console.log("選択された画像:", file);
       applyToFormData("img_url", file.name);
       setImage(file);
       const objectUrl = URL.createObjectURL(file);
@@ -87,10 +83,6 @@ const SelectAvatar = () => {
     }
   };
 
-  //テスト用useEffect
-  useEffect(() => {
-    console.log("最終formData:", formData);
-  }, [formData]);
   return (
     <AuthFormContainer onSubmit={handleRegister}>
       <div className="text-center ">
@@ -114,6 +106,7 @@ const SelectAvatar = () => {
               setSelectImage(`${process.env.REACT_APP_IMAGE_URL}/${filename}`);
               setSelectAvatar(filename);
               setImage(null);
+              applyToFormData("img_url", filename);
             }}
             key={filename}
           >
