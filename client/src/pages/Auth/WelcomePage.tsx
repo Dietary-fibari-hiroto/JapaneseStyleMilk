@@ -20,7 +20,9 @@ const WelcomePage = () => {
     };
     get();
   }, []);
-
+  useEffect(() => {
+    console.log(account);
+  }, [account]);
   const handleStart = () => {
     navigate("/home");
   };

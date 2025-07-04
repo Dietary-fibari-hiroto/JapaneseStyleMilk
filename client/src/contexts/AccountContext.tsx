@@ -27,8 +27,8 @@ interface AccountProviderProps {
 }
 
 const AccountProvider: React.FC<AccountProviderProps> = ({ children }) => {
-  const [account, setAccount] = useState<Account | null>(null);
-  const [loginState, setLoginState] = useState(false);
+  const [account, setAccount] = useState<Account | null>(null); //アカウントの情報そのものを保持
+  const [loginState, setLoginState] = useState(false); //ログインの発火を管理
 
   useEffect(() => {
     const fetchMe = async () => {
