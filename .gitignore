@@ -22,6 +22,8 @@
 /client/.env.test.local
 /client/.env.production.local
 /server/src/api/.env
+/server/src/api/realtimeapi/.env
+/server/src/api/gemini/.env
 
 npm-debug.log*
 yarn-debug.log*
