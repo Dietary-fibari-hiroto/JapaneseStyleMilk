@@ -74,7 +74,7 @@ const MatcingCard = () => {
   return (
     <motion.div
       {...animationConfig}
-      className="fixed top-0 left-0 h-full w-full"
+      className="fixed top-0 left-0 z-[3] h-full w-full"
     >
       <div
         style={{ backdropFilter: "blur(5px)" }}
