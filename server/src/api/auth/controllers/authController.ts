@@ -1,5 +1,5 @@
-import { Request, Response } from 'express';
-import { AuthService } from '../services/authService';
+import { Request, Response } from "express";
+import { AuthService } from "../services/authService";
 
 const authService = new AuthService();
 
@@ -9,7 +9,9 @@ export const authController = {
       const { email, password } = req.body;
 
       if (!email || !password) {
-        return res.status(400).json({ message: 'メールアドレスとパスワードは必須です' });
+        return res
+          .status(400)
+          .json({ message: "メールアドレスとパスワードは必須です" });
       }
 
       const result = await authService.login(email, password);
@@ -18,7 +20,7 @@ export const authController = {
       if (error instanceof Error) {
         res.status(401).json({ message: error.message });
       } else {
-        res.status(500).json({ message: 'サーバーエラーが発生しました' });
+        res.status(500).json({ message: "サーバーエラーが発生しました" });
       }
     }
   },
@@ -28,7 +30,9 @@ export const authController = {
       const { refreshToken } = req.body;
 
       if (!refreshToken) {
-        return res.status(400).json({ message: 'リフレッシュトークンは必須です' });
+        return res
+          .status(400)
+          .json({ message: "リフレッシュトークンは必須です" });
       }
 
       const result = await authService.refreshToken(refreshToken);
@@ -37,7 +41,7 @@ export const authController = {
       if (error instanceof Error) {
         res.status(401).json({ message: error.message });
       } else {
-        res.status(500).json({ message: 'サーバーエラーが発生しました' });
+        res.status(500).json({ message: "サーバーエラーが発生しました" });
       }
     }
   },
@@ -47,7 +51,7 @@ export const authController = {
       const result = await authService.logout();
       res.json(result);
     } catch (error) {
-      res.status(500).json({ message: 'サーバーエラーが発生しました' });
+      res.status(500).json({ message: "サーバーエラーが発生しました" });
     }
   },
-}; 
+};

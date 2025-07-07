@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import testImages from "../assets/images/test/testImages";
 
-import { routeList } from "../AppRoutes";
+import { routeList, authPathList, developPathList } from "../AppRoutes";
 
 const testAccount = {
   name: "テスト",
@@ -92,13 +92,36 @@ const DeveloperPage = () => {
             <p>Path</p>
             <p>Name</p>
           </div>
+          <p className="text-white">デベロッパー</p>
+          {developPathList.map((route, index) => (
+            <Link
+              key={index}
+              to={route.path}
+              className="rounded-[10px] border-b w-[500px] flex justify-start items-center text-black bg-white space-x-[100px] pl-[10px] py-[10px] hover:scale-105 transition-transform duration-300"
+            >
+              <p className="text-[20px]">{route.path}</p>
+              <p className="text-[15px]">{route.name}</p>
+            </Link>
+          ))}{" "}
+          <p className="text-white">ログイン関連</p>
+          {authPathList.map((route, index) => (
+            <Link
+              key={index}
+              to={route.path}
+              className="rounded-[10px] border-b w-[500px] flex justify-start items-center text-black bg-white space-x-[100px] pl-[10px] py-[10px] hover:scale-105 transition-transform duration-300"
+            >
+              <p className="text-[20px]">{route.path}</p>
+              <p className="text-[15px]">{route.name}</p>
+            </Link>
+          ))}{" "}
+          <p className="text-white">アプリ内ページ</p>
           {routeList.map((route, index) => (
             <Link
               key={index}
               to={route.path}
-              className="rounded-[10px] border-b w-[500px] flex justify-start items-center text-black bg-white space-x-[100px] pl-[10px] hover:scale-105 transition-transform duration-300"
+              className="rounded-[10px] border-b w-[500px] flex justify-start items-center text-black bg-white space-x-[100px] pl-[10px] py-[10px] hover:scale-105 transition-transform duration-300"
             >
-              <p className="text-[30px]">{route.path}</p>
+              <p className="text-[20px]">{route.path}</p>
               <p className="text-[15px]">{route.name}</p>
             </Link>
           ))}
@@ -112,7 +135,7 @@ const DeveloperPage = () => {
               className="size-[250px] bg-white shadow rounded flex flex-col justify-center items-center text-black hover:scale-105 transition-transform duration-300"
             >
               <p className="text-[40px]">{route.path}</p>
-              <p>{route.name}</p>
+              <p className="flex-shrink-0">{route.name}</p>
             </Link>
           ))}
         </div>

@@ -1,2 +1,28 @@
-console.log("componentをまとめて出力するためのルートポイント");
-export {}; // ← これを追加
+export { default as UpgradeCard } from "./common/UpgradeCard"; // ← これを追加
+export { default as ThemeButton } from "./common/ThemeButton";
+export { default as PopUpUserCard } from "./account/PopUpUserCard";
+export { default as VoiceToChat } from "./feature/debate/VoiceToChat";
+export { default as CountDown } from "./feature/debate/CountDown";
+export { default as DebateButton } from "./feature/debate/DebateButton";
+export { default as Loading } from "./common/Loading";
+export { default as SecondaryButton } from "./common/SecondaryButton";
+export { default as ResultCard } from "./modal/ResultCard";
+export { default as EvaluationCard } from "./feature/Dashboard/EvaluationCard";
+export { default as ScoreCard } from "./feature/debate/ScoreCard";
+export { default as DebateResultDataCard } from "./feature/Dashboard/DebateresultDataCard";
+export { default as MonthSelector } from "./feature/Dashboard/MonthSelector";
+export { default as DebateHistory } from "./feature/Dashboard/DebateHistory";
+export { default as MatcingCard } from "./modal/MatchingCard";
+export { default as InputBox } from "./common/InputBox";
+export { default as PasswordInput } from "./common/PasswordInput";
+export { default as RequirementBullet } from "./common/RequirementBullet";
+export { default as BirthdayInput } from "./common/BirthdayInput";
+export { default as AuthLayout } from "./layout/AuthLayout";
+export { default as MainLayout } from "./layout/MainLayout";
+export { default as FormButton } from "./common/FormButton";
+export { default as AuthInputList } from "./form/AuthInputList";
+export { default as AuthFormContainer } from "./form/AuthFormContainer";
+export { default as CheckBox } from "./common/CheckBox";
+export { default as HomeMainContent } from "./common/HomeMainContent";
+export { default as VersusAvatars } from "./common/VersusAvatars";
+export { default as MatchingCard } from "./modal/MatchingCard";

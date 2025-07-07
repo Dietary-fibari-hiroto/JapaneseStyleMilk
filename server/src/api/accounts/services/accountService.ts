@@ -2,6 +2,7 @@ import { CreateAccountDTO } from '../models/account';
 import Account from '../models/account';
 import AccountState from '../models/accountState';
 import Rank from '../models/rank';
+import TotalEvaluation from '../models/totalEvaluation';
 import bcrypt from 'bcrypt';
 
 export class AccountService {
@@ -55,4 +56,23 @@ export class AccountService {
   async findByEmail(email: string) {
     return Account.findOne({ where: { email } });
   }
+
+  async editAccount(accountData: CreateAccountDTO) {
+    const hashedPassword = await bcrypt.hash(accountData.password, 10);
+    return Account.update(
+      {
+        ...accountData,
+        password: hashedPassword,
+      },
+      { where: { id: accountData.id } }
+    );
+  }
+
+  async getTotalEvaluation(accountId: number) {
+    return TotalEvaluation.findOne({
+      where: { account_id: accountId }
+    });
+  }
+  
+  
 } 
