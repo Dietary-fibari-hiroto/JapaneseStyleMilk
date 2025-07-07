@@ -1,11 +1,11 @@
-import { Server } from 'socket.io';
-import registerSocketEvents from '../controllers/socketController';
+import { Server } from "socket.io";
+import registerSocketEvents from "../controllers/socketController";
 
 function setupSocket(io: Server) {
-  io.on('connection', (socket) => {
-    console.log('Client connected from IP:', socket.handshake.address);
-    registerSocketEvents(socket);
+  io.on("connection", (socket) => {
+    console.log("Client connected from IP:", socket.handshake.address);
+    registerSocketEvents(io, socket);
   });
 }
 
-export default setupSocket
+export default setupSocket;

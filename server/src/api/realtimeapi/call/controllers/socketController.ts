@@ -1,15 +1,43 @@
-import { Socket } from 'socket.io';
-import * as socketService from '../sockets/realtimeapi';
+import { Server, Socket } from "socket.io";
 
-function registerSocketEvents(socket: Socket) {
-  console.log('A client connected:', socket.id);
+export default function registerSocketEvents(io: Server, socket: Socket) {
+  console.log(`Client connected: ${socket.id}`);
 
-  socket.on('knock', (room) => socketService.handleKnock(socket, room));
-  socket.on('create', (room) => socketService.handleCreate(socket, room));
-  socket.on('join', (room) => socketService.handleJoin(socket, room));
-  socket.on('allow', (room) => socketService.handleAllow(socket, room));
-  socket.on('message', (description) => socketService.handleMessage(socket, description));
-  socket.on('disconnect', () => console.log(socket.id + ' disconnected'));
+  socket.on("knock", (room: string) => {
+    console.log(`[knock] ${socket.id} requests to join room: ${room}`);
+    const clients = io.sockets.adapter.rooms.get(room);
+    const numClients = clients ? clients.size : 0;
+    socket.emit("knocked response", numClients, room);
+  });
+
+  socket.on("create", (room: string) => {
+    console.log(`[create] ${socket.id} creates room: ${room}`);
+    socket.join(room);
+    socket.emit("created");
+  });
+
+  socket.on("join", (room: string) => {
+    console.log(`[join] ${socket.id} joins room: ${room}`);
+    socket.join(room);
+    io.to(room).emit("joined");
+  });
+
+  socket.on("offer", (desc: RTCSessionDescriptionInit & { room: string }) => {
+    console.log(`[offer] from ${socket.id} to room: ${desc.room}`);
+    socket.to(desc.room).emit("offer", desc);
+  });
+
+  socket.on("answer", (desc: RTCSessionDescriptionInit & { room: string }) => {
+    console.log(`[answer] from ${socket.id} to room: ${desc.room}`);
+    socket.to(desc.room).emit("answer", desc);
+  });
+
+  socket.on("candidate", (candidate: RTCIceCandidateInit & { room: string }) => {
+    console.log(`[candidate] from ${socket.id} to room: ${candidate.room}`);
+    socket.to(candidate.room).emit("candidate", candidate);
+  });
+
+  socket.on("disconnect", () => {
+    console.log(`Client disconnected: ${socket.id}`);
+  });
 }
-
-export default registerSocketEvents;

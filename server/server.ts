@@ -28,7 +28,7 @@ setupSocket(io);
 // グローバルミドルウェアの設定
 app.use(
   cors({
-    origin: "http://localhost:3000", // フロントのURLを明示！
+    origin: "*", // フロントの起動と合わせる。（開発用ですべて許可）
     credentials: true, // 認証情報（cookie等）を許可
   })
 );
