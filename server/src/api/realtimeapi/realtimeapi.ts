@@ -6,18 +6,21 @@ import { Server as SocketIOServer } from 'socket.io';
 
 const server = http.createServer(app);
 
+//サーバー起動
 const io = new SocketIOServer(server, {
   cors: {
-    origin: '*',
+    origin: '*',   // 全てのオリジンからの接続を許可（開発用）
     methods: ['GET', 'POST'],
   }
 });
 
-
+//クライアントの接続処理
 io.on('connection', (socket) => {
   console.log('Client connected from IP:', socket.handshake.address);
   console.log('A client connected: ' + socket.id);
 
+
+  //部屋が存在するか確認
   socket.on('knock', (room) => {
     console.log(socket.id + ' is knocking room [' + room + ']');
     const clientsInRoom = io.sockets.adapter.rooms.get(room);
@@ -25,6 +28,7 @@ io.on('connection', (socket) => {
     socket.emit('knocked response', numClients, room);
   });
 
+  //部屋がなかった場合、部屋を作成する。
   socket.on('create', (room) => {
     const clientsInRoom = io.sockets.adapter.rooms.get(room);
     const numClients = clientsInRoom ? clientsInRoom.size : 0;
@@ -37,6 +41,7 @@ io.on('connection', (socket) => {
     }
   });
 
+  //部屋がある場合,クライアントが部屋に接続
   socket.on('join', (room) => {
     const clientsInRoom = io.sockets.adapter.rooms.get(room);
     const numClients = clientsInRoom ? clientsInRoom.size : 0;
@@ -48,7 +53,7 @@ io.on('connection', (socket) => {
       socket.emit('room full', room);
     }
   });
-
+  //部屋のホストが接続許可した通知を送る処理
   socket.on('allow', (room) => {
     console.log('room host allowed joining for room:', room);
     socket.to(room).emit('allowed');  // room内の自分以外に通知
@@ -61,6 +66,7 @@ io.on('connection', (socket) => {
       console.log('No room found for socket', socket.id);
       return;
     }
+    //WebRTCのシグナリング送信
     if (description.type === 'offer') {
       console.log('offer');
       socket.to(room).emit('offer', description);
@@ -73,7 +79,7 @@ io.on('connection', (socket) => {
       console.log('[ERROR] Unknown message type:', description.type);
     }
   });
-
+  // クライアント切断時のログ出力
   socket.on('disconnect', () => {
     console.log(socket.id + " disconnected");
   });

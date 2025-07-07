@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Grid, Card, CardMedia, CardActions } from '@mui/material';
 import socketClient from 'socket.io-client';
 
-const SERVER = "http://localhost:5001";
+const SERVER = "import.meta.env.REACT_APP_MAIN_URL";
 const socket = socketClient(SERVER);
 
 
