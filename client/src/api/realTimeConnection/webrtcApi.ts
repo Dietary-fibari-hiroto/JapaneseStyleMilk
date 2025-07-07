@@ -1,13 +1,16 @@
 import { io, Socket } from "socket.io-client";
 
+//接続するサーバーのip,port
 export const SERVER = "http://localhost:3000";
 export const socket: Socket = io(SERVER);
 
+//カメラ、音声のオンオフ
 export const constraints: MediaStreamConstraints = {
   video: true,
   audio: true,
 };
 
+//スタンサーバー指定
 export const config: RTCConfiguration = {
   iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
 };
@@ -18,15 +21,17 @@ export class WebRTCConnection {
   isStarted = false;
   room: string;
 
+  //ルーム名を受け取って設定
   constructor(room: string) {
     this.room = room;
   }
-
+  //カメラとマイクのストリームの取得
   async initLocalStream(): Promise<MediaStream> {
     this.localStream = await navigator.mediaDevices.getUserMedia(constraints);
     return this.localStream;
   }
 
+  //RTCPeerConnectionの作成
   createPeerConnection(onTrack: (stream: MediaStream) => void) {
     if (!this.localStream) {
       throw new Error("localStream is not initialized");
