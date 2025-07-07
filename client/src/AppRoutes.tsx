@@ -10,6 +10,9 @@ import {
   SelectAvatar,
   WelcomePage,
 } from "./pages";
+//test用
+import CallConnect from './api/realTimeConnect';
+
 import Test from "./test/Test";
 import Test2 from "./test/Test2";
 import DeveloperPage from "./pages/developerPage";
@@ -17,9 +20,10 @@ import { AnimatePresence } from "framer-motion";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { AuthLayout, MainLayout } from "./components";
 export const developPathList = [
-  { path: "/test", element: <Test />, name: "テストページ" },
+  { path: "/test", element: <CallConnect />, name: "テストページ" },
   { path: "/test2", element: <Test2 />, name: "テストページ2" },
   { path: "/develop", element: <DeveloperPage />, name: "developerページ" },
+  
 ];
 export const authPathList = [
   {
