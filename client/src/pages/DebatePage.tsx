@@ -1,7 +1,7 @@
 import { DebateButton, VersusAvatars } from "../components";
 import SectionHeader from "../components/common/SectionHeader";
 
-const DevatePage = () => {
+const DebatePage = () => {
   return (
     <>
       <div className="space-y-[50px]">
@@ -20,4 +20,4 @@ const DevatePage = () => {
   );
 };
 
-export default DevatePage;
+export default DebatePage;
