@@ -12,10 +12,7 @@ const Home = () => {
   }, []);
   const [openMatchingCard, setOpenMatchingCard] = useState(false);
   return (
-    // <div className="w-[100vw] h-screen flex justify-center items-center text-[100px]">
-    //   和風牛乳
-    // </div>
-    <>
+    <div className="w-[80%]">
       <AnimatePresence mode="wait">
         {openMatchingCard && <MatchingCard />}
       </AnimatePresence>
@@ -42,7 +39,7 @@ const Home = () => {
           />
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

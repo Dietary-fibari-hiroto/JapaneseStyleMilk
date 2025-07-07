@@ -3,7 +3,7 @@ import SectionHeader from "../components/common/SectionHeader";
 
 const DebatePage = () => {
   return (
-    <>
+    <div className="w-[80%] flex-all-center">
       <div className="space-y-[50px]">
         {/* ページ見出し(ラウンド) */}
         <SectionHeader mode="anime" />
@@ -16,7 +16,7 @@ const DebatePage = () => {
           <DebateButton />
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

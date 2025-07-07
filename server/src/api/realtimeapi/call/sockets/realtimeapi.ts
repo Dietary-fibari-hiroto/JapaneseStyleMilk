@@ -52,17 +52,16 @@ export function handleMessage(socket: Socket, description: any) {
 
   switch (description.type) {
     case 'offer':
-      console.log('offer');
       socket.to(room).emit('offer', description);
       break;
     case 'answer':
-      console.log('answer');
       socket.to(room).emit('answer', description);
       break;
     case 'candidate':
-      socket.to(room).emit('candidate', description);
+      socket.to(room).emit('candidate', description); // ここでは description.candidate をそのまま送る
       break;
     default:
       console.log('[ERROR] Unknown message type:', description.type);
   }
 }
+

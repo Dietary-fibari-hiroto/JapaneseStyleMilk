@@ -8,9 +8,22 @@ import historyRoutes from "./src/api/history/routes/historyRoutes";
 import logger from "./src/middlewares/logger";
 import uploadRouter from "./src/api/accounts/routes/uploadRoutes";
 import path from "path";
+import http from "http";
+import { Server as SocketIOServer } from "socket.io";
+import setupSocket from "./src/api/realtimeapi/call/routes";
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+const server = http.createServer(app);
+const io = new SocketIOServer(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+  },
+});
+
+setupSocket(io);
 
 // グローバルミドルウェアの設定
 app.use(
@@ -44,9 +57,12 @@ app.use(
   }
 );
 
-// サーバー起動
-app.listen(port, () => {
-  console.log(`サーバーが起動しました: http://localhost:${port}`);
+// HTTP test endpoint
+app.get('/socket', (req, res) => {
+  res.send('WebRTC + Socket.IO server is running');
 });
 
-export { app };
+// サーバー起動
+server.listen(port, () => {
+  console.log(`サーバーが起動しました: http://localhost:${port}`);
+});

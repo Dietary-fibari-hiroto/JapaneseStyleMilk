@@ -5,7 +5,7 @@ import { Account } from "../../types";
 
 const UserCard = ({ img_url = "gray.jpg" }: Pick<Account, "img_url">) => {
   return (
-    <figure className="w-[400px] h-[279px] flex-all-center bg-[--surface-avatar-background-avatar_yellow] rounded-[12px]">
+    <figure className="max-w-[400px] min-h-[279px] w-[80%] flex-all-center bg-[--surface-avatar-background-avatar_yellow] rounded-[12px]">
       <Avatar image={img_url} size="xl" />
     </figure>
   );

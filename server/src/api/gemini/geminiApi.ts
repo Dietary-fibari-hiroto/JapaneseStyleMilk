@@ -7,11 +7,10 @@ const ai = new GoogleGenAI({
 });
 
 export async function main(contents: string): Promise<string> {
-  const ask = contents;
-console.log(ask);
+  const ask =   contents;
   const result = await ai.models.generateContent({
     model: "gemini-2.5-flash",
-    ask,
+    contents: ask,
   });
   if (result.text) {
     return result.text;
@@ -29,3 +28,11 @@ console.log(ask);
 // })
 //   .then(res => res.json())
 //   .then(data => console.log(data.text));
+
+//エントリーポイントからの操作
+// async function run() {
+//   console.log("実行開始:")
+//   const reply = await main("こんにちは、AIって何？");
+//   console.log(reply);
+// }
+// run();

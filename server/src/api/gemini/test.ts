@@ -40,5 +40,4 @@ async function run() {
   const reply = await main("こんにちは、AIって何？");
   console.log(reply);
 }
-
 run();
