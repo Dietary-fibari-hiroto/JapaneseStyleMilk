@@ -6,7 +6,7 @@ const MainLayout = () => {
     <div className="flex">
       <Sidebar />
       <main className="relative flex-1 flex-all-center flex-col ">
-        <div className="w-[70%] h-[80%] ">
+        <div className="">
           <Outlet />
         </div>
       </main>

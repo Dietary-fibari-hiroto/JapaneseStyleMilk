@@ -12,7 +12,7 @@ const DashBoardPage = () => {
   return(
     <div className="flex flex-col gap-8">
       {/* 月別グラフ・勝敗数 */}
-      <div className="flex w-full border">
+      <div className="flex w-full">
         <div className="w-[80%]">
           <MonthSelector/>
           <p>グラフ差し替え</p>
