@@ -1,11 +1,19 @@
 import { Socket } from 'socket.io';
 import { getRoomClientCount, getRoomOfSocket } from '../models/roomModel';
 
-export function handleKnock(socket: Socket, room: string) {
-  const numClients = getRoomClientCount(room, socket);
-  console.log(`${socket.id} is knocking room [${room}]`);
-  socket.emit('knocked response', numClients, room);
+const waitingRoomQueue: string[] = [];
+
+export function handleKnock(socket: Socket, _: string) {
+  if (waitingRoomQueue.length > 0) {
+    const room = waitingRoomQueue.shift(); // 先に待ってた部屋に入れる
+    socket.emit('knocked response', 1, room); // 1人いるよ
+  } else {
+    const newRoom = Math.random().toString(36).substring(2, 10);
+    waitingRoomQueue.push(newRoom);
+    socket.emit('knocked response', 0, newRoom); // 新しく作る
+  }
 }
+
 
 export function handleCreate(socket: Socket, room: string) {
   const numClients = getRoomClientCount(room, socket);
