@@ -19,3 +19,4 @@ async function transcribeAudio(audioFilePath: string) {
         console.error("Error transcribing audio:", error);
     }
 }
+export{transcribeAudio}
