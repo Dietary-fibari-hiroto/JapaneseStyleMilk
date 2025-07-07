@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 
 const apikey=process.env.API_KEY;
 
-const openai = new OpenAI();//初期設定
+const openai = new OpenAI();//初期化
 
 async function transcribeAudio(audioFilePath: string) {
     try {

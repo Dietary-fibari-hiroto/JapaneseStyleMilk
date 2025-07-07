@@ -1,9 +1,9 @@
 'use strict'
 import {app} from "../../../server"
-import OpenAI from "openai";
-import dotenv from "dotenv";
+
 import http from 'http';
 import { Server as SocketIOServer } from 'socket.io';
+
 const server = http.createServer(app);
 
 const io = new SocketIOServer(server, {
