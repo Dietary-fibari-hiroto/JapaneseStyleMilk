@@ -11,7 +11,7 @@ import {
   WelcomePage,
 } from "./pages";
 //test用
-import CallConnect from './api/realTimeConnect';
+import CallConnect from './api/realTimeConnection/CallConnect';
 
 import Test from "./test/Test";
 import Test2 from "./test/Test2";
