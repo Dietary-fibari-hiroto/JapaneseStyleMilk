@@ -3,9 +3,11 @@ import ImagesRoute from "../../assets/images/ImagesRoute";
 import styled from "styled-components";
 import NavItem from "./NavItem";
 import UpgradeCard from "./UpgradeCard";
+import { logout } from "../../api/auth";
 
 import { useAccount } from "../../contexts/AccountContext";
 import Avatar from "./Avatar";
+import { useNavigate } from "react-router-dom";
 
 //後でAPI接続する時に使うために変数化した。
 const testItem = { name: "山田ジョン", rank: "ゴールドランク" };
@@ -60,12 +62,21 @@ const AsideBar = styled.aside<{ $isOpen: boolean }>`
 `;
 
 const Sidebar = () => {
-  const { account } = useAccount();
+  const navigate = useNavigate();
+  const { account, setAccount } = useAccount();
   //バーがオープンしたときに使う状態管理
   const [isOpen, setIsOpen] = useState(true);
   const handleOpen = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setIsOpen((prev) => !prev);
+  };
+
+  const handleLogout = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    await logout();
+    setAccount(null);
+    navigate("/login");
+    window.location.reload();
   };
 
   return (
@@ -110,13 +121,13 @@ const Sidebar = () => {
             <p>{testItem.rank}</p>
           </div>
         </div>
-        <div className="close-hidden">
+        <button onClick={handleLogout} className="close-hidden">
           {" "}
           <img
             className="size-[18px] flex flex-shrink-0 rounded-[50%] "
             src={ImagesRoute.log_out_icon}
           />
-        </div>
+        </button>
       </section>
     </AsideBar>
   );

@@ -15,6 +15,8 @@ interface AccountContextType {
   setAccount: (account: Account | null) => void;
   loginState: boolean;
   setLoginState: (loginState: boolean) => void;
+  isFetching: boolean;
+  setIsFetching: (loginState: boolean) => void;
 }
 //Contextの初期化(undefinedを許容し、カスタムフックで扱う)
 export const AccountContext = createContext<AccountContextType | undefined>(
@@ -29,25 +31,52 @@ interface AccountProviderProps {
 const AccountProvider: React.FC<AccountProviderProps> = ({ children }) => {
   const [account, setAccount] = useState<Account | null>(null); //アカウントの情報そのものを保持
   const [loginState, setLoginState] = useState(false); //ログインの発火を管理
-
+  const [isFetching, setIsFetching] = useState(true);
+  //初回レンダリング処理
   useEffect(() => {
+    const stored = localStorage.getItem("langbate_account");
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        setAccount(parsed);
+      } catch (error) {
+        console.log(
+          "アカウント情報の復元に失敗。ログインしてください。",
+          error
+        );
+      } finally {
+        setIsFetching(false);
+      }
+    }
+  }, []);
+  //ステートが意図的に変わったときに実行される処理。
+  useEffect(() => {
+    const token = localStorage.getItem("token");
     const fetchMe = async () => {
       try {
+        if (!token) return;
         const data = await getMe();
         setAccount(data);
       } catch (error) {
-        console.log("getMe失敗", error);
         setAccount(null);
+      } finally {
+        setIsFetching(false);
       }
     };
     fetchMe();
-    console.log("fetchMe実行完了");
     setLoginState(false);
   }, [loginState]);
 
   return (
     <AccountContext.Provider
-      value={{ account, setAccount, loginState, setLoginState }}
+      value={{
+        account,
+        setAccount,
+        loginState,
+        setLoginState,
+        isFetching,
+        setIsFetching,
+      }}
     >
       {children}
     </AccountContext.Provider>
