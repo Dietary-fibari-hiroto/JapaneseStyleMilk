@@ -17,14 +17,18 @@ export const initWebRTC = async (
 //部屋作成、または参加イベント
 export const handleCreatedOrJoined = (
   rtc: WebRTCConnection,
-  setRemoteStream: (s: MediaStream) => void
+  setRemoteStream: (s: MediaStream) => void,
+  setIsConnected: (value: boolean) => void
 ) => {
   /*
   カメラとマイクの確認が取れたときと、接続の開始フラグが立った時
     部屋の作成準備を進めるとともに接続を開始する
      */
   if (!rtc.isStarted && rtc.localStream) {
-    rtc.createPeerConnection(setRemoteStream);
+    rtc.createPeerConnection(setRemoteStream, () => {
+      setIsConnected(true);
+    });
+
     rtc.startConnection();
   }
 };
@@ -34,10 +38,13 @@ export const handleOffer = async (
   rtc: WebRTCConnection,
   desc: RTCSessionDescriptionInit,
   room: string,
-  setRemoteStream: (s: MediaStream) => void
+  setRemoteStream: (s: MediaStream) => void,
+  setIsConnected: (value: boolean) => void
 ) => {
   if (!rtc.peerConnection && rtc.localStream) {
-    rtc.createPeerConnection(setRemoteStream);
+    rtc.createPeerConnection(setRemoteStream, () => {
+      setIsConnected(true); // offer を受け取って接続準備する場合にも必要
+    });
   }
   if (!rtc.peerConnection) return;
 

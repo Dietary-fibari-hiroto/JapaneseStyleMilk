@@ -45,7 +45,10 @@ export class WebRTCConnection {
   }
 
   // RTCPeerConnection を作成し、ストリームとイベントを設定
-  createPeerConnection(onTrack: (stream: MediaStream) => void) {
+  createPeerConnection(
+    onTrack: (stream: MediaStream) => void,
+    onConnected?: () => void
+  ) {
     // 先にカメラとマイクが初期化されていなければエラー
     if (!this.localStream) {
       throw new Error("localStream is not initialized");
@@ -79,6 +82,8 @@ export class WebRTCConnection {
     this.peerConnection.onconnectionstatechange = () => {
       if (this.peerConnection?.connectionState === "connected") {
         console.log("通話可能になった!");
+        onConnected?.();
+        console.log("onCOnnect通過");
       }
     };
 

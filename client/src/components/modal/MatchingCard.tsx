@@ -22,9 +22,12 @@ const MatcingCard = () => {
   /**以下テスト変数(pagesとの結合段階で使う) */
   //WebRTC
   const {
+    localVideoRef,
+    remoteVideoRef,
     canCall,
     audioURL,
     isRecording,
+    isConnected,
     handleCall,
     startRecording,
     stopRecording,
@@ -50,10 +53,14 @@ const MatcingCard = () => {
     //通話要請を送信
     handleCall();
   }, []);
-  //マイクの使用許可を得たときの処理
+  // ローカル音声が取得できたらマッチング状態を「待機中」にする
   useEffect(() => {
     if (canCall) setMatchState(MatchingState.Waiting);
   }, [canCall]);
+  //通話が接続されたときの処理。
+  useEffect(() => {
+    if (isConnected) setMatchState(MatchingState.Success);
+  }, [isConnected]);
   //動作確認用
   /**
   useEffect(() => {
@@ -79,6 +86,8 @@ const MatcingCard = () => {
         window.location.reload();
       }}
     >
+      <audio ref={remoteVideoRef} autoPlay />
+
       <div
         style={{ backdropFilter: "blur(5px)" }}
         className="absolute z-[3] top-0 left-0 bg-[#00000033]  w-screen h-screen "

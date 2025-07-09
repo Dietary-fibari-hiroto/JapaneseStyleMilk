@@ -17,7 +17,7 @@ export const useWebRTC = (room: string) => {
   //通話初期化完了か否か
   const [canCall, setCanCall] = useState(false);
   //接続状態(ここがtrueなら話せている状態)
-  const [isConnected, setIsConnected] = useState();
+  const [isConnected, setIsConnected] = useState<boolean>(false);
 
   const [isRecording, setIsRecording] = useState(false);
   //録音データを管理するURl
@@ -30,7 +30,7 @@ export const useWebRTC = (room: string) => {
   useEffect(() => {
     initWebRTC(room, localVideoRef, setCanCall).then((rtc) => {
       webrtcRef.current = rtc;
-      registerWebRTCHandlers(rtc, room, setRemoteStream);
+      registerWebRTCHandlers(rtc, room, setRemoteStream, setIsConnected);
     });
     return () => {
       unregisterWebRTCHandlers();
@@ -92,6 +92,7 @@ export const useWebRTC = (room: string) => {
     canCall,
     isRecording,
     audioURL,
+    isConnected,
     handleCall,
     startRecording,
     stopRecording,
