@@ -12,11 +12,7 @@ import {
   RequireLogin,
 } from "./pages";
 //test用
-<<<<<<< HEAD
-import CallConnect from './api/realTimeConnection/CallConnect';
-=======
-import CallConnect from "./api/realTimeConnect";
->>>>>>> feature/hiroto
+import CallConnect from "./api/realTimeConnection/CallConnect";
 
 import PrivateRoute from "./routes/PrivateRoute";
 import PublicRoute from "./routes/PublicRoute";
