@@ -28,7 +28,7 @@ setupSocket(io);
 // グローバルミドルウェアの設定
 app.use(
   cors({
-    origin: "*", // フロントの起動と合わせる。（開発用ですべて許可）
+    origin: "http://localhost:3000", // フロントの起動と合わせる。（開発用ですべて許可）
     credentials: true, // 認証情報（cookie等）を許可
   })
 );
@@ -58,8 +58,8 @@ app.use(
 );
 
 // HTTP test endpoint
-app.get('/socket', (req, res) => {
-  res.send('WebRTC + Socket.IO server is running');
+app.get("/socket", (req, res) => {
+  res.send("WebRTC + Socket.IO server is running");
 });
 
 // サーバー起動

@@ -1,7 +1,7 @@
 import { io, Socket } from "socket.io-client";
 
 //接続するサーバーのip,port
-export const SERVER = "http://localhost:3000";
+export const SERVER = "http://58.85.112.119:3000";
 export const socket: Socket = io(SERVER);
 
 //カメラ、音声のオンオフ
@@ -50,7 +50,10 @@ export class WebRTCConnection {
 
     this.peerConnection.onicecandidate = (event) => {
       if (event.candidate) {
-        socket.emit("candidate", { ...event.candidate.toJSON(), room: this.room });
+        socket.emit("candidate", {
+          ...event.candidate.toJSON(),
+          room: this.room,
+        });
       }
     };
 
@@ -65,6 +68,9 @@ export class WebRTCConnection {
     const offer = await this.peerConnection.createOffer();
     await this.peerConnection.setLocalDescription(offer);
 
-    socket.emit("offer", { ...this.peerConnection.localDescription!.toJSON(), room: this.room });
+    socket.emit("offer", {
+      ...this.peerConnection.localDescription!.toJSON(),
+      room: this.room,
+    });
   }
 }

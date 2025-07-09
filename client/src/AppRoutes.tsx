@@ -17,6 +17,7 @@ import CallConnect from "./api/realTimeConnection/CallConnect";
 import PrivateRoute from "./routes/PrivateRoute";
 import PublicRoute from "./routes/PublicRoute";
 import Test2 from "./test/Test2";
+import Test3 from "./test/Test3";
 import DeveloperPage from "./pages/developerPage";
 import { AnimatePresence } from "framer-motion";
 import { Routes, Route, useLocation } from "react-router-dom";
@@ -24,6 +25,7 @@ import { AuthLayout, MainLayout } from "./components";
 export const developPathList = [
   { path: "/test", element: <CallConnect />, name: "テストページ" },
   { path: "/test2", element: <Test2 />, name: "テストページ2" },
+  { path: "/test3", element: <Test3 />, name: "テストページ3" },
   { path: "/develop", element: <DeveloperPage />, name: "developerページ" },
 ];
 export const authPathList = [

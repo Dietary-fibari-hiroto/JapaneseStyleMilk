@@ -71,6 +71,7 @@ const MatcingCard = () => {
     setMatchState(MatchingState.Waiting);
   };
 
+  //メインのUI描画
   return (
     <motion.div
       {...animationConfig}

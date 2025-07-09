@@ -9,7 +9,8 @@ const RequireLogin = () => {
   const navigate = useNavigate();
   return (
     <AuthFormContainer
-      onSubmit={() => {
+      onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
         navigate("/login");
       }}
     >

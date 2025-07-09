@@ -4,9 +4,9 @@ import { ReactNode, useEffect } from "react";
 
 const PrivateRoute = ({ children }: { children: JSX.Element }) => {
   const { account, isFetching } = useAccount();
-  useEffect(() => {}, [account]);
+
   if (isFetching) return <div>Loading...</div>; // or Spinner
-  return account ? children : <Navigate to="/login/require" />;
+  return account ? children : <Navigate to="/login/require" replace />;
 };
 
 export default PrivateRoute;

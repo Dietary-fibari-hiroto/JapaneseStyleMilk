@@ -49,6 +49,7 @@ const AccountProvider: React.FC<AccountProviderProps> = ({ children }) => {
       }
     }
   }, []);
+
   //ステートが意図的に変わったときに実行される処理。
   useEffect(() => {
     const token = localStorage.getItem("token");

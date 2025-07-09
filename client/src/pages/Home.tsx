@@ -6,7 +6,7 @@ import { getMe } from "../api/auth";
 import { useAccount } from "../contexts/AccountContext";
 
 const Home = () => {
-  const { account } = useAccount();
+  const { account, setIsFetching } = useAccount();
 
   const [openMatchingCard, setOpenMatchingCard] = useState(false);
   return (
