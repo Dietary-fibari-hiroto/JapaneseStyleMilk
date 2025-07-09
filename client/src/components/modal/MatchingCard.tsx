@@ -1,51 +1,40 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import clsx from "clsx";
-import Loading from "../common/Loading";
+import { Loading, ProsCons } from "../";
+import { animationConfig } from "../../config/motionAnimateConfig";
 import Avatar from "../common/Avatar";
 import { SecondaryButton } from "../";
+import { useWebRTC } from "../../api/webRtc/useWebRtc";
 
+//マッチングの状態
 enum MatchingState {
-  Waiting = "waiting",
-  Success = "success",
-  Fail = "fail",
+  AcceptStream = "acceptstream", //マイクの使用承諾
+  Waiting = "waiting", //マッチ相手を待っている状態
+  Success = "success", //マッチングが完了して話せる状態
+  Fail = "fail", //マッチングが失敗した状態
 }
 
-const animationConfig = {
-  initial: { opacity: 0 },
-  animate: { opacity: 1 },
-  exit: { opacity: 0 },
-
-  transition: { duration: 0.3 },
-};
-
+//このページ内で再利用性のあるCSSクラス
 const contentStyle = "space-y-[16px] flex flex-col";
-
-//賛否を表示する要素
-type propCons = { witch: boolean };
-const ProsCons = ({ witch }: propCons) => {
-  if (witch) {
-    return (
-      <div className="w-[60px] h-[38px] bg-[--surface-debate_position_tag] text-[--text-debate_position_text] rounded-[6px] font-bold flex-all-center">
-        否定
-      </div>
-    );
-  } else {
-    return (
-      <div className="w-[60px] h-[38px] bg-[--text-debate_position_text] text-[--surface-debate_position_tag] rounded-[6px] font-bold flex-all-center">
-        肯定
-      </div>
-    );
-  }
-};
 
 const MatcingCard = () => {
   /**以下テスト変数(pagesとの結合段階で使う) */
+  //WebRTC
+  const {
+    canCall,
+    audioURL,
+    isRecording,
+    handleCall,
+    startRecording,
+    stopRecording,
+  } = useWebRTC("a"); // 固定ルーム名 "a" を使う
   //テスト用の賛否状態管理。(現在は親から受け取った情報を配列stateで管理する予定)
-  const [testProsCons, setTestProsCons] = useState(true);
-  //ディベートテーマ
-  const [testTheme, setTestTheme] =
-    useState("五条悟は両面宿儺より強いですか？");
+  const [testProsCons, setTestProsCons] = useState<boolean>(true);
+  //ディベートテーマ(状態管理も担う)
+  const [testTheme, setTestTheme] = useState<string | null>(
+    "五条悟は両面宿儺より強いですか？"
+  );
   //相手ユーザーのアイコン
   const userIcon =
     "https://matitaka.dawn-waiting.com/static/media/IMG_2883.345fbe743ae2b250d435.jpg";
@@ -53,17 +42,27 @@ const MatcingCard = () => {
 
   //マッチングの状態
   const [matchState, setMatchState] = useState<MatchingState>(
-    MatchingState.Waiting
+    MatchingState.AcceptStream
   );
 
+  //マウント時の処理
+  useEffect(() => {
+    //通話要請を送信
+    handleCall();
+  }, []);
+  //マイクの使用許可を得たときの処理
+  useEffect(() => {
+    if (canCall) setMatchState(MatchingState.Waiting);
+  }, [canCall]);
   //動作確認用
+  /**
   useEffect(() => {
     const test = setTimeout(() => {
       setMatchState(MatchingState.Success);
     }, 3000);
     return () => clearTimeout(test);
   }, [matchState]);
-
+ */
   //はい、いいえボタンの挙動
   const handleYes = () => {};
   const handleNo = () => {
@@ -76,6 +75,9 @@ const MatcingCard = () => {
     <motion.div
       {...animationConfig}
       className="fixed top-0 left-0 z-[3] h-full w-full"
+      onClick={() => {
+        window.location.reload();
+      }}
     >
       <div
         style={{ backdropFilter: "blur(5px)" }}
@@ -124,7 +126,7 @@ const MatcingCard = () => {
               {matchState === MatchingState.Success && (
                 <motion.div {...animationConfig}>
                   <div className="flex items-center space-x-[10px]">
-                    <p className="fofnt-medium">ディベート内容</p>
+                    <p className="fofnt-medium">{testTheme}</p>
                     <ProsCons witch={testProsCons} />
                   </div>
                 </motion.div>

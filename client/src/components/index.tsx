@@ -26,3 +26,4 @@ export { default as CheckBox } from "./common/CheckBox";
 export { default as HomeMainContent } from "./common/HomeMainContent";
 export { default as VersusAvatars } from "./common/VersusAvatars";
 export { default as MatchingCard } from "./modal/MatchingCard";
+export { default as ProsCons } from "./common/ProsCons";

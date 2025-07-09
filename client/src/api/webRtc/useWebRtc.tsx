@@ -9,15 +9,15 @@ import { AudioRecorder } from "../realTimeConnection/AudioRecoder";
 import { socket } from "../realTimeConnection/webrtcApi";
 
 export const useWebRTC = (room: string) => {
-  //roomIdは後でランダムかつ数値型に変更予定
-
   //ビデオ系統の状態
   const localVideoRef = useRef<HTMLVideoElement | null>(null);
   const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
   //マイクやカメラの状態管理
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
-  //???
+  //通話初期化完了か否か
   const [canCall, setCanCall] = useState(false);
+  //接続状態(ここがtrueなら話せている状態)
+  const [isConnected, setIsConnected] = useState();
 
   const [isRecording, setIsRecording] = useState(false);
   //録音データを管理するURl

@@ -1,4 +1,4 @@
-import { useWebRTC } from "../api/webRtc/useWebRtc"; // useWebRTC カスタムフックをインポート
+import { useWebRTC } from "../api/webRtc/useWebRtc";
 
 export default function Test3() {
   const {

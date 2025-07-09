@@ -9,7 +9,7 @@ export const socket: Socket = io(SERVER);
 
 // カメラとマイクの使用を許可するための制約（true で両方ON）
 export const constraints: MediaStreamConstraints = {
-  video: true,
+  video: false,
   audio: true,
 };
 
@@ -73,6 +73,12 @@ export class WebRTCConnection {
           ...event.candidate.toJSON(), // JSON形式に変換
           room: this.room, // どの部屋かも一緒に送信
         });
+      }
+    };
+
+    this.peerConnection.onconnectionstatechange = () => {
+      if (this.peerConnection?.connectionState === "connected") {
+        console.log("通話可能になった!");
       }
     };
 
