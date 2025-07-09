@@ -66,10 +66,16 @@ export const getMe = async () => {
     });
 
     localStorage.setItem("langbate_account", JSON.stringify(res.data));
-    console.log("ログインユーザー情報:", res.data);
+
     return res.data;
   } catch (error) {
     console.error("ユーザー情報取得失敗:", error);
     throw error;
   }
+};
+
+export const logout = () => {
+  localStorage.removeItem("accountId");
+  localStorage.removeItem("langbate_account");
+  localStorage.removeItem("token");
 };

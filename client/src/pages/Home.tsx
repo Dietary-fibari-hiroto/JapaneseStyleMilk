@@ -7,9 +7,7 @@ import { useAccount } from "../contexts/AccountContext";
 
 const Home = () => {
   const { account } = useAccount();
-  useEffect(() => {
-    getMe();
-  }, []);
+
   const [openMatchingCard, setOpenMatchingCard] = useState(false);
   return (
     <div className="w-[80%]">

@@ -36,7 +36,6 @@ const inputConfigs = [
 ];
 const Login = () => {
   const navigate = useNavigate();
-  const { setLoginState } = useAccount();
   const { formData, handleChange, applyToFormData } = useForm(inputConfigs);
   //ページ内で使用する状態管理
   const { errorMessage, handleApiError } = useApiError(); //エラーメッセージ
@@ -52,10 +51,9 @@ const Login = () => {
     const { email, password } = formData;
     try {
       const data = await login({ email: email, password: password });
-      console.log("ログイン成功:", data);
-      //useAccount発火フラグ
-      setLoginState(true);
+
       navigate("/home");
+      window.location.reload();
     } catch (error) {
       handleApiError(error);
       setIsConnecting(false);

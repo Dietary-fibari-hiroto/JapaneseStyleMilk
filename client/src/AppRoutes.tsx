@@ -9,11 +9,17 @@ import {
   Login,
   SelectAvatar,
   WelcomePage,
+  RequireLogin,
 } from "./pages";
 //test用
+<<<<<<< HEAD
 import CallConnect from './api/realTimeConnection/CallConnect';
+=======
+import CallConnect from "./api/realTimeConnect";
+>>>>>>> feature/hiroto
 
-import Test from "./test/Test";
+import PrivateRoute from "./routes/PrivateRoute";
+import PublicRoute from "./routes/PublicRoute";
 import Test2 from "./test/Test2";
 import DeveloperPage from "./pages/developerPage";
 import { AnimatePresence } from "framer-motion";
@@ -23,7 +29,6 @@ export const developPathList = [
   { path: "/test", element: <CallConnect />, name: "テストページ" },
   { path: "/test2", element: <Test2 />, name: "テストページ2" },
   { path: "/develop", element: <DeveloperPage />, name: "developerページ" },
-  
 ];
 export const authPathList = [
   {
@@ -43,6 +48,7 @@ export const authPathList = [
   },
   { path: "/register/welcome", element: <WelcomePage />, name: "ウェルカム" },
   { path: "/login", element: <Login />, name: "ログイン" },
+  { path: "/login/require", element: <RequireLogin />, name: "ログイン要求" },
 ];
 export const routeList = [
   //{path:"example",element:<Example/>,name:"論理名"}
@@ -75,14 +81,17 @@ export const routeList = [
 
 const AppRoutes = () => {
   const location = useLocation();
-
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
         <Route element={<MainLayout />}>
           {" "}
           {routeList.map(({ path, element }) => (
-            <Route key={path} path={path} element={element} />
+            <Route
+              key={path}
+              path={path}
+              element={<PrivateRoute>{element}</PrivateRoute>}
+            />
           ))}
         </Route>
         <Route>
@@ -94,7 +103,11 @@ const AppRoutes = () => {
         <Route element={<AuthLayout />}>
           {" "}
           {authPathList.map(({ path, element }) => (
-            <Route key={path} path={path} element={element} />
+            <Route
+              key={path}
+              path={path}
+              element={<PublicRoute>{element}</PublicRoute>}
+            />
           ))}
         </Route>
       </Routes>

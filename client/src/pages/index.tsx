@@ -9,3 +9,4 @@ export { default as RegisterForm } from "./Auth/RegisterForm";
 export { default as Login } from "./Auth/Login";
 export { default as SelectAvatar } from "./Auth/SelectAvatar";
 export { default as WelcomePage } from "./Auth/WelcomePage";
+export { default as RequireLogin } from "./Auth/RequireLogin";
