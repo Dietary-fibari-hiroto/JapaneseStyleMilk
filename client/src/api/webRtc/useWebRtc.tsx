@@ -7,8 +7,12 @@ import {
 import { WebRTCConnection } from "../realTimeConnection/webrtcApi";
 import { AudioRecorder } from "../realTimeConnection/AudioRecoder";
 import { socket } from "../realTimeConnection/webrtcApi";
+import { OpponentAccount } from "../../types";
 
-export const useWebRTC = (room: string) => {
+export const useWebRTC = (
+  room: string,
+  setOpponent: (account: OpponentAccount) => void
+) => {
   //ビデオ系統の状態
   const localVideoRef = useRef<HTMLVideoElement | null>(null);
   const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
@@ -30,7 +34,13 @@ export const useWebRTC = (room: string) => {
   useEffect(() => {
     initWebRTC(room, localVideoRef, setCanCall).then((rtc) => {
       webrtcRef.current = rtc;
-      registerWebRTCHandlers(rtc, room, setRemoteStream, setIsConnected);
+      registerWebRTCHandlers(
+        rtc,
+        room,
+        setRemoteStream,
+        setIsConnected,
+        setOpponent
+      );
     });
     return () => {
       unregisterWebRTCHandlers();

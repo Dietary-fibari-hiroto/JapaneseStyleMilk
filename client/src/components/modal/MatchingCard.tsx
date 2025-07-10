@@ -6,6 +6,7 @@ import { animationConfig } from "../../config/motionAnimateConfig";
 import Avatar from "../common/Avatar";
 import { SecondaryButton } from "../";
 import { useWebRTC } from "../../api/webRtc/useWebRtc";
+import { useOpponent } from "../../contexts/OpponentContext";
 
 //マッチングの状態
 enum MatchingState {
@@ -19,6 +20,7 @@ enum MatchingState {
 const contentStyle = "space-y-[16px] flex flex-col";
 
 const MatcingCard = () => {
+  const { opponent, setOpponent } = useOpponent();
   /**以下テスト変数(pagesとの結合段階で使う) */
   //WebRTC
   const {
@@ -31,7 +33,7 @@ const MatcingCard = () => {
     handleCall,
     startRecording,
     stopRecording,
-  } = useWebRTC("a"); // 固定ルーム名 "a" を使う
+  } = useWebRTC("a", setOpponent); // 固定ルーム名 "a" を使う
   //テスト用の賛否状態管理。(現在は親から受け取った情報を配列stateで管理する予定)
   const [testProsCons, setTestProsCons] = useState<boolean>(true);
   //ディベートテーマ(状態管理も担う)
@@ -103,6 +105,11 @@ const MatcingCard = () => {
           </p>
           <div className="w-[668px] h-[280px] bg-[--surface-opponent_matching_card] rounded-[16px] flex-all-center">
             <AnimatePresence mode="wait">
+              {matchState === MatchingState.AcceptStream && (
+                <motion.div {...animationConfig}>
+                  <p>マイクの使用を許可してください！</p>
+                </motion.div>
+              )}
               {matchState === MatchingState.Waiting && (
                 <motion.div {...animationConfig}>
                   <Loading />
@@ -110,7 +117,7 @@ const MatcingCard = () => {
               )}
               {matchState === MatchingState.Success && (
                 <motion.div {...animationConfig}>
-                  <Avatar image={userIcon} size="xl" />
+                  <Avatar image={opponent?.img_url} size="xl" />
                 </motion.div>
               )}
               {matchState === MatchingState.Fail && (

@@ -4,3 +4,5 @@ export interface Account {
   email: string;
   img_url: string;
 }
+
+export type OpponentAccount = Pick<Account, "id" | "name" | "img_url">;

@@ -1,6 +1,7 @@
 // socket.io から Server と Socket 型をインポート
+import { IntegerDataType } from "sequelize";
 import { Server, Socket } from "socket.io";
-
+const roomAccounts = new Map<string, number>(); // socket.id → accountId
 // registerSocketEvents 関数をエクスポート（引数はサーバーインスタンスとクライアントソケット）
 export default function registerSocketEvents(io: Server, socket: Socket) {
   // クライアント接続時にコンソールにソケットIDを表示
@@ -22,10 +23,10 @@ export default function registerSocketEvents(io: Server, socket: Socket) {
   });
 
   // クライアントから "create" イベントを受信したときの処理
-  socket.on("create", (room: string) => {
+  socket.on("create", (room: string, accountId: number) => {
     // どのクライアントがどの部屋を作成しようとしているかログ出力
     console.log(`[create] ${socket.id} creates room: ${room}`);
-
+    console.log("バックで受け取ったID:", accountId);
     // クライアントを指定した部屋に参加させる
     socket.join(room);
 
@@ -34,13 +35,36 @@ export default function registerSocketEvents(io: Server, socket: Socket) {
   });
 
   // クライアントから "join" イベントを受信したときの処理
-  socket.on("join", (room: string) => {
+  socket.on("join", (room: string, accountId: number) => {
     // どのクライアントがどの部屋に参加しようとしているかログ出力
     console.log(`[join] ${socket.id} joins room: ${room}`);
-
+    console.log("バックで受け取ったID:", accountId);
     // クライアントを指定した部屋に参加させる
     socket.join(room);
 
+    //アカウントIDを保存しておくう
+    roomAccounts.set(socket.id, accountId);
+
+    //その部屋の他の人たちに自分のIDを送る
+    socket.to(room).emit("peer-joined", {
+      socketId: socket.id,
+      accountId,
+    });
+
+    //すでに部屋にいた他の人のIDを自分に送る
+    const others = Array.from(io.sockets.adapter.rooms.get(room) || []).filter(
+      (id) => id !== socket.id
+    );
+
+    others.forEach((otherSocketId) => {
+      const otherId = roomAccounts.get(otherSocketId);
+      if (otherId) {
+        socket.emit("peer-joined", {
+          socketId: otherSocketId,
+          accountId: otherId,
+        });
+      }
+    });
     // 部屋の全員に参加通知（自分も含む）
     io.to(room).emit("joined");
   });
@@ -79,5 +103,6 @@ export default function registerSocketEvents(io: Server, socket: Socket) {
   socket.on("disconnect", () => {
     // 切断されたクライアントのソケットIDをログ出力
     console.log(`Client disconnected: ${socket.id}`);
+    roomAccounts.delete(socket.id);
   });
 }

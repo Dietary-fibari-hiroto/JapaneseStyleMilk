@@ -10,7 +10,7 @@ export default function Test3() {
     handleCall,
     startRecording,
     stopRecording,
-  } = useWebRTC("a"); // 固定ルーム名 "a" を使う
+  } = useWebRTC("a", () => {}); // 固定ルーム名 "a" を使う
 
   return (
     <div style={{ padding: "20px" }}>

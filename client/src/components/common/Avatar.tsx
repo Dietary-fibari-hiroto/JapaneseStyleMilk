@@ -19,7 +19,7 @@ type AvatarSize = keyof typeof AvatarSizes;
 
 // ユーザーアイコンの引数定義
 type AvatarProps = {
-  image: string; // 画像名
+  image?: string | "gray.jpg"; // 画像名
   size: AvatarSize;
 };
 
