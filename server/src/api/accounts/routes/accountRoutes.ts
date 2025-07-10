@@ -33,4 +33,8 @@ router.get('/', authMiddleware as RequestHandler, asyncHandler(async (req, res) 
 
 router.post('/check-email', asyncHandler(checkEmailExists));
 
+router.get('/:id', asyncHandler(async (req, res) => {
+  await accountController.getAccountInfo(req, res);
+}));
+
 export default router; 

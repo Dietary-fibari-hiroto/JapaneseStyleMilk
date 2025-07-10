@@ -74,5 +74,9 @@ export class AccountService {
     });
   }
   
-  
+  async getAccInfo(accountId: number) {
+    return Account.findOne({
+      where: { id: accountId }
+    })
+  }
 } 

@@ -4,7 +4,7 @@ import { CreateAccountDTO } from '../models/account';
 import Account from '../models/account';
 
 export class AccountController {
-  constructor(private accountService: AccountService) {}
+  constructor(private accountService: AccountService) { }
 
   async createAccount(req: Request, res: Response) {
     try {
@@ -38,13 +38,13 @@ export class AccountController {
   async getTotalEvaluation(req: Request, res: Response) {
     try {
       const accountId = Number(req.params.id);
-      
+
       if (!accountId) {
         return res.status(400).json({ error: 'アカウントIDが必要です' });
       }
 
       const totalEvaluation = await this.accountService.getTotalEvaluation(accountId);
-      
+
       if (!totalEvaluation) {
         return res.status(404).json({ error: '総合評価が見つかりません' });
       }
@@ -63,6 +63,7 @@ export class AccountController {
     }
   }
 
+  //jsw tokenからユーザー情報を取得
   async getMe(req: Request, res: Response) {
     if (!req.user || !req.user.id) {
       return res.status(401).json({ message: '認証情報がありません' });
@@ -75,6 +76,20 @@ export class AccountController {
         return res.status(404).json({ message: 'ユーザーが見つかりません' });
       }
       res.json(user);
+    } catch (err) {
+      res.status(500).json({ message: 'サーバーエラー' });
+    }
+  }
+
+  // 主キーからユーザー情報を取得(paramsで指定)
+  async getAccountInfo(req: Request, res: Response) {
+    const accountId = Number(req.params.id);
+    if (!accountId) {
+      return res.status(400).json({ message: 'アカウントIDが必要です' });
+    }
+    try {
+      const account = await this.accountService.getAccInfo(accountId);
+      res.json(account);
     } catch (err) {
       res.status(500).json({ message: 'サーバーエラー' });
     }
