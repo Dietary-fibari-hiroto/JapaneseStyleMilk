@@ -74,6 +74,17 @@ export const getMe = async () => {
   }
 };
 
+export const getOpp = async (opponentId: number) => {
+  try {
+    const res = await axiosInstance.get(`/accounts/${opponentId}`);
+    console.log("oppデータ:", res.data);
+    return res.data;
+  } catch (error) {
+    console.error("対戦相手のデータ取得に失敗しました。");
+    return;
+  }
+};
+
 export const logout = () => {
   localStorage.removeItem("accountId");
   localStorage.removeItem("langbate_account");

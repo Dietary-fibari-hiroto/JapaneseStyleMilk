@@ -4,29 +4,22 @@ import { Server, Socket } from "socket.io";
 const roomAccounts = new Map<string, number>(); // socket.id → accountId
 // registerSocketEvents 関数をエクスポート（引数はサーバーインスタンスとクライアントソケット）
 export default function registerSocketEvents(io: Server, socket: Socket) {
-  // クライアント接続時にコンソールにソケットIDを表示
-  console.log(`Client connected: ${socket.id}`);
-
   // クライアントから "knock" イベントを受信したときの処理
   socket.on("knock", (room: string) => {
     // どのクライアントがどの部屋にノックしてきたかログ出力
-    console.log(`[knock] ${socket.id} requests to join room: ${room}`);
 
     // 指定された部屋に現在いるクライアント一覧を取得
     const clients = io.sockets.adapter.rooms.get(room);
 
     // クライアント数を取得（部屋が存在しない場合は 0）
     const numClients = clients ? clients.size : 0;
-
     // ノックしたクライアントに部屋の人数と部屋名を返信
-    socket.emit("knocked response", numClients, room);
+    socket.emit("knocked response", numClients);
   });
 
   // クライアントから "create" イベントを受信したときの処理
   socket.on("create", (room: string, accountId: number) => {
-    // どのクライアントがどの部屋を作成しようとしているかログ出力
-    console.log(`[create] ${socket.id} creates room: ${room}`);
-    console.log("バックで受け取ったID:", accountId);
+    roomAccounts.set(socket.id, accountId);
     // クライアントを指定した部屋に参加させる
     socket.join(room);
 
@@ -36,12 +29,9 @@ export default function registerSocketEvents(io: Server, socket: Socket) {
 
   // クライアントから "join" イベントを受信したときの処理
   socket.on("join", (room: string, accountId: number) => {
-    // どのクライアントがどの部屋に参加しようとしているかログ出力
-    console.log(`[join] ${socket.id} joins room: ${room}`);
-    console.log("バックで受け取ったID:", accountId);
+    // どのクライアントがどの部屋に参加しようとしているかログ出
     // クライアントを指定した部屋に参加させる
     socket.join(room);
-
     //アカウントIDを保存しておくう
     roomAccounts.set(socket.id, accountId);
 
@@ -50,6 +40,10 @@ export default function registerSocketEvents(io: Server, socket: Socket) {
       socketId: socket.id,
       accountId,
     });
+    console.log(
+      "現在のルーム内クライアント一覧:",
+      Array.from(io.sockets.adapter.rooms.get(room) || [])
+    );
 
     //すでに部屋にいた他の人のIDを自分に送る
     const others = Array.from(io.sockets.adapter.rooms.get(room) || []).filter(
@@ -66,7 +60,7 @@ export default function registerSocketEvents(io: Server, socket: Socket) {
       }
     });
     // 部屋の全員に参加通知（自分も含む）
-    io.to(room).emit("joined");
+    io.to(room).emit("joined", { accountId });
   });
 
   // クライアントから "offer" イベントを受信したときの処理（WebRTC: 接続要求）
@@ -106,5 +100,3 @@ export default function registerSocketEvents(io: Server, socket: Socket) {
     roomAccounts.delete(socket.id);
   });
 }
-
-

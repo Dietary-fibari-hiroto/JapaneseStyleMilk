@@ -7,6 +7,7 @@ import {
 import { socket } from "./webrtcApi";
 import { WebRTCConnection } from "./webrtcApi";
 import { OpponentAccount } from "../../types";
+import { getOpp } from "../auth";
 
 export const registerWebRTCHandlers = (
   rtc: WebRTCConnection,
@@ -18,8 +19,8 @@ export const registerWebRTCHandlers = (
   const getId = localStorage.getItem("accountId");
   const accountId = Number(getId);
   //サーバーからのknockの返事
-  socket.on("knocked response", (numClients: number) => {
-    console.log(accountId, ":を送ったお");
+  socket.on("knocked response", (numClients) => {
+    console.log("knocked");
     if (numClients === 0) socket.emit("create", room, accountId);
     else if (numClients === 1) socket.emit("join", room, accountId);
   });
@@ -30,20 +31,26 @@ export const registerWebRTCHandlers = (
   });
 
   //参加時の処理
-  socket.on("joined", () => {
+  socket.on("joined", ({ accountId }) => {
     handleCreatedOrJoined(rtc, setRemoteStream, setIsConnected);
   });
   //アカウントIDを送信しあうポイント
-  socket.on("peer-joined", (socketId: string, accountId: number) => {
-    console.log(socketId, accountId);
-    /**
+  socket.on("peer-joined", ({ socketId, accountId }) => {
+    /*
      * 以下にAPIリクエスト及びcontext格納処理を格納
      */
-    setOpponent({
-      id: 1,
-      name: "test",
-      img_url: "https",
-    });
+
+    const registerOpp = async () => {
+      const oppData = await getOpp(accountId);
+      if (oppData) {
+        setOpponent({
+          id: oppData.id,
+          name: oppData.name,
+          img_url: oppData.img_url,
+        });
+      }
+    };
+    registerOpp();
   });
 
   //相手からの「通話しよう」リクエストを受けたときの処理
