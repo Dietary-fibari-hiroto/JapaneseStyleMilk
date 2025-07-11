@@ -5,7 +5,8 @@ import { socket, WebRTCConnection } from "../webRtc/webrtcApi";
 // 音声録音用クラスをインポート
 import { AudioRecorder } from "../AudioRecoder/AudioRecoder";
 
-import VoiceActivityMonitor from "../whisper/VoiceActivityMonitor"
+import VoiceActivityMonitor,{uploadAudio} from "../whisper/VoiceActivityMonitor"
+
 
 
 // コンポーネント定義
@@ -235,18 +236,42 @@ useEffect(() => {
   };
 
   // 録音を停止して再生用のURLを取得
-  const stopRecording = async () => {
-    if (!recorderRef.current) return;
+  const isStoppingRef = useRef(false); //重複して停止を実行しないため
 
+  const stopRecording = async () => {
+    if (isStoppingRef.current) {
+      console.warn("stopRecording: すでに録音停止処理中です");
+      return;
+    }
+
+    isStoppingRef.current = true;
     try {
-      const audioBlob = await recorderRef.current.stop(); // Blobデータ取得
-      const url = URL.createObjectURL(audioBlob); // BlobからURL生成
-      setAudioURL(url);
-      setIsRecording(false);
-    } catch (e) {
-      console.error("録音停止エラー", e);
+      if (recorderRef.current?.isRecording()) {
+        const blob = await recorderRef.current.stop();
+            const formData = new FormData();
+            formData.append("audio", blob, "audio.webm");
+
+            const response = await fetch("http://localhost:4000/api/transcribe", {
+              method: "POST",
+              body: formData,
+            });
+
+            const contentType = response.headers.get("content-type");
+            if (contentType && contentType.includes("application/json")) {
+              const data = await response.json();
+              // 処理続行
+            } else {
+              const text = await response.text();
+              console.error("Unexpected response:", text);
+            }
+      }
+    } catch (err) {
+      console.error("録音停止エラー", err);
+    } finally {
+      isStoppingRef.current = false;
     }
   };
+
 
   // JSXのUI描画
   return (

@@ -1,14 +1,19 @@
-import { start } from "repl";
-import {AudioRecorder} from "../AudioRecoder/AudioRecoder"
+import { AudioRecorder } from "../AudioRecoder/AudioRecoder";
 
 class VoiceActivityMonitor {
   private analyser: AnalyserNode;
-  private threshold: number = 0.02; // 👈 これが閾値（音の大きさ）
+  private audioContext: AudioContext;
+  private threshold: number = 0.05;
+  private isSpeaking = false;
+
+  onVoiceStart?: () => void;
+  onVoiceStop?: () => void;
 
   constructor(stream: MediaStream, recorder: AudioRecorder) {
-    const audioContext = new AudioContext();
-    const source = audioContext.createMediaStreamSource(stream);
-    this.analyser = audioContext.createAnalyser();
+    this.audioContext = new AudioContext();
+    const source = this.audioContext.createMediaStreamSource(stream);
+    this.analyser = this.audioContext.createAnalyser();
+    this.analyser.fftSize = 512;
     source.connect(this.analyser);
 
     this.startMonitoring();
@@ -19,13 +24,13 @@ class VoiceActivityMonitor {
 
     const detectVoice = () => {
       this.analyser.getByteTimeDomainData(dataArray);
-      
-      // 振幅（ボリューム）の変動を測定
       const volume = this.calculateVolume(dataArray);
 
-      if (volume > this.threshold) {
+      if (volume > this.threshold && !this.isSpeaking) {
+        this.isSpeaking = true;
         this.onVoiceStart?.();
-      } else {
+      } else if (volume <= this.threshold && this.isSpeaking) {
+        this.isSpeaking = false;
         this.onVoiceStop?.();
       }
 
@@ -41,11 +46,28 @@ class VoiceActivityMonitor {
       const value = data[i] / 128 - 1.0;
       sum += value * value;
     }
-    return Math.sqrt(sum / data.length); // RMS (root mean square) volume
+    return Math.sqrt(sum / data.length);
   }
 
-  onVoiceStart?: () => void;
-  onVoiceStop?: () => void;
+  public stop() {
+    this.audioContext?.close();
+  }
 }
+export const uploadAudio = async (blob: Blob): Promise<string> => {
+  const formData = new FormData();
+  formData.append("audio", blob, "audio.webm");
 
-export default VoiceActivityMonitor
+  const response = await fetch("/api/transcribe", {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!response.ok) {
+    throw new Error("Transcription failed");
+  }
+
+  const result = await response.json();
+  return result.text; // Whisperの結果を取得
+};
+
+export default VoiceActivityMonitor;

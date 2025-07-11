@@ -31,21 +31,28 @@ export class AudioRecorder {
     this.mediaRecorder.start();
   }
 
-  stop(): Promise<Blob> {
-    return new Promise((resolve, reject) => {
-      if (!this.mediaRecorder) {
-        reject("MediaRecorder not initialized.");
-        return;
-      }
+stop(): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    if (!this.mediaRecorder) {
+      console.warn("MediaRecorder not initialized.");
+      reject("MediaRecorder not initialized.");
+      return;
+    }
 
-      this.mediaRecorder.onstop = () => {
-        const audioBlob = new Blob(this.recordedChunks, { type: this.mimeType });
-        resolve(audioBlob);
-      };
+    if (this.mediaRecorder.state === "inactive") {
+      console.warn("MediaRecorder is already inactive.");
+      reject("MediaRecorder is already inactive.");
+      return;
+    }
 
-      this.mediaRecorder.stop();
-    });
-  }
+    this.mediaRecorder.onstop = () => {
+      const audioBlob = new Blob(this.recordedChunks, { type: this.mimeType });
+      resolve(audioBlob);
+    };
+
+    this.mediaRecorder.stop();
+  });
+}
 
   getAudioURL(): string {
     const blob = new Blob(this.recordedChunks, { type: this.mimeType });
