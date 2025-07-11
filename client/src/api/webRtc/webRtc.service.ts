@@ -4,7 +4,7 @@ import { socket } from "../realTimeConnection/webrtcApi";
 //WebRTCインスタンスの初期化
 export const initWebRTC = async (
   room: string,
-  localVideoRef: React.RefObject<HTMLVideoElement>,
+  localVideoRef: React.RefObject<HTMLVideoElement | null>,
   setCanCall: (b: boolean) => void
 ): Promise<WebRTCConnection> => {
   const rtc = new WebRTCConnection(room);

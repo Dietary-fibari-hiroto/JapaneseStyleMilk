@@ -1,8 +1,8 @@
 import { Navigate } from "react-router-dom";
 import { useAccount } from "../contexts/AccountContext";
-import { ReactNode, useEffect } from "react";
+import { ReactNode } from "react";
 
-const PrivateRoute = ({ children }: { children: JSX.Element }) => {
+const PrivateRoute = ({ children }: { children: ReactNode }) => {
   const { account, isFetching } = useAccount();
 
   if (isFetching) return <div>Loading...</div>; // or Spinner
