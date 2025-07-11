@@ -10,6 +10,7 @@
     "@mui/material": "^7.2.0",
     "@splinetool/react-spline": "^4.0.0",
     "@splinetool/runtime": "^1.10.24",
+    "@tailwindcss/line-clamp": "^0.4.4",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
