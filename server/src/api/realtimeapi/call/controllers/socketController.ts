@@ -26,7 +26,7 @@ export default function registerSocketEvents(io: Server, socket: Socket) {
   socket.on("create", (room: string, accountId: number) => {
     // どのクライアントがどの部屋を作成しようとしているかログ出力
     console.log(`[create] ${socket.id} creates room: ${room}`);
-    console.log("バックで受け取ったID:", accountId);
+    console.log("careateバックで受け取ったID:", accountId);
     roomAccounts.set(socket.id, accountId);
     // クライアントを指定した部屋に参加させる
     socket.join(room);
@@ -39,7 +39,7 @@ export default function registerSocketEvents(io: Server, socket: Socket) {
   socket.on("join", (room: string, accountId: number) => {
     // どのクライアントがどの部屋に参加しようとしているかログ出力
     console.log(`[join] ${socket.id} joins room: ${room}`);
-    console.log("バックで受け取ったID:", accountId);
+    console.log("joinバックで受け取ったID:", accountId);
     // クライアントを指定した部屋に参加させる
     socket.join(room);
     //アカウントIDを保存しておくう

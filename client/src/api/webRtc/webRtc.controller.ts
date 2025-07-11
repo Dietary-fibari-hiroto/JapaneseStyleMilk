@@ -20,9 +20,9 @@ export const registerWebRTCHandlers = (
   const accountId = Number(getId);
   //サーバーからのknockの返事
   socket.on("knocked response", (numClients: number) => {
-    console.log(numClients, ":num");
-    if (numClients === 0) socket.emit("create", room, accountId);
+    if (numClients === 0) socket.emit("create", room);
     else if (numClients === 1) socket.emit("join", room, accountId);
+    console.log("送信ID", accountId);
   });
 
   //部屋を作るときの処理
@@ -31,8 +31,8 @@ export const registerWebRTCHandlers = (
   });
 
   //参加時の処理
-  socket.on("joined", () => {
-    console.log("通過4");
+  socket.on("joined", (accountId) => {
+    console.log("受信:", accountId);
     handleCreatedOrJoined(rtc, setRemoteStream, setIsConnected);
   });
   //アカウントIDを送信しあうポイント
@@ -63,6 +63,7 @@ export const registerWebRTCHandlers = (
     handleAnswer(rtc, desc);
   });
   socket.on("candidate", (candidate: any) => {
+    console.log("うんおｋ");
     handleCandidate(rtc, candidate);
   });
 };
