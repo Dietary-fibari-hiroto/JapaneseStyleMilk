@@ -5,6 +5,7 @@ import cors from "cors";
 import accountRoutes from "./src/api/accounts/routes/accountRoutes";
 import authRoutes from "./src/api/auth/routes/authRoutes";
 import historyRoutes from "./src/api/history/routes/historyRoutes";
+import topicRoutes from "./src/api/topics/routes/topicRoutes";
 import logger from "./src/middlewares/logger";
 import uploadRouter from "./src/api/accounts/routes/uploadRoutes";
 import path from "path";
@@ -43,6 +44,7 @@ app.use("/api/upload", uploadRouter);
 app.use("/api/accounts", accountRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/history", historyRoutes);
+app.use("/api/topics", topicRoutes);
 
 // エラーハンドリング
 app.use(
