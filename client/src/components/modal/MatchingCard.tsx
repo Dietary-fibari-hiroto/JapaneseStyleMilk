@@ -7,6 +7,8 @@ import Avatar from "../common/Avatar";
 import { SecondaryButton } from "../";
 import { useWebRTC } from "../../api/webRtc/useWebRtc";
 import { useOpponent } from "../../contexts/OpponentContext";
+import { OpponentAccount } from "../../types";
+import { AccountContext } from "../../contexts/AccountContext";
 
 //マッチングの状態
 enum MatchingState {
@@ -29,11 +31,13 @@ const MatcingCard = () => {
     canCall,
     audioURL,
     isRecording,
-    isConnected,
     handleCall,
     startRecording,
     stopRecording,
+    isConnected,
   } = useWebRTC("a", setOpponent); // 固定ルーム名 "a" を使う
+  //相手方のプロフォール
+  const [oppState, setOppState] = useState<OpponentAccount | null>(null);
   //テスト用の賛否状態管理。(現在は親から受け取った情報を配列stateで管理する予定)
   const [testProsCons, setTestProsCons] = useState<boolean>(true);
   //ディベートテーマ(状態管理も担う)
@@ -53,7 +57,9 @@ const MatcingCard = () => {
   //マウント時の処理
   useEffect(() => {
     //通話要請を送信
-    handleCall();
+    setTimeout(() => {
+      handleCall();
+    }, 100);
   }, []);
   // ローカル音声が取得できたらマッチング状態を「待機中」にする
   useEffect(() => {
@@ -62,6 +68,7 @@ const MatcingCard = () => {
   //通話が接続されたときの処理。
   useEffect(() => {
     if (isConnected) setMatchState(MatchingState.Success);
+    setOppState(opponent);
   }, [isConnected]);
   //動作確認用
   /**
@@ -117,7 +124,14 @@ const MatcingCard = () => {
               )}
               {matchState === MatchingState.Success && (
                 <motion.div {...animationConfig}>
-                  <Avatar image={opponent?.img_url} size="xl" />
+                  {opponent?.img_url ? (
+                    <div className="flex-all-center flex-col">
+                      <Avatar image={opponent.img_url} size="xl" />
+                      <p className="font-bold text-header-r">{opponent.name}</p>
+                    </div>
+                  ) : (
+                    <p>相手情報を取得中…</p>
+                  )}
                 </motion.div>
               )}
               {matchState === MatchingState.Fail && (
