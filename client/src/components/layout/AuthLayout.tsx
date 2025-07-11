@@ -8,7 +8,6 @@ const AuthLayout = () => {
         <Outlet />
         <section className="w-[624px] h-[640px] rounded-[24px] bg-[--color-neutral-1000]">
           {" "}
-          <Spline scene="https://prod.spline.design/NU1-Vy6sQXOZ0ke0/scene.splinecode" />
         </section>
       </div>
     </div>

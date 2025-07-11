@@ -29,11 +29,11 @@ const MatcingCard = () => {
     canCall,
     audioURL,
     isRecording,
-    isConnected,
     handleCall,
     startRecording,
     stopRecording,
-  } = useWebRTC("a", setOpponent); // 固定ルーム名 "a" を使う
+    isConnected,
+  } = useWebRTC("a", () => {}); // 固定ルーム名 "a" を使う
   //テスト用の賛否状態管理。(現在は親から受け取った情報を配列stateで管理する予定)
   const [testProsCons, setTestProsCons] = useState<boolean>(true);
   //ディベートテーマ(状態管理も担う)
@@ -57,7 +57,9 @@ const MatcingCard = () => {
   //マウント時の処理
   useEffect(() => {
     //通話要請を送信
-    handleCall();
+    setTimeout(() => {
+      handleCall();
+    }, 1000);
   }, []);
   // ローカル音声が取得できたらマッチング状態を「待機中」にする
   useEffect(() => {
