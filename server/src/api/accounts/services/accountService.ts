@@ -76,7 +76,8 @@ export class AccountService {
   
   async getAccInfo(accountId: number) {
     return Account.findOne({
-      where: { id: accountId }
+      where: { id: accountId },
+      attributes: { exclude: ['password', 'email'] }
     })
   }
 } 
