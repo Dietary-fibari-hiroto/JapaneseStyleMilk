@@ -28,18 +28,14 @@ export const registerWebRTCHandlers = (
   //部屋を作るときの処理
   socket.on("created", () => {
     handleCreatedOrJoined(rtc, setRemoteStream, setIsConnected);
-    console.log("creeate通過");
   });
 
   //参加時の処理
   socket.on("joined", ({ accountId }) => {
-    console.log("受信:", accountId);
     handleCreatedOrJoined(rtc, setRemoteStream, setIsConnected);
-    console.log("joined通過");
   });
   //アカウントIDを送信しあうポイント
   socket.on("peer-joined", ({ socketId, accountId }) => {
-    console.log("受信:", socketId, accountId);
     /*
      * 以下にAPIリクエスト及びcontext格納処理を格納
      */
@@ -55,17 +51,14 @@ export const registerWebRTCHandlers = (
       }
     };
     registerOpp();
-    console.log("peer-joined通過");
   });
 
   //相手からの「通話しよう」リクエストを受けたときの処理
   socket.on("offer", (desc: any) => {
     handleOffer(rtc, desc, room, setRemoteStream, setIsConnected);
-    console.log("offer通過");
   });
   socket.on("answer", (desc: any) => {
     handleAnswer(rtc, desc);
-    console.log("answer通過");
   });
   socket.on("candidate", (candidate: any) => {
     handleCandidate(rtc, candidate);

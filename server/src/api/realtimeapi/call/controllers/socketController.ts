@@ -7,7 +7,6 @@ export default function registerSocketEvents(io: Server, socket: Socket) {
   // クライアントから "knock" イベントを受信したときの処理
   socket.on("knock", (room: string) => {
     // どのクライアントがどの部屋にノックしてきたかログ出力
-    console.log(`[knock] ${socket.id} ノックしたよ: ${room}`);
 
     // 指定された部屋に現在いるクライアント一覧を取得
     const clients = io.sockets.adapter.rooms.get(room);
@@ -20,8 +19,6 @@ export default function registerSocketEvents(io: Server, socket: Socket) {
 
   // クライアントから "create" イベントを受信したときの処理
   socket.on("create", (room: string, accountId: number) => {
-    // どのクライアントがどの部屋を作成しようとしているかログ出力
-    console.log("careatに入って受け取ったID:", accountId);
     roomAccounts.set(socket.id, accountId);
     // クライアントを指定した部屋に参加させる
     socket.join(room);
@@ -32,8 +29,7 @@ export default function registerSocketEvents(io: Server, socket: Socket) {
 
   // クライアントから "join" イベントを受信したときの処理
   socket.on("join", (room: string, accountId: number) => {
-    // どのクライアントがどの部屋に参加しようとしているかログ出力
-    console.log("joinバックで受け取ったID:", accountId);
+    // どのクライアントがどの部屋に参加しようとしているかログ出
     // クライアントを指定した部屋に参加させる
     socket.join(room);
     //アカウントIDを保存しておくう
