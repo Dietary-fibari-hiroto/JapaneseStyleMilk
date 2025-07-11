@@ -50,6 +50,10 @@ const MatcingCard = () => {
     MatchingState.AcceptStream
   );
 
+  //test
+  useEffect(() => {
+    console.log("opp:", opponent);
+  }, [opponent]);
   //マウント時の処理
   useEffect(() => {
     //通話要請を送信

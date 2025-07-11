@@ -27,6 +27,7 @@ export default function registerSocketEvents(io: Server, socket: Socket) {
     // どのクライアントがどの部屋を作成しようとしているかログ出力
     console.log(`[create] ${socket.id} creates room: ${room}`);
     console.log("バックで受け取ったID:", accountId);
+    roomAccounts.set(socket.id, accountId);
     // クライアントを指定した部屋に参加させる
     socket.join(room);
 
@@ -41,12 +42,11 @@ export default function registerSocketEvents(io: Server, socket: Socket) {
     console.log("バックで受け取ったID:", accountId);
     // クライアントを指定した部屋に参加させる
     socket.join(room);
-
     //アカウントIDを保存しておくう
     roomAccounts.set(socket.id, accountId);
 
     //その部屋の他の人たちに自分のIDを送る
-    socket.to(room).emit("peer-joined", {
+    io.to(room).emit("peer-joined", {
       socketId: socket.id,
       accountId,
     });
