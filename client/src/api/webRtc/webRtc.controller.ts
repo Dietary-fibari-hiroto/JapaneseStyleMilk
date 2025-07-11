@@ -4,8 +4,8 @@ import {
   handleCreatedOrJoined,
   handleOffer,
 } from "./webRtc.service";
-import { socket } from "../realTimeConnection/webrtcApi";
-import { WebRTCConnection } from "../realTimeConnection/webrtcApi";
+import { socket } from "./webrtcApi";
+import { WebRTCConnection } from "./webrtcApi";
 import { OpponentAccount } from "../../types";
 
 export const registerWebRTCHandlers = (

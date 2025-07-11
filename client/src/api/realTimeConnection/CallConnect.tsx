@@ -1,13 +1,19 @@
 // Reactのフックなどをインポート
 import React, { useEffect, useRef, useState } from "react";
 // WebRTCとSocket.io関連のAPIをインポート
-import { socket, WebRTCConnection } from "./webrtcApi";
+import { socket, WebRTCConnection } from "../webRtc/webrtcApi";
 // 音声録音用クラスをインポート
-import { AudioRecorder } from "./AudioRecoder";
+import { AudioRecorder } from "../AudioRecoder/AudioRecoder";
+
+import VoiceActivityMonitor from "../whisper/VoiceActivityMonitor"
+
 
 // コンポーネント定義
 export default function CallConnect() {
   const room = "a"; // 固定ルーム名（この部屋で通話）
+
+  const vad = useRef<VoiceActivityMonitor | null>(null);
+
 
   // 自分の映像を表示するvideo要素の参照
   const localVideoRef = useRef<HTMLVideoElement | null>(null);
@@ -159,7 +165,39 @@ export default function CallConnect() {
   const handleCall = () => {
     socket.emit("knock", room); // サーバーに部屋の人数確認リクエスト
   };
+  
+useEffect(() => {
+  if (!webrtcRef.current?.localStream) return;
 
+  const stream = webrtcRef.current.localStream;
+  const mimeType = MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
+    ? "audio/webm;codecs=opus"
+    : MediaRecorder.isTypeSupported("audio/webm")
+    ? "audio/webm"
+    : "";
+
+  const audioStream = new MediaStream(stream.getAudioTracks());
+  recorderRef.current = new AudioRecorder(audioStream, mimeType);
+
+  vad.current = new VoiceActivityMonitor(stream, recorderRef.current);
+
+  // イベントを設定
+  vad.current.onVoiceStart = () => {
+    console.log("話し始めた");
+    if (!isRecording) startRecording();
+  };
+
+  vad.current.onVoiceStop = () => {
+    console.log("話し終わった");
+    if (isRecording) stopRecording();
+  };
+
+  vad.current.onVoiceStart(); // VADの監視を開始
+
+  return () => {
+    vad.current?.onVoiceStop?.(); // クリーンアップ
+  };
+}, ); // 通話開始可能になったタイミングで実行
   // 録音を開始
   const startRecording = () => {
     const stream = webrtcRef.current?.localStream;

@@ -56,3 +56,5 @@ export class AudioRecorder {
     return this.mediaRecorder?.state === "recording";
   }
 }
+
+export default AudioRecorder

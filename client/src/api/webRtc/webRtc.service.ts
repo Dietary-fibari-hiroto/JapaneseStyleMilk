@@ -1,5 +1,5 @@
-import { WebRTCConnection } from "../realTimeConnection/webrtcApi";
-import { socket } from "../realTimeConnection/webrtcApi";
+import { WebRTCConnection } from "./webrtcApi";
+import { socket } from "./webrtcApi";
 
 //WebRTCインスタンスの初期化
 export const initWebRTC = async (
