@@ -3,7 +3,7 @@ import 'dotenv/config';
 
 
 const ai = new GoogleGenAI({
-  apiKey: process.env.GEMINI_SECRET_KEY,
+  apiKey: process.env.API_KEY,
 });
 
 export async function gemini(contents: string): Promise<string> {
@@ -18,3 +18,21 @@ export async function gemini(contents: string): Promise<string> {
     throw new Error('AIからの応答テキストが取得できませんでした');
   }
 }
+
+//クライアントからの送信例↓
+//portの変化に注意
+// fetch("http://localhost:3300/api/generate", {
+//   method: "POST",
+//   headers: { "Content-Type": "application/json" },
+//   body: JSON.stringify({ contents: "AIについて説明して" })
+// })
+//   .then(res => res.json())
+//   .then(data => console.log(data.text));
+
+//エントリーポイントからの操作
+// async function run() {
+//   console.log("実行開始:")
+//   const reply = await main("こんにちは、AIって何？");
+//   console.log(reply);
+// }
+// run();

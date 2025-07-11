@@ -17,12 +17,31 @@ export class EvaluationController {
         return res.status(400).json({ error: 'ディベート履歴IDが必要です' });
       }
 
+      if (!evaluationData.user_id1 || !evaluationData.user_id2) {
+        return res.status(400).json({ error: 'ユーザーIDが必要です' });
+      }
+
       if (!evaluationData.debate_topic || evaluationData.debate_topic.trim() === '') {
         return res.status(400).json({ error: 'ディベートトピックが必要です' });
       }
 
       if (!evaluationData.debate_texts || evaluationData.debate_texts.length === 0) {
         return res.status(400).json({ error: 'ディベートテキストが必要です' });
+      }
+
+      if (!evaluationData.user_id1 || !evaluationData.user_id2) {
+        return res.status(400).json({ error: 'ユーザーID1とユーザーID2が必要です' });
+      }
+
+      // 各発言にuser_idが含まれているかチェック
+      for (const text of evaluationData.debate_texts) {
+        if (!text.user_id) {
+          return res.status(400).json({ error: '各発言にuser_idが必要です' });
+        }
+        // user_idがuser_id1またはuser_id2のいずれかであることをチェック
+        if (text.user_id !== evaluationData.user_id1 && text.user_id !== evaluationData.user_id2) {
+          return res.status(400).json({ error: '発言のuser_idはuser_id1またはuser_id2のいずれかである必要があります' });
+        }
       }
 
       // 評価実行
@@ -35,8 +54,19 @@ export class EvaluationController {
 
     } catch (error) {
       console.error('ディベート評価エラー:', error);
+      
+      // エラーメッセージを返す
+      let errorMessage = 'ディベートの評価に失敗しました';
+      if (error instanceof Error) {
+        if (error.message.includes('ディベート履歴が見つかりません')) {
+          errorMessage = error.message;
+        } else {
+          errorMessage = error.message;
+        }
+      }
+      
       res.status(500).json({ 
-        error: 'ディベートの評価に失敗しました',
+        error: errorMessage,
         details: error instanceof Error ? error.message : '不明なエラー'
       });
     }
