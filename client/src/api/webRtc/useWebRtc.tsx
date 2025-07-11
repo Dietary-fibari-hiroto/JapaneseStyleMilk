@@ -14,7 +14,7 @@ export const useWebRTC = (
   setOpponent: (account: OpponentAccount) => void
 ) => {
   //ビデオ系統の状態
-  const localVideoRef = useRef<HTMLVideoElement | null>(null);
+  const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
   //マイクやカメラの状態管理
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
