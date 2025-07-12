@@ -8,7 +8,7 @@ import { SecondaryButton } from "../";
 import { useWebRTC } from "../../api/webRtc/useWebRtc";
 import { useOpponent } from "../../contexts/OpponentContext";
 import { OpponentAccount } from "../../types";
-import { AccountContext } from "../../contexts/AccountContext";
+import { useNavigate } from "react-router-dom";
 
 //マッチングの状態
 enum MatchingState {
@@ -22,6 +22,7 @@ enum MatchingState {
 const contentStyle = "space-y-[16px] flex flex-col";
 
 const MatcingCard = () => {
+  const navigate = useNavigate();
   const { opponent, setOpponent } = useOpponent();
   /**以下テスト変数(pagesとの結合段階で使う) */
   //WebRTC
@@ -80,7 +81,9 @@ const MatcingCard = () => {
   }, [matchState]);
  */
   //はい、いいえボタンの挙動
-  const handleYes = () => {};
+  const handleYes = () => {
+    navigate("/debate/room");
+  };
   const handleNo = () => {
     //動作確認用
     setMatchState(MatchingState.Waiting);

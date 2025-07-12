@@ -1,7 +1,8 @@
 import { DebateButton, VersusAvatars } from "../components";
 import SectionHeader from "../components/common/SectionHeader";
-
+import { useWebRTCStore } from "../store/webrtcStore";
 const DebatePage = () => {
+  const { webrtc, remoteStream } = useWebRTCStore();
   return (
     <div className="w-[80%] flex-all-center">
       <div className="space-y-[50px]">
