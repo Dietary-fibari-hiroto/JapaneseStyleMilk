@@ -8,7 +8,6 @@ import { WebRTCConnection } from "./webrtcApi";
 import { AudioRecorder } from "../AudioRecoder/AudioRecoder";
 import { socket } from "./webrtcApi";
 import { OpponentAccount } from "../../types";
-import { useWebRTCStore } from "../../store/webrtcStore";
 
 export const useWebRTC = (
   room: string,
@@ -30,26 +29,20 @@ export const useWebRTC = (
 
   const webrtcRef = useRef<WebRTCConnection | null>(null);
   const recorderRef = useRef<AudioRecorder | null>(null);
-  const { setWebRTC, clearRtc, setRemoteStreamLocal } = useWebRTCStore();
   //socketをリアルタイム管理＆実行&クリーンアップし続ける関数
   useEffect(() => {
     initWebRTC(room, localVideoRef, setCanCall).then((rtc) => {
       webrtcRef.current = rtc;
-      setWebRTC(rtc); //Zustandに保存！
       registerWebRTCHandlers(
         rtc,
         room,
-        (stream) => {
-          setRemoteStream(stream); // ZustandにremoteStreamを保存
-          setRemoteStreamLocal(stream); // local useStateも更新する場合
-        },
+        setRemoteStream,
         setIsConnected,
         setOpponent
       );
     });
     return () => {
       unregisterWebRTCHandlers();
-      clearRtc();
     };
   }, [room]);
 

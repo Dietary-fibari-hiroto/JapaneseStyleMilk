@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, ReactHTMLElement } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import clsx from "clsx";
 import { Loading, ProsCons } from "../";
@@ -9,6 +9,7 @@ import { useWebRTC } from "../../api/webRtc/useWebRtc";
 import { useOpponent } from "../../contexts/OpponentContext";
 import { OpponentAccount } from "../../types";
 import { useNavigate } from "react-router-dom";
+import { GameProgress } from "../../pages/Home";
 
 //マッチングの状態
 enum MatchingState {
@@ -18,27 +19,30 @@ enum MatchingState {
   Fail = "fail", //マッチングが失敗した状態
 }
 
+//WebRTC関数を受け取るための型
+type props = {
+  remoteVideoRef: React.RefObject<HTMLVideoElement | null>;
+  canCall: boolean;
+  isConnected: boolean;
+  handleCall: () => void;
+  setGameProgress: (prev: GameProgress) => void;
+};
+
 //このページ内で再利用性のあるCSSクラス
 const contentStyle = "space-y-[16px] flex flex-col";
 
-const MatcingCard = () => {
+const MatcingCard = ({
+  remoteVideoRef,
+  canCall,
+  isConnected,
+  handleCall,
+  setGameProgress,
+}: props) => {
   const navigate = useNavigate();
   const { opponent, setOpponent } = useOpponent();
   /**以下テスト変数(pagesとの結合段階で使う) */
   //WebRTC
-  const {
-    localVideoRef,
-    remoteVideoRef,
-    canCall,
-    audioURL,
-    isRecording,
-    handleCall,
-    startRecording,
-    stopRecording,
-    isConnected,
-  } = useWebRTC("a", setOpponent); // 固定ルーム名 "a" を使う
-  //相手方のプロフォール
-  const [oppState, setOppState] = useState<OpponentAccount | null>(null);
+
   //テスト用の賛否状態管理。(現在は親から受け取った情報を配列stateで管理する予定)
   const [testProsCons, setTestProsCons] = useState<boolean>(true);
   //ディベートテーマ(状態管理も担う)
@@ -46,8 +50,6 @@ const MatcingCard = () => {
     "五条悟は両面宿儺より強いですか？"
   );
   //相手ユーザーのアイコン
-  const userIcon =
-    "https://matitaka.dawn-waiting.com/static/media/IMG_2883.345fbe743ae2b250d435.jpg";
   /*---ここまで---*/
 
   //マッチングの状態
@@ -69,7 +71,6 @@ const MatcingCard = () => {
   //通話が接続されたときの処理。
   useEffect(() => {
     if (isConnected) setMatchState(MatchingState.Success);
-    setOppState(opponent);
   }, [isConnected]);
   //動作確認用
   /**
@@ -81,12 +82,14 @@ const MatcingCard = () => {
   }, [matchState]);
  */
   //はい、いいえボタンの挙動
-  const handleYes = () => {
-    navigate("/debate/room");
+  const handleYes = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setGameProgress(GameProgress.Waite);
   };
   const handleNo = () => {
     //動作確認用
     setMatchState(MatchingState.Waiting);
+    window.location.reload();
   };
 
   //メインのUI描画
@@ -94,15 +97,13 @@ const MatcingCard = () => {
     <motion.div
       {...animationConfig}
       className="fixed top-0 left-0 z-[3] h-full w-full"
-      onClick={() => {
-        window.location.reload();
-      }}
     >
-      <audio ref={remoteVideoRef} autoPlay />
-
       <div
         style={{ backdropFilter: "blur(5px)" }}
         className="absolute z-[3] top-0 left-0 bg-[#00000033]  w-screen h-screen "
+        onClick={() => {
+          window.location.reload();
+        }}
       ></div>
       <div
         className={`absolute z-[5] top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] w-[780px] ${
