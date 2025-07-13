@@ -1,5 +1,4 @@
-import { AudioRecorderService } from "../AudioRecoder/AudioRecoderService";
-
+// service/VoiceActivityMonitorService.ts
 export class VoiceActivityMonitorService {
   private analyser: AnalyserNode;
   private audioContext: AudioContext;
@@ -10,7 +9,7 @@ export class VoiceActivityMonitorService {
   onVoiceStart?: () => void;
   onVoiceStop?: () => void;
 
-  constructor(stream: MediaStream,recorder: AudioRecorderService) {
+  constructor(stream: MediaStream) {
     this.audioContext = new AudioContext();
     const source = this.audioContext.createMediaStreamSource(stream);
     this.analyser = this.audioContext.createAnalyser();
@@ -55,6 +54,7 @@ export class VoiceActivityMonitorService {
       }
       requestAnimationFrame(detectVoice);
     };
+
     detectVoice();
   }
 
@@ -71,6 +71,3 @@ export class VoiceActivityMonitorService {
     this.audioContext?.close();
   }
 }
-
-
-

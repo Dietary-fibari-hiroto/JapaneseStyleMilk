@@ -1,18 +1,11 @@
-import { TranscriptionService } from "./TranscriptionController";
+// service/TranscriptionService.ts
+import { uploadAudio } from "./Whisper";
 
-export class TranscriptionController {
-  private service: TranscriptionService;
-
-  constructor() {
-    this.service = new TranscriptionService();
-  }
-
-  async transcribe(blob: Blob): Promise<string | null> {
-    try {
-      return await this.service.transcribeAudio(blob);
-    } catch (err) {
-      console.error("文字起こし失敗", err);
-      return null;
-    }
+export class TranscriptionService {
+  async transcribeAudio(
+    blob: Blob,
+    socketId: string
+  ): Promise<{ speaker: string; text: string }> {
+    return await uploadAudio(blob, socketId);
   }
 }

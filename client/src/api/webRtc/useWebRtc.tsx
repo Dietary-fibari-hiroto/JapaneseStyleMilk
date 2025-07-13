@@ -4,9 +4,9 @@ import {
   registerWebRTCHandlers,
   unregisterWebRTCHandlers,
 } from "./webRtc.controller";
-import { WebRTCConnection } from "./webrtcApi";
+import { WebRTCConnection } from "./webrtc";
 import { AudioRecorderService } from "../AudioRecoder/AudioRecoderService";
-import { socket } from "./webrtcApi";
+import { socket } from "./webrtc";
 import { OpponentAccount } from "../../types";
 
 export const useWebRTC = (

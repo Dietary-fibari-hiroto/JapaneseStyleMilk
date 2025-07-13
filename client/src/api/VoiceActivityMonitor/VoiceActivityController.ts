@@ -5,7 +5,7 @@ export class VoiceActivityController {
   private vadService: VoiceActivityMonitorService;
 
   constructor(stream: MediaStream, recorder: AudioRecorderService) {
-    this.vadService = new VoiceActivityMonitorService(stream, recorder);
+    this.vadService = new VoiceActivityMonitorService(stream);
   }
 
 

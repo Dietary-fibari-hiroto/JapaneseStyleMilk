@@ -1,13 +1,13 @@
 // Reactのフックなどをインポート
 import React, { useEffect, useRef, useState } from "react";
 // WebRTCとSocket.io関連のAPIをインポート
-import { socket, WebRTCConnection } from "../webRtc/webrtcApi";
+import { socket, WebRTCConnection } from "../webRtc/webrtc";
 // 音声録音用クラスをインポート
 import { AudioRecorderService } from "../AudioRecoder/AudioRecoderService";
 
 import {VoiceActivityMonitorService} from "../VoiceActivityMonitor/VoiceActivityMonitor"
-
-
+import { uploadAudio } from "../TranscriptionService/Whisper";
+import { TranscriptionController } from "../TranscriptionService/TranscriptionController";
 
 // コンポーネント定義
 export default function CallConnect() {
@@ -180,7 +180,7 @@ useEffect(() => {
   const audioStream = new MediaStream(stream.getAudioTracks());
   recorderRef.current = new AudioRecorderService(audioStream, mimeType);
 
-  vad.current = new VoiceActivityMonitorService(stream, recorderRef.current);
+  vad.current = new VoiceActivityMonitorService(stream);
 
   // イベントを設定
   vad.current.onVoiceStart = () => {
@@ -235,49 +235,52 @@ useEffect(() => {
     }
   };
 
-  // 録音を停止して再生用のURLを取得
-  const isStoppingRef = useRef(false); //重複して停止を実行しないため
+const [socketId, setSocketId] = useState<string | null>(null);
 
-  const stopRecording = async () => {
-    if (isStoppingRef.current) {
-      console.warn("stopRecording: すでに録音停止処理中です");
-      return;
-    }
+useEffect(() => {
+  socket.on("connect", () => {
+    console.log("接続ID:", socket.id);
+    setSocketId(socket.id ?? null);
+  });
 
-    isStoppingRef.current = true;
-    try {
-      if (recorderRef.current?.isRecording()) {
-            const blob = await recorderRef.current.stop();
-              console.log("録音データサイズ:", blob.size);
-            if (blob.size === 0) {
-              console.warn("録音データサイズが0のため送信をスキップします");
-              setIsRecording(false);
-              isStoppingRef.current = false;
-              return;
-            }
-            const formData = new FormData();
-            formData.append("audio", blob, "audio.webm");
-
-            const response = await fetch("http://192.168.40.200:5000/transcribe", {
-              method: "POST",
-              body: formData,
-            });
-
-            const contentType = response.headers.get("content-type");
-            if (contentType && contentType.includes("application/json")) {
-              const data = await response.json();
-              console.log("文字起こし結果:", data.text);
-            } else {
-              const text = await response.text();
-              console.error("Unexpected response:", text);
-            }
-      }
-    } catch (err) {
-      console.error("録音停止エラー", err);
-    } finally {
-      isStoppingRef.current = false;
-    }
+  return () => {
+    socket.off("connect");
   };
+}, []);
+
+
+
+// 録音を停止して再生用のURLを取得
+const isStoppingRef = useRef(false); //重複して停止を実行しないため
+const transcriptionController = new TranscriptionController();
+
+// 録音停止処理
+const stopRecording = async () => {
+  if (isStoppingRef.current) return;
+  isStoppingRef.current = true;
+
+  try {
+    if (recorderRef.current?.isRecording()) {
+      const blob = await recorderRef.current.stop();
+      setIsRecording(false);
+
+      if (blob.size === 0) {
+        console.warn("録音サイズ0、送信スキップ");
+        return;
+      }
+
+      const text = await transcriptionController.transcribe(blob, socketId ?? "unknown");
+      console.log("文字起こし結果:", text);
+    }
+  } catch (err) {
+    console.error("録音停止エラー", err);
+  } finally {
+    isStoppingRef.current = false;
+  }
+};
+
+
+
 
 
   // JSXのUI描画

@@ -4,8 +4,8 @@ import {
   handleCreatedOrJoined,
   handleOffer,
 } from "./webRtc.service";
-import { socket } from "./webrtcApi";
-import { WebRTCConnection } from "./webrtcApi";
+import { socket } from "./webrtc";
+import { WebRTCConnection } from "./webrtc";
 import { OpponentAccount } from "../../types";
 import { getOpp } from "../auth";
 

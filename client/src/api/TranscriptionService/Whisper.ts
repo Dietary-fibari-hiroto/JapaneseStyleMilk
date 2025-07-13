@@ -1,6 +1,12 @@
-export const uploadAudio = async (blob: Blob): Promise<string> => {
+// Whisper.ts
+export const uploadAudio = async (
+  blob: Blob,
+  speakerId: string
+): Promise<{ speaker: string; text: string }> => {
   const formData = new FormData();
-  formData.append("file", blob, "audio.webm");
+
+  formData.append("audio", blob, "audio.webm");
+  formData.append("speaker", speakerId);
 
   const response = await fetch("http://192.168.40.200:5000/transcribe", {
     method: "POST",
@@ -14,5 +20,6 @@ export const uploadAudio = async (blob: Blob): Promise<string> => {
   }
 
   const result = await response.json();
-  return result.text;
+  console.log(result);
+  return result;
 };
