@@ -6,6 +6,7 @@ import accountRoutes from "./src/api/accounts/routes/accountRoutes";
 import authRoutes from "./src/api/auth/routes/authRoutes";
 import historyRoutes from "./src/api/history/routes/historyRoutes";
 import topicRoutes from "./src/api/topics/routes/topicRoutes";
+import evaluationRoutes from "./src/api/evaluation/routes/evaluationRoutes";
 import logger from "./src/middlewares/logger";
 import uploadRouter from "./src/api/accounts/routes/uploadRoutes";
 import path from "path";
@@ -45,6 +46,7 @@ app.use("/api/accounts", accountRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/history", historyRoutes);
 app.use("/api/topics", topicRoutes);
+app.use("/api/evaluation", evaluationRoutes);
 
 // エラーハンドリング
 app.use(
