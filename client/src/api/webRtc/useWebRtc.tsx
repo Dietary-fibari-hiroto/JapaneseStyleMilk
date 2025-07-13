@@ -5,7 +5,7 @@ import {
   unregisterWebRTCHandlers,
 } from "./webRtc.controller";
 import { WebRTCConnection } from "./webrtcApi";
-import { AudioRecorder } from "../AudioRecoder/AudioRecoder";
+import { AudioRecorderService } from "../AudioRecoder/AudioRecoderService";
 import { socket } from "./webrtcApi";
 import { OpponentAccount } from "../../types";
 
@@ -28,7 +28,7 @@ export const useWebRTC = (
   const [audioURL, setAudioURL] = useState<string | null>(null);
 
   const webrtcRef = useRef<WebRTCConnection | null>(null);
-  const recorderRef = useRef<AudioRecorder | null>(null);
+  const recorderRef = useRef<AudioRecorderService | null>(null);
   //socketをリアルタイム管理＆実行&クリーンアップし続ける関数
   useEffect(() => {
     initWebRTC(room, localVideoRef, setCanCall).then((rtc) => {
@@ -73,7 +73,7 @@ export const useWebRTC = (
       console.error("録音できるMIMEタイプがありません");
       return;
     }
-    recorderRef.current = new AudioRecorder(audioStream, mimeType);
+    recorderRef.current = new AudioRecorderService(audioStream, mimeType);
     try {
       recorderRef.current.start();
       setIsRecording(true);

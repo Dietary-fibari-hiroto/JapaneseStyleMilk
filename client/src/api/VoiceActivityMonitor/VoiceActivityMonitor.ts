@@ -1,42 +1,60 @@
-import { AudioRecorder } from "../AudioRecoder/AudioRecoder";
+import { AudioRecorderService } from "../AudioRecoder/AudioRecoderService";
 
-class VoiceActivityMonitor {
+export class VoiceActivityMonitorService {
   private analyser: AnalyserNode;
   private audioContext: AudioContext;
   private threshold: number = 0.05;
   private isSpeaking = false;
+  private stopTimeoutId: number | null = null;
 
   onVoiceStart?: () => void;
   onVoiceStop?: () => void;
 
-  constructor(stream: MediaStream, recorder: AudioRecorder) {
+  constructor(stream: MediaStream,recorder: AudioRecorderService) {
     this.audioContext = new AudioContext();
     const source = this.audioContext.createMediaStreamSource(stream);
     this.analyser = this.audioContext.createAnalyser();
     this.analyser.fftSize = 512;
     source.connect(this.analyser);
-
     this.startMonitoring();
+  }
+
+  setOnVoiceStart(callback: () => void) {
+    this.onVoiceStart = callback;
+  }
+
+  setOnVoiceStop(callback: () => void) {
+    this.onVoiceStop = callback;
   }
 
   private startMonitoring() {
     const dataArray = new Uint8Array(this.analyser.fftSize);
+    const timer = 3000;
 
     const detectVoice = () => {
       this.analyser.getByteTimeDomainData(dataArray);
       const volume = this.calculateVolume(dataArray);
 
-      if (volume > this.threshold && !this.isSpeaking) {
-        this.isSpeaking = true;
-        this.onVoiceStart?.();
-      } else if (volume <= this.threshold && this.isSpeaking) {
-        this.isSpeaking = false;
-        this.onVoiceStop?.();
+      if (volume > this.threshold) {
+        if (!this.isSpeaking) {
+          this.isSpeaking = true;
+          this.onVoiceStart?.();
+        }
+        if (this.stopTimeoutId !== null) {
+          clearTimeout(this.stopTimeoutId);
+          this.stopTimeoutId = null;
+        }
+      } else {
+        if (this.isSpeaking && this.stopTimeoutId === null) {
+          this.stopTimeoutId = window.setTimeout(() => {
+            this.isSpeaking = false;
+            this.onVoiceStop?.();
+            this.stopTimeoutId = null;
+          }, timer);
+        }
       }
-
       requestAnimationFrame(detectVoice);
     };
-
     detectVoice();
   }
 
@@ -53,21 +71,6 @@ class VoiceActivityMonitor {
     this.audioContext?.close();
   }
 }
-export const uploadAudio = async (blob: Blob): Promise<string> => {
-  const formData = new FormData();
-  formData.append("audio", blob, "audio.webm");
 
-  const response = await fetch("/api/transcribe", {
-    method: "POST",
-    body: formData,
-  });
 
-  if (!response.ok) {
-    throw new Error("Transcription failed");
-  }
 
-  const result = await response.json();
-  return result.text; // Whisperの結果を取得
-};
-
-export default VoiceActivityMonitor;

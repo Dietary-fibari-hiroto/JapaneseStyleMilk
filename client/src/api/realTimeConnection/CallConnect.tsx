@@ -3,9 +3,9 @@ import React, { useEffect, useRef, useState } from "react";
 // WebRTCとSocket.io関連のAPIをインポート
 import { socket, WebRTCConnection } from "../webRtc/webrtcApi";
 // 音声録音用クラスをインポート
-import { AudioRecorder } from "../AudioRecoder/AudioRecoder";
+import { AudioRecorderService } from "../AudioRecoder/AudioRecoderService";
 
-import VoiceActivityMonitor,{uploadAudio} from "../whisper/VoiceActivityMonitor"
+import {VoiceActivityMonitorService} from "../VoiceActivityMonitor/VoiceActivityMonitor"
 
 
 
@@ -13,7 +13,7 @@ import VoiceActivityMonitor,{uploadAudio} from "../whisper/VoiceActivityMonitor"
 export default function CallConnect() {
   const room = "a"; // 固定ルーム名（この部屋で通話）
 
-  const vad = useRef<VoiceActivityMonitor | null>(null);
+  const vad = useRef<VoiceActivityMonitorService | null>(null);
 
 
   // 自分の映像を表示するvideo要素の参照
@@ -34,7 +34,7 @@ export default function CallConnect() {
   // WebRTCの接続インスタンス
   const webrtcRef = useRef<WebRTCConnection | null>(null);
   // 音声録音インスタンス
-  const recorderRef = useRef<AudioRecorder | null>(null);
+  const recorderRef = useRef<AudioRecorderService | null>(null);
 
   // 初回レンダー時のセットアップ
   useEffect(() => {
@@ -178,9 +178,9 @@ useEffect(() => {
     : "";
 
   const audioStream = new MediaStream(stream.getAudioTracks());
-  recorderRef.current = new AudioRecorder(audioStream, mimeType);
+  recorderRef.current = new AudioRecorderService(audioStream, mimeType);
 
-  vad.current = new VoiceActivityMonitor(stream, recorderRef.current);
+  vad.current = new VoiceActivityMonitorService(stream, recorderRef.current);
 
   // イベントを設定
   vad.current.onVoiceStart = () => {
@@ -225,7 +225,7 @@ useEffect(() => {
     }
 
     // 録音インスタンスを作成し、録音開始
-    recorderRef.current = new AudioRecorder(audioStream, mimeType);
+    recorderRef.current = new AudioRecorderService(audioStream, mimeType);
 
     try {
       recorderRef.current.start();
@@ -247,11 +247,18 @@ useEffect(() => {
     isStoppingRef.current = true;
     try {
       if (recorderRef.current?.isRecording()) {
-        const blob = await recorderRef.current.stop();
+            const blob = await recorderRef.current.stop();
+              console.log("録音データサイズ:", blob.size);
+            if (blob.size === 0) {
+              console.warn("録音データサイズが0のため送信をスキップします");
+              setIsRecording(false);
+              isStoppingRef.current = false;
+              return;
+            }
             const formData = new FormData();
             formData.append("audio", blob, "audio.webm");
 
-            const response = await fetch("http://localhost:4000/api/transcribe", {
+            const response = await fetch("http://192.168.40.200:5000/transcribe", {
               method: "POST",
               body: formData,
             });
@@ -259,7 +266,7 @@ useEffect(() => {
             const contentType = response.headers.get("content-type");
             if (contentType && contentType.includes("application/json")) {
               const data = await response.json();
-              // 処理続行
+              console.log("文字起こし結果:", data.text);
             } else {
               const text = await response.text();
               console.error("Unexpected response:", text);
