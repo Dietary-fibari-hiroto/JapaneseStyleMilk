@@ -49,7 +49,7 @@ const MatcingCard = ({
   const [testProsCons, setTestProsCons] = useState<boolean>(true);
   //ディベートテーマ(状態管理も担う)
   const [testTheme, setTestTheme] = useState<string | null>(
-    "五条悟は両面宿儺より強いですか？"
+    "リモートワークはオフィスワークより効率的か？"
   );
   //相手ユーザーのアイコン
   /*---ここまで---*/
@@ -88,11 +88,19 @@ const MatcingCard = ({
     e.preventDefault();
     setGameProgress(GameProgress.Waite);
     setGameStart(true);
+
+    //loadingをtruにして
+    //テーマをセットしたら戻す
   };
   const handleNo = () => {
     //動作確認用
     setMatchState(MatchingState.Waiting);
-    window.location.reload();
+    const timeId = setTimeout(() => {
+      setTestTheme("プラスチック製品の使用を禁止すべきか？");
+      setMatchState(MatchingState.Success);
+    }, 3000);
+
+    return () => clearTimeout(timeId);
   };
 
   //メインのUI描画

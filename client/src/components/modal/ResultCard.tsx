@@ -16,7 +16,7 @@ const ResultCard = ({ win }: Props) => {
   //いいえを押されたときの処理
   const handleNO = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    window.location.reload();
+    navigate("/dashboard/evaluation/:historyId");
   };
 
   return (
