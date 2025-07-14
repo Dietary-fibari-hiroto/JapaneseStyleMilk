@@ -9,7 +9,7 @@ import { useWebRTC } from "../../api/webRtc/useWebRtc";
 import { useOpponent } from "../../contexts/OpponentContext";
 import { OpponentAccount } from "../../types";
 import { useNavigate } from "react-router-dom";
-import { GameProgress } from "../../pages/Home";
+import { GameProgress } from "../../types/enum";
 
 //マッチングの状態
 enum MatchingState {
@@ -26,6 +26,7 @@ type props = {
   isConnected: boolean;
   handleCall: () => void;
   setGameProgress: (prev: GameProgress) => void;
+  setGameStart: (prev: boolean) => void;
 };
 
 //このページ内で再利用性のあるCSSクラス
@@ -37,6 +38,7 @@ const MatcingCard = ({
   isConnected,
   handleCall,
   setGameProgress,
+  setGameStart,
 }: props) => {
   const navigate = useNavigate();
   const { opponent, setOpponent } = useOpponent();
@@ -47,7 +49,7 @@ const MatcingCard = ({
   const [testProsCons, setTestProsCons] = useState<boolean>(true);
   //ディベートテーマ(状態管理も担う)
   const [testTheme, setTestTheme] = useState<string | null>(
-    "五条悟は両面宿儺より強いですか？"
+    "リモートワークはオフィスワークより効率的か？"
   );
   //相手ユーザーのアイコン
   /*---ここまで---*/
@@ -85,11 +87,20 @@ const MatcingCard = ({
   const handleYes = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setGameProgress(GameProgress.Waite);
+    setGameStart(true);
+
+    //loadingをtruにして
+    //テーマをセットしたら戻す
   };
   const handleNo = () => {
     //動作確認用
     setMatchState(MatchingState.Waiting);
-    window.location.reload();
+    const timeId = setTimeout(() => {
+      setTestTheme("プラスチック製品の使用を禁止すべきか？");
+      setMatchState(MatchingState.Success);
+    }, 3000);
+
+    return () => clearTimeout(timeId);
   };
 
   //メインのUI描画

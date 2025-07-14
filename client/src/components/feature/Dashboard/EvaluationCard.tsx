@@ -25,16 +25,14 @@ const CardContainer = styled.button<{}>`
 `;
 
 type Props = {
-  //ディベート内容
-  debateTitle: string;
-  //1人目のユーザーの画像
-  userImg1: string;
-  //二人目のユーザーの画像
-  userImg2: string;
-  //日付
-  date: string;
+  debateTitle: string;  //ディベート内容
+  userImg1: string;     //1人目のユーザーの画像
+  userImg2: string;     //2人目のユーザーの画像
+  date: string;         //日付
+  path: string;         //遷移先パス
 };
-const EvaluationCard = ({ debateTitle, userImg1, userImg2, date }: Props) => {
+
+const EvaluationCard = ({ debateTitle, userImg1, userImg2, date, path }: Props) => {
   return (
     <CardContainer>
       <div className="container">

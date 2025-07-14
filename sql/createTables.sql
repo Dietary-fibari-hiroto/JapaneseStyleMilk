@@ -175,6 +175,8 @@ CREATE TABLE general_es(
 
 
 
+
+
 /*イベント*/
 CREATE TABLE events(
     id INT NOT NULL PRIMARY KEY,

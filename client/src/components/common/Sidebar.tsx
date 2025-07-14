@@ -15,7 +15,11 @@ const testItem = { name: "山田ジョン", rank: "ゴールドランク" };
 //ナビゲーションのリスト
 const navList = [
   { name: "ホーム", path: "/home", icon: ImagesRoute.home_icon },
-  { name: "ダッシュボード", path: "", icon: ImagesRoute.dash_board_icon },
+  {
+    name: "ダッシュボード",
+    path: "/dashboard/:accountId",
+    icon: ImagesRoute.dash_board_icon,
+  },
   { name: "プロフィール", path: "", icon: ImagesRoute.profile_icon },
   { name: "設定", path: "", icon: ImagesRoute.setting_icon },
 ];
@@ -96,10 +100,7 @@ const Sidebar = () => {
               src={ImagesRoute.close_side_bar_icon}
             />
           </button>
-          <img
-            className="h-[40px] close-hidden"
-            src={ImagesRoute.close_side_bar_icon}
-          />
+          <img className="h-[40px] close-hidden" src={ImagesRoute.logo_icon} />
         </div>
         <div className={`${isOpen ? "translate-x-[12px]" : ""} space-y-[4px] `}>
           {navList.map((nav, index) => (
