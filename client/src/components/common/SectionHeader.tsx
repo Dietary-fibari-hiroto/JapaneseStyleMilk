@@ -4,12 +4,10 @@
  * Author : H.Kitagawa
  * Desc : ページ上部テキスト コンポーネント
  */
-
-import { useEffect, useState, useRef } from "react";
-import { GameProgress } from "../../pages/Home";
 // 表示ラベル定義
 const TurnList = [
   { label: "接続中...", time: 2000 },
+  { label: "準備中...", time: 2000 },
   { label: "シンキングタイム(1分)", time: 60000 },
   { label: "Round1", time: 5000 },
   { label: "シンキングタイム(1分)", time: 60000 },
@@ -22,7 +20,7 @@ const TurnList = [
 type SectionHeaderProps = {
   mode: "single" | "anime";
   name?: string;
-  gameProgress: GameProgress;
+  currentTurn: number;
 };
 
 /**
@@ -31,52 +29,8 @@ type SectionHeaderProps = {
  * @param name  アニメーション無しの場合に表示するユーザー名
  * @returns     アニメーションの有無を指定したページ上部テキスト
  */
-const SectionHeader = ({ mode, name }: SectionHeaderProps) => {
+const SectionHeader = ({ mode, name, currentTurn }: SectionHeaderProps) => {
   /* 以下 アニメーション設定 (後で修正) */
-  const [currentTurn, setCurrentTurn] = useState(0); // ターン管理
-  const firstWate = 5000; // 最初の待ち時間(debag:1/10)
-  const currentTurnRef = useRef(currentTurn); //最新のcurrentを管理
-
-  // 待機時間設定
-  const wateTime = (seconds: number) =>
-    new Promise((resolve) => setTimeout(resolve, seconds));
-
-  useEffect(() => {
-    currentTurnRef.current = currentTurn;
-  }, [currentTurn]);
-
-  const animationManager = async () => {
-    const nextTurn = () => {
-      setCurrentTurn((prev) => prev + 1);
-    };
-
-    await wateTime(firstWate);
-
-    for (const element of TurnList) {
-      const turnAtStart = currentTurnRef.current;
-
-      nextTurn();
-
-      await wateTime(1000); // ← アニメーション時間
-
-      // その間に currentTurn が外部で変わってたら無視（スキップ）
-      if (currentTurnRef.current !== turnAtStart + 1) {
-        console.log("turnが外部で変更されたのでスキップ");
-        continue;
-      }
-
-      // ここで安全に処理
-      console.log("次のターンの処理: ", element);
-    }
-  };
-
-  // アニメーション呼び出し
-  var testIndex; // コンテキスト設定後消す
-  useEffect(() => {
-    animationManager();
-  }, [testIndex]); // コンテキストの変数に置き換え
-
-  /* アニメーション設定ここまで */
 
   if (mode === "anime") {
     return (

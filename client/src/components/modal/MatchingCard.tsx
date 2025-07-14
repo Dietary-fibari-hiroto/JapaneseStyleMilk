@@ -9,7 +9,7 @@ import { useWebRTC } from "../../api/webRtc/useWebRtc";
 import { useOpponent } from "../../contexts/OpponentContext";
 import { OpponentAccount } from "../../types";
 import { useNavigate } from "react-router-dom";
-import { GameProgress } from "../../pages/Home";
+import { GameProgress } from "../../types/enum";
 
 //マッチングの状態
 enum MatchingState {

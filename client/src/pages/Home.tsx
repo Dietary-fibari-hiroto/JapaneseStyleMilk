@@ -2,25 +2,29 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import PrimaryButton from "../components/common/PrimaryButton";
-import { getMe } from "../api/auth";
 import { useAccount } from "../contexts/AccountContext";
 import { useOpponent } from "../contexts/OpponentContext";
 import { useWebRTC } from "../api/webRtc/useWebRtc";
-import { DebateButton, VersusAvatars, MatchingCard } from "../components";
+import {
+  DebateButton,
+  VersusAvatars,
+  MatchingCard,
+  CountDown,
+  ResultCard,
+} from "../components";
+
 import SectionHeader from "../components/common/SectionHeader";
-export enum GameProgress {
-  None = "none", //ゲームが始まっていない状態
-  Matching = "matching", //マッチング状態
-  StandBy = "standby", //ゲーム内待機
-  Waite = "waite", //お互いのシステム状態合わせているときの待機状態
-  Turn1 = "turn1", //1ターン目
-  Turn2 = "turn2", //2ターン目
-  Turn3 = "turn3", //3ターン目
-  Result = "result", //結果
-}
+import { GameProgress, GameProgressIndexMap } from "../types/enum";
+
 const Home = () => {
   const { opponent, setOpponent } = useOpponent();
   const { account, setIsFetching } = useAccount();
+  const [currentTurn, setCurrentTurn] = useState(0); // ターン管理
+  const [showCount, setShowCount] = useState(false);
+  const thinkingTime = 15000;
+  const turnTime = 15000;
+  /* アニメーション設定ここまで */
+
   const {
     localVideoRef,
     remoteVideoRef,
@@ -45,10 +49,47 @@ const Home = () => {
     "五条悟は両面宿儺より強いですか？"
   );
 
+  //ターンのUI部分の進行
+  useEffect(() => {
+    setCurrentTurn(GameProgressIndexMap[gameProgress]);
+  }, [gameProgress]);
+  //シンキングタイムをおわらせにきた
+  useEffect(() => {
+    console.log(currentTurn);
+    console.log(showCount);
+    if ([2, 3, 4, 5, 6, 7].includes(currentTurn)) {
+      setShowCount(true);
+    }
+    if ([2, 4, 6].includes(currentTurn)) {
+      const timeoutId = setTimeout(() => {
+        setCurrentTurn((prev) => prev + 1);
+      }, thinkingTime);
+      return () => clearTimeout(timeoutId);
+    }
+    if ([3, 5, 7].includes(currentTurn)) {
+      const timeoutId = setTimeout(() => {
+        setCurrentTurn((prev) => prev + 1);
+      }, turnTime);
+      return () => clearTimeout(timeoutId);
+    }
+
+    if ([0, 1].includes(currentTurn)) {
+      const timeoutId = setTimeout(() => {
+        setCurrentTurn((prev) => prev + 1);
+      }, 10000);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [currentTurn]);
+
   return (
     <div className="w-[80%]">
       <audio ref={remoteVideoRef} autoPlay />
       <AnimatePresence mode="wait">
+        {" "}
+        {showCount && (
+          <CountDown setShowCount={setShowCount} currentIndex={currentTurn} />
+        )}
+        {currentTurn >= 8 && <ResultCard win={true} />}
         {gameProgress === GameProgress.Matching && (
           <MatchingCard
             remoteVideoRef={remoteVideoRef}
@@ -70,7 +111,7 @@ const Home = () => {
             </p>
           </div>
         ) : (
-          <SectionHeader mode="anime" gameProgress={gameProgress} />
+          <SectionHeader currentTurn={currentTurn} mode="anime" />
         )}
         <VersusAvatars img_url={account?.img_url} opp_url={opponent?.img_url} />
         <div className="flex-all-center">
