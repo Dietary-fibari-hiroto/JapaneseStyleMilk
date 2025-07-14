@@ -19,8 +19,15 @@ const conversation: string[] = [
   "Emily: However, I contend that even with education, the very design of many digital platforms—optimized for engagement and instant gratification—makes it extremely difficult for users to resist the pull of endless scrolling and notifications, which can have detrimental effects on mental health and our collective attention span.",
   "James: Certainly, there are valid concerns regarding persuasive design and its impact on users, but we should also recognize the agency individuals have in setting boundaries and using technology intentionally, as well as the potential for future regulations or ethical design practices to mitigate these negative effects.",
 ];
+type props = {
+  img_url?: string;
+  opp_url?: string;
+};
 
-const VersusAvatars = ({ img_url = "gray.jpg" }: Pick<Account, "img_url">) => {
+const VersusAvatars = ({
+  img_url = "gray.jpg",
+  opp_url = "gray.jpg",
+}: props) => {
   // テスト用アニメーション
   const [lineFeed, setLineFeed] = useState(0); // ターン管理
   const wateTime = (seconds: number) =>
@@ -45,7 +52,7 @@ const VersusAvatars = ({ img_url = "gray.jpg" }: Pick<Account, "img_url">) => {
     <section className="flex-all-center flex-col space-y-[30px]">
       <div className="w-full  flex justify-evenly">
         <UserCard img_url={img_url} />
-        <UserCard img_url="gray.jpg" />
+        <UserCard img_url={opp_url} />
       </div>
 
       {/* 文字のアニメーションは後で修正必要 */}

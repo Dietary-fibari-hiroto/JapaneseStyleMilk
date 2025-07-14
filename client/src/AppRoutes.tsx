@@ -50,29 +50,29 @@ export const authPathList = [
 ];
 export const routeList = [
   //{path:"example",element:<Example/>,name:"論理名"}
-  { path: "/home", element: <Home />, name: "ホームページ" },
+  { path: "/home", element: Home, name: "ホームページ" },
 
   /**
    * 以下、アプリケーションページ
    */
   {
-    path: "/debate/room/:roomId",
-    element: <DevatePage />,
+    path: "/debate/room",
+    element: DevatePage,
     name: "ディベートページ",
   },
   {
     path: "/dashboard/:accountId",
-    element: <DashBoardPage />,
+    element: DashBoardPage,
     name: "ダッシュボード",
   },
   {
-    path: "/dashboard/:accountId/evaluation/:historyId ",
-    element: <EvaluationPage />,
+    path: "/dashboard/evaluation/:historyId",
+    element: EvaluationPage,
     name: "評価ページ",
   },
   {
     path: "/dashboard/:accountId/history/:historyId",
-    element: <DevateHistoryPage />,
+    element: DevateHistoryPage,
     name: "ディベート履歴ページ",
   },
 ];
@@ -88,7 +88,7 @@ const AppRoutes = () => {
             <Route
               key={path}
               path={path}
-              element={<PrivateRoute>{element}</PrivateRoute>}
+              element={<PrivateRoute Component={element} />}
             />
           ))}
         </Route>

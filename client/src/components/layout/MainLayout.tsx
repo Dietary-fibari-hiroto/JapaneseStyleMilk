@@ -5,8 +5,9 @@ const MainLayout = () => {
   return (
     <div className="flex">
       <Sidebar />
-      <main className="relative flex-1 flex-all-center flex-col ">
+      <main className="relative flex-1 flex-all-center flex-col overflow-y-scroll h-screen">
           <Outlet />
+
       </main>
     </div>
   );

@@ -2,7 +2,7 @@
 import { io, Socket } from "socket.io-client";
 
 // 接続先のサーバーURL（IPアドレスとポート番号を指定）
-export const SERVER = "http://58.85.112.119:3000";
+export const SERVER = "http://10.200.4.170:4000";
 
 // サーバーにソケット接続を開始（`socket` が通信に使われる）
 export const socket: Socket = io(SERVER);

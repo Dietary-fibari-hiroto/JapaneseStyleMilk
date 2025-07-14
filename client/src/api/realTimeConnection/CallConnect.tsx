@@ -1,13 +1,20 @@
 // Reactのフックなどをインポート
 import React, { useEffect, useRef, useState } from "react";
 // WebRTCとSocket.io関連のAPIをインポート
-import { socket, WebRTCConnection } from "./webrtcApi";
+import { socket, WebRTCConnection } from "../webRtc/webrtcApi";
 // 音声録音用クラスをインポート
-import { AudioRecorder } from "./AudioRecoder";
+import { AudioRecorder } from "../AudioRecoder/AudioRecoder";
+
+import VoiceActivityMonitor,{uploadAudio} from "../whisper/VoiceActivityMonitor"
+
+
 
 // コンポーネント定義
 export default function CallConnect() {
   const room = "a"; // 固定ルーム名（この部屋で通話）
+
+  const vad = useRef<VoiceActivityMonitor | null>(null);
+
 
   // 自分の映像を表示するvideo要素の参照
   const localVideoRef = useRef<HTMLVideoElement | null>(null);
@@ -159,7 +166,39 @@ export default function CallConnect() {
   const handleCall = () => {
     socket.emit("knock", room); // サーバーに部屋の人数確認リクエスト
   };
+  
+useEffect(() => {
+  if (!webrtcRef.current?.localStream) return;
 
+  const stream = webrtcRef.current.localStream;
+  const mimeType = MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
+    ? "audio/webm;codecs=opus"
+    : MediaRecorder.isTypeSupported("audio/webm")
+    ? "audio/webm"
+    : "";
+
+  const audioStream = new MediaStream(stream.getAudioTracks());
+  recorderRef.current = new AudioRecorder(audioStream, mimeType);
+
+  vad.current = new VoiceActivityMonitor(stream, recorderRef.current);
+
+  // イベントを設定
+  vad.current.onVoiceStart = () => {
+    console.log("話し始めた");
+    if (!isRecording) startRecording();
+  };
+
+  vad.current.onVoiceStop = () => {
+    console.log("話し終わった");
+    if (isRecording) stopRecording();
+  };
+
+  vad.current.onVoiceStart(); // VADの監視を開始
+
+  return () => {
+    vad.current?.onVoiceStop?.(); // クリーンアップ
+  };
+}, ); // 通話開始可能になったタイミングで実行
   // 録音を開始
   const startRecording = () => {
     const stream = webrtcRef.current?.localStream;
@@ -197,18 +236,42 @@ export default function CallConnect() {
   };
 
   // 録音を停止して再生用のURLを取得
-  const stopRecording = async () => {
-    if (!recorderRef.current) return;
+  const isStoppingRef = useRef(false); //重複して停止を実行しないため
 
+  const stopRecording = async () => {
+    if (isStoppingRef.current) {
+      console.warn("stopRecording: すでに録音停止処理中です");
+      return;
+    }
+
+    isStoppingRef.current = true;
     try {
-      const audioBlob = await recorderRef.current.stop(); // Blobデータ取得
-      const url = URL.createObjectURL(audioBlob); // BlobからURL生成
-      setAudioURL(url);
-      setIsRecording(false);
-    } catch (e) {
-      console.error("録音停止エラー", e);
+      if (recorderRef.current?.isRecording()) {
+        const blob = await recorderRef.current.stop();
+            const formData = new FormData();
+            formData.append("audio", blob, "audio.webm");
+
+            const response = await fetch("http://localhost:4000/api/transcribe", {
+              method: "POST",
+              body: formData,
+            });
+
+            const contentType = response.headers.get("content-type");
+            if (contentType && contentType.includes("application/json")) {
+              const data = await response.json();
+              // 処理続行
+            } else {
+              const text = await response.text();
+              console.error("Unexpected response:", text);
+            }
+      }
+    } catch (err) {
+      console.error("録音停止エラー", err);
+    } finally {
+      isStoppingRef.current = false;
     }
   };
+
 
   // JSXのUI描画
   return (

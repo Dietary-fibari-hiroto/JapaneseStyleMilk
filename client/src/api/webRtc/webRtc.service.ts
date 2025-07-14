@@ -1,5 +1,5 @@
-import { WebRTCConnection } from "../realTimeConnection/webrtcApi";
-import { socket } from "../realTimeConnection/webrtcApi";
+import { WebRTCConnection } from "./webrtcApi";
+import { socket } from "./webrtcApi";
 
 //WebRTCインスタンスの初期化
 export const initWebRTC = async (
@@ -24,6 +24,7 @@ export const handleCreatedOrJoined = (
   カメラとマイクの確認が取れたときと、接続の開始フラグが立った時
     部屋の作成準備を進めるとともに接続を開始する
      */
+
   if (!rtc.isStarted && rtc.localStream) {
     rtc.createPeerConnection(setRemoteStream, () => {
       setIsConnected(true);
