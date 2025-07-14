@@ -20,6 +20,7 @@ const Home = () => {
   const { opponent, setOpponent } = useOpponent();
   const { account, setIsFetching } = useAccount();
   const [currentTurn, setCurrentTurn] = useState(0); // ターン管理
+  const [gameStart, setGameStart] = useState(false);
   const [showCount, setShowCount] = useState(false);
   const thinkingTime = 15000;
   const turnTime = 15000;
@@ -55,31 +56,31 @@ const Home = () => {
   }, [gameProgress]);
   //シンキングタイムをおわらせにきた
   useEffect(() => {
-    console.log(currentTurn);
-    console.log(showCount);
-    if ([2, 3, 4, 5, 6, 7].includes(currentTurn)) {
-      setShowCount(true);
-    }
-    if ([2, 4, 6].includes(currentTurn)) {
-      const timeoutId = setTimeout(() => {
-        setCurrentTurn((prev) => prev + 1);
-      }, thinkingTime);
-      return () => clearTimeout(timeoutId);
-    }
-    if ([3, 5, 7].includes(currentTurn)) {
-      const timeoutId = setTimeout(() => {
-        setCurrentTurn((prev) => prev + 1);
-      }, turnTime);
-      return () => clearTimeout(timeoutId);
-    }
+    if (gameStart) {
+      if ([2, 3, 4, 5, 6, 7].includes(currentTurn)) {
+        setShowCount(true);
+      }
+      if ([2, 4, 6].includes(currentTurn)) {
+        const timeoutId = setTimeout(() => {
+          setCurrentTurn((prev) => prev + 1);
+        }, thinkingTime);
+        return () => clearTimeout(timeoutId);
+      }
+      if ([3, 5, 7].includes(currentTurn)) {
+        const timeoutId = setTimeout(() => {
+          setCurrentTurn((prev) => prev + 1);
+        }, turnTime);
+        return () => clearTimeout(timeoutId);
+      }
 
-    if ([0, 1].includes(currentTurn)) {
-      const timeoutId = setTimeout(() => {
-        setCurrentTurn((prev) => prev + 1);
-      }, 10000);
-      return () => clearTimeout(timeoutId);
+      if ([0, 1].includes(currentTurn)) {
+        const timeoutId = setTimeout(() => {
+          setCurrentTurn((prev) => prev + 1);
+        }, 10000);
+        return () => clearTimeout(timeoutId);
+      }
     }
-  }, [currentTurn]);
+  }, [currentTurn, gameStart]);
 
   return (
     <div className="w-[80%]">
@@ -92,6 +93,7 @@ const Home = () => {
         {currentTurn >= 8 && <ResultCard win={true} />}
         {gameProgress === GameProgress.Matching && (
           <MatchingCard
+            setGameStart={setGameStart}
             remoteVideoRef={remoteVideoRef}
             canCall={canCall}
             isConnected={isConnected}

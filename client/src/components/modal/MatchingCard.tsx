@@ -26,6 +26,7 @@ type props = {
   isConnected: boolean;
   handleCall: () => void;
   setGameProgress: (prev: GameProgress) => void;
+  setGameStart: (prev: boolean) => void;
 };
 
 //このページ内で再利用性のあるCSSクラス
@@ -37,6 +38,7 @@ const MatcingCard = ({
   isConnected,
   handleCall,
   setGameProgress,
+  setGameStart,
 }: props) => {
   const navigate = useNavigate();
   const { opponent, setOpponent } = useOpponent();
@@ -85,6 +87,7 @@ const MatcingCard = ({
   const handleYes = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setGameProgress(GameProgress.Waite);
+    setGameStart(true);
   };
   const handleNo = () => {
     //動作確認用

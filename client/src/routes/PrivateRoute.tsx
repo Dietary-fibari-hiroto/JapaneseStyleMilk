@@ -1,6 +1,7 @@
 import { Navigate } from "react-router-dom";
 import { useAccount } from "../contexts/AccountContext";
 import { ReactNode } from "react";
+import { motion } from "framer-motion";
 
 const PrivateRoute = ({ Component }: { Component: React.FC }) => {
   const { account, isFetching } = useAccount();
