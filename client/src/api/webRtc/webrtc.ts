@@ -2,11 +2,7 @@
 import { io, Socket } from "socket.io-client";
 
 // 接続先のサーバーURL（IPアドレスとポート番号を指定）
-<<<<<<< HEAD:client/src/api/webRtc/webrtc.ts
 export const SERVER = "http://localhost:4000";
-=======
-export const SERVER = "http://10.200.4.170:4000";
->>>>>>> c951b19ddc1496b49f1a67594db28680b86119f4:client/src/api/webRtc/webrtcApi.ts
 
 // サーバーにソケット接続を開始（`socket` が通信に使われる）
 export const socket: Socket = io(SERVER);
