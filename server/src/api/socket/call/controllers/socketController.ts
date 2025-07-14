@@ -1,6 +1,7 @@
 // socket.io から Server と Socket 型をインポート
 import { IntegerDataType } from "sequelize";
 import { Server, Socket } from "socket.io";
+import { handleStartRound } from "../service/socketService";
 const roomAccounts = new Map<string, number>(); // socket.id → accountId
 // registerSocketEvents 関数をエクスポート（引数はサーバーインスタンスとクライアントソケット）
 export default function registerSocketEvents(io: Server, socket: Socket) {
@@ -92,6 +93,12 @@ export default function registerSocketEvents(io: Server, socket: Socket) {
       socket.to(candidate.room).emit("candidate", candidate);
     }
   );
+
+    // 追加部分（registerSocketEvents内）
+  socket.on("start round", (room: string) => {
+    console.log(`start round received from ${socket.id} for room ${room}`);
+    handleStartRound(io, socket, room);
+  });
 
   // クライアントが切断されたときの処理
   socket.on("disconnect", () => {

@@ -13,6 +13,38 @@ export function handleKnock(socket: Socket, room: string) {
   }
 }
 
+// ラウンドのインターバル（秒）
+const roundDuration = 3;
+
+const roundTimers = new Map<string, NodeJS.Timeout>();
+
+export function handleStartRound(io: Server, socket: Socket, room: string) {
+  let currentRound = roomRounds.get(room) || 1;
+
+  if (roundTimers.has(room)) {
+    clearTimeout(roundTimers.get(room)!);
+  }
+
+  console.log(`Room ${room} - Round ${currentRound} started by ${socket.id}`);
+
+  io.to(room).emit("round started", { round: currentRound });
+
+  const timer = setTimeout(() => {
+    io.to(room).emit("round ended", { round: currentRound });
+    console.log(`Room ${room} - Round ${currentRound} ended`);
+
+    // ラウンド終了後に更新
+    const nextRound = currentRound + 1;
+    roomRounds.set(room, nextRound);
+
+    io.to(room).emit("round updated", { round: nextRound });
+  }, roundDuration * 1000);
+
+  roundTimers.set(room, timer);
+}
+
+
+
 
 const roomRounds = new Map<string, number>(); // 例: roomId => currentRound
 export function handleCreate(socket: Socket, room: string) {
@@ -22,6 +54,7 @@ export function handleCreate(socket: Socket, room: string) {
   socket.to(room).emit('joined', room, socket.id); // 相手に送る（存在すれば）
   console.log(`Socket ${socket.id} created/joined room ${room}`);
 }
+
 
 export function handleNextRound(io: Server, socket: Socket, room: string) {
   const currentRound = roomRounds.get(room) || 1;
