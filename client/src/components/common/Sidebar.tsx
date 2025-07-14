@@ -15,7 +15,11 @@ const testItem = { name: "山田ジョン", rank: "ゴールドランク" };
 //ナビゲーションのリスト
 const navList = [
   { name: "ホーム", path: "/home", icon: ImagesRoute.home_icon },
-  { name: "ダッシュボード", path: "", icon: ImagesRoute.dash_board_icon },
+  {
+    name: "ダッシュボード",
+    path: "/dashboard/:accountId",
+    icon: ImagesRoute.dash_board_icon,
+  },
   { name: "プロフィール", path: "", icon: ImagesRoute.profile_icon },
   { name: "設定", path: "", icon: ImagesRoute.setting_icon },
 ];
