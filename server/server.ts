@@ -12,9 +12,10 @@ import path from "path";
 import http from "http";
 import { Server as SocketIOServer } from "socket.io";
 import setupSocket from "./src/api/realtimeapi/call/routes";
-import { transcribe, uploadMiddleware } from "./src/api/whisperapi//TranscriptionController";
+// import transcribeRouter from "./src/api/whisper/transcribeRouter";
 const app = express();
 const port = process.env.PORT || 4000;
+import createRoomRoutes from './src/api/realtimeapi/call/routes/index';
 
 const server = http.createServer(app);
 const io = new SocketIOServer(server, {
@@ -46,8 +47,6 @@ app.use("/api/accounts", accountRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/history", historyRoutes);
 app.use("/api/topics", topicRoutes);
-app.post("/api/transcribe", uploadMiddleware, transcribe);
-// エラーハンドリング
 app.use(
   (
     err: Error,

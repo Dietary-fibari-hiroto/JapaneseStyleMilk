@@ -14,13 +14,25 @@ export function handleKnock(socket: Socket, room: string) {
 }
 
 
-
+const roomRounds = new Map<string, number>(); // 例: roomId => currentRound
 export function handleCreate(socket: Socket, room: string) {
   socket.join(room);
+  roomRounds.set(room, 1); // ラウンド1から開始
   socket.emit('joined', room, socket.id);
   socket.to(room).emit('joined', room, socket.id); // 相手に送る（存在すれば）
   console.log(`Socket ${socket.id} created/joined room ${room}`);
 }
+
+export function handleNextRound(io: Server, socket: Socket, room: string) {
+  const currentRound = roomRounds.get(room) || 1;
+  const nextRound = currentRound + 1;
+  roomRounds.set(room, nextRound);
+
+  // 全員に通知
+  io.to(room).emit("round updated", { round: nextRound });
+}
+
+
 
 
 export function handleJoin(io: Server,socket: Socket, room: string) {
@@ -66,3 +78,5 @@ export function handleMessage(io: Server, socket: Socket, description: any) {
       console.log('[ERROR] Unknown message type:', description.type);
   }
 }
+
+
