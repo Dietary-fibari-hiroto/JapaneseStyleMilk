@@ -66,7 +66,7 @@ export const routeList = [
     name: "ダッシュボード",
   },
   {
-    path: "/dashboard/:accountId/evaluation/:historyId ",
+    path: "/dashboard/evaluation/:historyId",
     element: EvaluationPage,
     name: "評価ページ",
   },

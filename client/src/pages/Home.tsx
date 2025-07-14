@@ -46,10 +46,6 @@ const Home = () => {
     GameProgress.None
   );
 
-  const [testTheme, setTestTheme] = useState<string | null>(
-    "五条悟は両面宿儺より強いですか？"
-  );
-
   //ターンのUI部分の進行
   useEffect(() => {
     setCurrentTurn(GameProgressIndexMap[gameProgress]);
