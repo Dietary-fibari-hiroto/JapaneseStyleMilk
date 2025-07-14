@@ -71,6 +71,7 @@ const ImagesRoute: ImagesRouteType = {
   cancel_button: require("./Icons/cancel_button.svg").default,
   mic_button: require("./Icons/mic_button.svg").default,
   not_mic_button: require("./Icons/not_mic_button.svg").default,
+  logo_icon: require("./Icons/logo_icon.svg").default,
 
   cancel: require("./test/cancel.png").default,
   choiceBar: require("./test/choiceBar.png").default,

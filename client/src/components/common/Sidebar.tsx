@@ -100,10 +100,7 @@ const Sidebar = () => {
               src={ImagesRoute.close_side_bar_icon}
             />
           </button>
-          <img
-            className="h-[40px] close-hidden"
-            src={ImagesRoute.close_side_bar_icon}
-          />
+          <img className="h-[40px] close-hidden" src={ImagesRoute.logo_icon} />
         </div>
         <div className={`${isOpen ? "translate-x-[12px]" : ""} space-y-[4px] `}>
           {navList.map((nav, index) => (
