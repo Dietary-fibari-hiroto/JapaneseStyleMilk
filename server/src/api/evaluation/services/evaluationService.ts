@@ -1,10 +1,16 @@
-import { main } from '../../gemini/geminiApi';
+import { GeminiClient } from '../../gemini/geminiApi';
 import { LogicEvaluation, CompositionEvaluation, RebuttalEvaluation, EnglishEvaluation, GeneralEvaluation } from '../models/evaluation';
 import { EvaluationRequestDTO, EvaluationResponseDTO } from '../models/evaluation';
 import DebateHistory from '../../history/models/debateHistory';
 import TotalEvaluation from '../../accounts/models/totalEvaluation';
 
 export class EvaluationService {
+  private geminiClient: GeminiClient;
+
+  constructor() {
+    this.geminiClient = new GeminiClient(process.env.GEMINI_SECRET_KEY || '');
+  }
+
   // ディベート内容を評価する
   async evaluateDebate(evaluationData: EvaluationRequestDTO): Promise<EvaluationResponseDTO> {
     try {
@@ -12,7 +18,7 @@ export class EvaluationService {
       const prompt = this.createEvaluationPrompt(evaluationData);
       
       // Gemini APIから評価結果を取得
-      const aiResponse = await main(prompt);
+      const aiResponse = await this.geminiClient.ask(prompt);
       
       // AIの応答をパースして評価結果を取得
       const evaluationResult = this.parseAIResponse(aiResponse);

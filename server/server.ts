@@ -35,7 +35,8 @@ app.use(
     credentials: true, // 認証情報（cookie等）を許可
   })
 );
-app.use(express.json());
+
+app.use(express.json()); // 自動でjsonをオブジェクトにしてくれるよーー
 app.use(express.urlencoded({ extended: true }));
 app.use(logger);
 //静的ファイル公開
