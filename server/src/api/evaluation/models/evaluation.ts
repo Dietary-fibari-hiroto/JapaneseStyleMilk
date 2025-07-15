@@ -12,22 +12,30 @@ export interface EvaluationCreationAttributes extends Optional<EvaluationAttribu
 
 // 評価リクエストのDTO
 export interface EvaluationRequestDTO {
+  user_id1: number;
+  user_id2: number;
   debate_history_id: number;
   debate_topic: string;
   debate_texts: Array<{
     turn_number: number;
     sequence_in_turn: number;
+    user_id: number;
     text: string;
   }>;
 }
 
 // 評価レスポンスのDTO
 export interface EvaluationResponseDTO {
-  logic: { score: number; feedback: string };
-  composition: { score: number; feedback: string };
-  rebuttal: { score: number; feedback: string };
-  english: { score: number; feedback: string };
-  general: { score: number; feedback: string };
+  users: {
+    [userId: number]: {
+      logic: { score: number; feedback: string };
+      composition: { score: number; feedback: string };
+      rebuttal: { score: number; feedback: string };
+      english: { score: number; feedback: string };
+      general: { score: number; feedback: string };
+    };
+  };
+  winner: number | null;
 }
 
 // 既存の評価テーブルに対応するモデル
