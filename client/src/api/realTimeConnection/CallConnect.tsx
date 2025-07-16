@@ -20,6 +20,7 @@ export default function CallConnect() {
   const [currentRound, setCurrentRound] = useState(1);
   const [roundStatus, setRoundStatus] = useState<"waiting" | "started" | "ended">("waiting");
   const [isConnected, setIsConnected] = useState(false);
+  const [self, setSelf] = useState<OpponentAccount | null>(null);
   const [opponent, setOpponent] = useState<OpponentAccount | null>(null);
   const [isRecording, setIsRecording] = useState(false);
   const [audioURL, setAudioURL] = useState<string | null>(null);
@@ -89,6 +90,19 @@ export default function CallConnect() {
       isStoppingRef.current = false;
     }
   }, [socketId]);
+
+
+  useEffect(() => {
+    const selfData = localStorage.getItem("langbate_account");
+    if (selfData) {
+      try {
+        const parsed: OpponentAccount = JSON.parse(selfData);
+        setSelf(parsed);
+      } catch (e) {
+        console.error("自分のアカウント情報の読み込みに失敗", e);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     webrtcRef.current = new WebRTCConnection(room);
@@ -233,7 +247,12 @@ export default function CallConnect() {
             </button>
 
             {audioURL && <audio controls src={audioURL} style={{ marginTop: 10 }} />}
-            {opponent && <div style={{ marginTop: 10 }}>相手: {opponent.name}</div>}
+            {opponent && <div style={{ marginTop: 10 }}>相手: {opponent.id}</div>}
+            {self && (
+              <div style={{ marginTop: 10 }}>
+                👤 あなた: {self.id}
+              </div>
+            )}
           </div>
         </div>
 

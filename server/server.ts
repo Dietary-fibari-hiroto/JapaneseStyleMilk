@@ -33,7 +33,7 @@ setupSocket(io);
 // グローバルミドルウェアの設定
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: ["http://localhost:3000"],
     credentials: true, // 認証情報（cookie等）を許可
   })
 );
