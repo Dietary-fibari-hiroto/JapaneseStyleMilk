@@ -14,6 +14,7 @@ type TurnPhase =
   | "cooldown-2"
   | "done";
   
+
 export default function CallConnect() {
   const room = "a";
 
@@ -26,6 +27,8 @@ export default function CallConnect() {
   const [audioURL, setAudioURL] = useState<string | null>(null);
   const [socketId, setSocketId] = useState<string | null>(null);
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
+  const [isMyTurn, setIsMyTurn] = useState(false);
+  const [isHost, setIsHost] = useState<boolean>(false);
 
   const webrtcRef = useRef<WebRTCConnection | null>(null);
   const recorderRef = useRef<AudioRecorderService | null>(null);
@@ -104,6 +107,37 @@ export default function CallConnect() {
     }
   }, []);
 
+  
+useEffect(() => {
+  socket.on("turn phase", ({ round, phase }: { round: number; phase: TurnPhase }) => {
+    setCurrentRound(round);
+    setTurnPhase(phase);
+
+    // ホストは first-turn のターン、非ホストは second-turn のターン
+    const isMyTurn =
+      (phase === "first-turn" && isHost) ||
+      (phase === "second-turn" && !isHost);
+
+    setIsMyTurn(isMyTurn);
+
+    if (isMyTurn) {
+      startRecording();
+    } else {
+      stopRecording();
+    }
+
+    console.log(`🎮 Phase: ${phase} / MyTurn: ${isMyTurn}`);
+  });
+
+  return () => {
+    socket.off("turn phase");
+  };
+}, [isHost]);
+
+
+
+
+  
   useEffect(() => {
     webrtcRef.current = new WebRTCConnection(room);
     webrtcRef.current.initLocalStream().then((stream) => {
@@ -150,32 +184,14 @@ export default function CallConnect() {
         const [turnPhase, setTurnPhase] = useState<TurnPhase>("none");
 
   useEffect(() => {
-    socket.on("round updated", ({ round }) => {
-      setCurrentRound(round);
-      setRoundStatus("waiting");
-    });
 
-    socket.on("round started", ({ round }) => {
-      setCurrentRound(round);
-      currentRoundRef.current = round;
-      recordingRoundRef.current = round;
-      setRoundStatus("started");
-    });
-
-    socket.on("round ended", ({ round }) => {
-      setRoundStatus("ended");
-      console.log(`Round ${round} ended`);
-    });
       socket.on("turn phase", ({ round, phase }: { round: number; phase: TurnPhase }) => {
       setCurrentRound(round);
       setTurnPhase(phase);
       console.log(`🎮 Phase update: Round ${round}, Phase ${phase}`);
     });
     return () => {
-      socket.off("round updated");
-      socket.off("round started");
-      socket.off("round ended");
-            socket.off("turn phase");
+      socket.off("turn phase");
     };
   }, [] );
 
