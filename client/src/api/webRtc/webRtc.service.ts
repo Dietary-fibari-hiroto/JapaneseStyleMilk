@@ -1,7 +1,7 @@
 import { WebRTCConnection } from "./webrtc";
 import { socket } from "./webrtc";
 
-//WebRTCインスタンスの初期化
+// WebRTCインスタンスの初期化
 export const initWebRTC = async (
   room: string,
   localVideoRef: React.RefObject<HTMLVideoElement | null>,
@@ -14,27 +14,21 @@ export const initWebRTC = async (
   return rtc;
 };
 
-//部屋作成、または参加イベント
+// 部屋作成、または参加時に呼び出される（接続準備）
 export const handleCreatedOrJoined = (
   rtc: WebRTCConnection,
   setRemoteStream: (s: MediaStream) => void,
   setIsConnected: (value: boolean) => void
 ) => {
-  /*
-  カメラとマイクの確認が取れたときと、接続の開始フラグが立った時
-    部屋の作成準備を進めるとともに接続を開始する
-     */
-
   if (!rtc.isStarted && rtc.localStream) {
     rtc.createPeerConnection(setRemoteStream, () => {
       setIsConnected(true);
     });
-
     rtc.startConnection();
   }
 };
 
-//相手からの「通話しよう」リクエストを受けたときの処理
+// 相手からの"通話しよう"リクエスト（offer）を受けたときの処理
 export const handleOffer = async (
   rtc: WebRTCConnection,
   desc: RTCSessionDescriptionInit,
@@ -44,7 +38,7 @@ export const handleOffer = async (
 ) => {
   if (!rtc.peerConnection && rtc.localStream) {
     rtc.createPeerConnection(setRemoteStream, () => {
-      setIsConnected(true); // offer を受け取って接続準備する場合にも必要
+      setIsConnected(true);
     });
   }
   if (!rtc.peerConnection) return;
@@ -62,7 +56,7 @@ export const handleOffer = async (
   });
 };
 
-//相手が通話リクエストを了承してくれたとき
+// 相手が通話リクエストを了承（answer）したときの処理
 export const handleAnswer = async (
   rtc: WebRTCConnection,
   desc: RTCSessionDescriptionInit
@@ -75,15 +69,15 @@ export const handleAnswer = async (
   }
 };
 
-//実際にどうやって通信するか（経路）を決める
+// ICE Candidate（経路情報）の受信時に処理
 export const handleCandidate = async (
   rtc: WebRTCConnection,
   candidate: RTCIceCandidateInit
 ) => {
   if (!rtc.peerConnection) return;
   try {
-    await rtc.peerConnection?.addIceCandidate(new RTCIceCandidate(candidate));
+    await rtc.peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
   } catch (error) {
-    console.log("経路決定エラー:", error, candidate);
+    console.error("ICE Candidate処理エラー:", error, candidate);
   }
 };
