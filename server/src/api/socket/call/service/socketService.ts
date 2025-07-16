@@ -13,34 +13,69 @@ export function handleKnock(socket: Socket, room: string) {
   }
 }
 
+type TurnPhase =
+  | "none"
+  | "first-turn"
+  | "cooldown-1"
+  | "second-turn"
+  | "cooldown-2"
+  | "done";
+
+
 // ラウンドのインターバル（秒）
 const roundDuration = 3;
 
 const roundTimers = new Map<string, NodeJS.Timeout>();
 
+type RoomState = {
+  round: number;
+  phase: TurnPhase;
+};
+const firstTurn = 5 //先攻の時間 (秒)
+const secondTurn = 5 //後攻の時間 (秒)
+const cooldown = 3 //クールタイムの時間 (秒)
+
+
+const roomStates = new Map<string, RoomState>();
+
 export function handleStartRound(io: Server, socket: Socket, room: string) {
-  let currentRound = roomRounds.get(room) || 1;
+  const currentRound = roomStates.get(room)?.round ?? 1;
 
-  if (roundTimers.has(room)) {
-    clearTimeout(roundTimers.get(room)!);
-  }
+  // 状態初期化
+  roomStates.set(room, { round: currentRound, phase: "first-turn" });
+  io.to(room).emit("turn phase", { round: currentRound, phase: "first-turn" });
 
-  console.log(`Room ${room} - Round ${currentRound} started by ${socket.id}`);
+  console.log(`Room ${room} - Round ${currentRound} started (first-turn)`);
 
-  io.to(room).emit("round started", { round: currentRound });
+  // クールタイムとターン遷移を順にセット
+  setTimeout(() => {
+    roomStates.set(room, { round: currentRound, phase: "cooldown-1" });
+    io.to(room).emit("turn phase", { round: currentRound, phase: "cooldown-1" });
+    console.log(`Room ${room} - cooldown-1`);
 
-  const timer = setTimeout(() => {
-    io.to(room).emit("round ended", { round: currentRound });
-    console.log(`Room ${room} - Round ${currentRound} ended`);
+    setTimeout(() => {
+      roomStates.set(room, { round: currentRound, phase: "second-turn" });
+      io.to(room).emit("turn phase", { round: currentRound, phase: "second-turn" });
+      console.log(`Room ${room} - second-turn`);
 
-    // ラウンド終了後に更新
-    const nextRound = currentRound + 1;
-    roomRounds.set(room, nextRound);
+      setTimeout(() => {
+        roomStates.set(room, { round: currentRound, phase: "cooldown-2" });
+        io.to(room).emit("turn phase", { round: currentRound, phase: "cooldown-2" });
+        console.log(`Room ${room} - cooldown-2`);
 
-    io.to(room).emit("round updated", { round: nextRound });
-  }, roundDuration * 1000);
+        setTimeout(() => {
+          const nextRound = currentRound + 1;
+          roomStates.set(room, { round: nextRound, phase: "first-turn" });
+          io.to(room).emit("round updated", { round: nextRound });
+          io.to(room).emit("turn phase", { round: nextRound, phase: "first-turn" });
+          console.log(`Room ${room} - Round ${nextRound} started`);
+        }, cooldown * 1000);
 
-  roundTimers.set(room, timer);
+      }, secondTurn * 1000);
+
+    }, cooldown * 1000);
+
+  }, firstTurn * 1000); 
 }
 
 

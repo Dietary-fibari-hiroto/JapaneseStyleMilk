@@ -1,14 +1,19 @@
-// CallConnect.tsx
-
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { WebRTCConnection } from "../webRtc/webrtc";
 import { registerWebRTCHandlers, unregisterWebRTCHandlers } from "../webRtc/webRtc.controller";
 import { AudioRecorderService } from "../AudioRecoder/AudioRecoderService";
-import { VoiceActivityMonitorService } from "../VoiceActivityMonitor/VoiceActivityMonitor";
 import { TranscriptionController } from "../TranscriptionService/TranscriptionController";
 import { OpponentAccount } from "../../types";
 import { socket } from "../webRtc/webrtc";
 
+type TurnPhase =
+  | "none"
+  | "first-turn"
+  | "cooldown-1"
+  | "second-turn"
+  | "cooldown-2"
+  | "done";
+  
 export default function CallConnect() {
   const room = "a";
 
@@ -23,7 +28,6 @@ export default function CallConnect() {
 
   const webrtcRef = useRef<WebRTCConnection | null>(null);
   const recorderRef = useRef<AudioRecorderService | null>(null);
-  const vad = useRef<VoiceActivityMonitorService | null>(null);
   const isStoppingRef = useRef(false);
 
   const localVideoRef = useRef<HTMLVideoElement | null>(null);
@@ -90,17 +94,6 @@ export default function CallConnect() {
     webrtcRef.current = new WebRTCConnection(room);
     webrtcRef.current.initLocalStream().then((stream) => {
       if (localVideoRef.current) localVideoRef.current.srcObject = stream;
-
-      vad.current = new VoiceActivityMonitorService(stream);
-      vad.current.setOnVoiceStart(() => {
-        if (roundStatus === "started" && !isRecording) {
-          recordingRoundRef.current = currentRoundRef.current;
-          startRecording();
-        }
-      });
-      vad.current.setOnVoiceStop(() => {
-        if (roundStatus === "started" && isRecording) stopRecording();
-      });
     });
 
     registerWebRTCHandlers(
@@ -117,31 +110,10 @@ export default function CallConnect() {
 
     return () => {
       unregisterWebRTCHandlers();
-      vad.current?.stop();
       socket.off("connect");
       webrtcRef.current?.localStream?.getTracks().forEach((t) => t.stop());
     };
   }, []);
-
-  useEffect(() => {
-    if (!vad.current) return;
-
-    if (roundStatus === "started") {
-      vad.current.setOnVoiceStart(() => {
-        if (!isRecording) {
-          recordingRoundRef.current = currentRoundRef.current;
-          startRecording();
-        }
-      });
-      vad.current.setOnVoiceStop(() => {
-        if (isRecording) stopRecording();
-      });
-    } else {
-      vad.current.setOnVoiceStart(() => {});
-      vad.current.setOnVoiceStop(() => {});
-      if (isRecording) stopRecording();
-    }
-  }, [roundStatus, isRecording, startRecording, stopRecording]);
 
   useEffect(() => {
     if (remoteVideoRef.current && remoteStream) {
@@ -161,6 +133,7 @@ export default function CallConnect() {
       setOpponent
     );
   };
+        const [turnPhase, setTurnPhase] = useState<TurnPhase>("none");
 
   useEffect(() => {
     socket.on("round updated", ({ round }) => {
@@ -179,19 +152,32 @@ export default function CallConnect() {
       setRoundStatus("ended");
       console.log(`Round ${round} ended`);
     });
-
+      socket.on("turn phase", ({ round, phase }: { round: number; phase: TurnPhase }) => {
+      setCurrentRound(round);
+      setTurnPhase(phase);
+      console.log(`🎮 Phase update: Round ${round}, Phase ${phase}`);
+    });
     return () => {
       socket.off("round updated");
       socket.off("round started");
       socket.off("round ended");
+            socket.off("turn phase");
     };
-  }, []);
+  }, [] );
+
+
+
+
 
   return (
     <div style={{ padding: 20 }}>
       <div style={{ display: "flex", gap: 20, flexWrap: "wrap", justifyContent: "center" }}>
+          <div>
+      <p>🌀 現在のラウンド: {currentRound}</p>
+      <p>🎙️ フェーズ: {turnPhase}</p>
+    </div>
         <button
-          onClick={() => socket.emit("start round", room)}
+          onClick={() => socket.emit("start round", room)}  //ラウンドを開始する処理
           disabled={!isConnected}
           style={{
             padding: "10px 20px",
