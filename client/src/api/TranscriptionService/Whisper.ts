@@ -1,13 +1,15 @@
 export const uploadAudio = async (
   blob: Blob,
   speakerId: string,
-  round: number
+  currentRound: number,
+  sequenceInTurn: number
 ): Promise<{ speaker: string; text: string }> => {
   const formData = new FormData();
-
   formData.append("audio", blob, "audio.webm");
   formData.append("speaker", speakerId);
-  formData.append("round", round.toString()); 
+  formData.append("sequence_in_turn", String(sequenceInTurn));
+  formData.append("round", currentRound.toString());
+
   const response = await fetch("http://192.168.40.200:5000/transcribe", {
     method: "POST",
     body: formData,
@@ -20,6 +22,8 @@ export const uploadAudio = async (
   }
 
   const result = await response.json();
-  console.log(result);
-  return result;
+  return {
+    speaker: result.speaker,
+    text: result.text,
+  };
 };

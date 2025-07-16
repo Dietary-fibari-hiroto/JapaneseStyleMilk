@@ -21,6 +21,8 @@ export default function CallConnect() {
   const [currentRound, setCurrentRound] = useState(1);
   const [roundStatus, setRoundStatus] = useState<"waiting" | "started" | "ended">("waiting");
   const [isConnected, setIsConnected] = useState(false);
+  const [isTalkAllowed, setIsTalkAllowed] = useState(false);
+
   const [self, setSelf] = useState<OpponentAccount | null>(null);
   const [opponent, setOpponent] = useState<OpponentAccount | null>(null);
   const [isRecording, setIsRecording] = useState(false);
@@ -41,15 +43,15 @@ export default function CallConnect() {
   const currentRoundRef = useRef(currentRound);
 
   const transcriptionController = useRef(new TranscriptionController()).current;
-
+  const userIdStr = self?.id !== undefined ? String(self.id) : "unknown";
   useEffect(() => {
     currentRoundRef.current = currentRound;
   }, [currentRound]);
+  const [turnPhase, setTurnPhase] = useState<TurnPhase>("none");
 
   const startRecording = useCallback(() => {
     const stream = webrtcRef.current?.localStream;
     if (!stream || stream.getAudioTracks().length === 0) return;
-
     const audioStream = new MediaStream(stream.getAudioTracks());
     const mimeType = MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
       ? "audio/webm;codecs=opus"
@@ -68,31 +70,41 @@ export default function CallConnect() {
     }
   }, []);
 
-  const stopRecording = useCallback(async () => {
-    if (isStoppingRef.current) return;
-    isStoppingRef.current = true;
+const stopRecording = useCallback(async () => {
+  if (isStoppingRef.current) return;
+  isStoppingRef.current = true;
 
-    try {
-      if (recorderRef.current?.isRecording()) {
-        const blob = await recorderRef.current.stop();
-        setIsRecording(false);
+  try {
+    if (recorderRef.current?.isRecording()) {
+      const blob = await recorderRef.current.stop();
+      setIsRecording(false);
 
-        if (blob.size === 0) return;
+      if (blob.size === 0) return;
 
-        setAudioURL(URL.createObjectURL(blob));
-        const result = await transcriptionController.transcribe(
-          blob,
-          socketId ?? "unknown",
-          recordingRoundRef.current
-        );
-        console.log("文字起こし結果:", result);
-      }
-    } catch (e) {
-      console.error("録音停止エラー", e);
-    } finally {
-      isStoppingRef.current = false;
+      setAudioURL(URL.createObjectURL(blob));
+
+      const sequenceInTurn =
+        turnPhase === "first-turn" ? 1 :
+        turnPhase === "second-turn" ? 2 : 0;
+
+      const userIdStr = self?.id !== undefined ? String(self.id) : "unknown";
+      console.log(userIdStr);
+      // 🔥 文字起こし & 評価をまとめて行う
+      const result = await transcriptionController.transcribeAndEvaluate(
+        blob,
+        userIdStr,
+        recordingRoundRef.current,
+        sequenceInTurn
+      );
+
+      console.log("📄 文字起こし & 評価結果:", result);
     }
-  }, [socketId]);
+  } catch (e) {
+    console.error("録音停止エラー", e);
+  } finally {
+    isStoppingRef.current = false;
+  }
+}, [socketId, turnPhase, self]);
 
 
   useEffect(() => {
@@ -107,7 +119,25 @@ export default function CallConnect() {
     }
   }, []);
 
-  
+useEffect(() => {
+  socket.on("joined", (data) => {
+
+  const { room, socketId, isHost } = data;
+    console.log("joined data 受信:", data);
+    setIsHost(isHost);
+    console.log("room", room);
+    console.log("socket", socketId);
+    console.log("自分はホストか？", isHost);
+  });
+
+
+  return () => {
+    socket.off("joined");
+  };
+}, []);
+
+
+
 useEffect(() => {
   socket.on("turn phase", ({ round, phase }: { round: number; phase: TurnPhase }) => {
     setCurrentRound(round);
@@ -135,32 +165,10 @@ useEffect(() => {
 }, [isHost]);
 
 
-
-
-  
   useEffect(() => {
-    webrtcRef.current = new WebRTCConnection(room);
-    webrtcRef.current.initLocalStream().then((stream) => {
-      if (localVideoRef.current) localVideoRef.current.srcObject = stream;
-    });
-
-    registerWebRTCHandlers(
-      webrtcRef.current,
-      room,
-      setRemoteStream,
-      setIsConnected,
-      setOpponent
-    );
-
     socket.on("connect", () => {
       setSocketId(socket.id ?? null);
     });
-
-    return () => {
-      unregisterWebRTCHandlers();
-      socket.off("connect");
-      webrtcRef.current?.localStream?.getTracks().forEach((t) => t.stop());
-    };
   }, []);
 
   useEffect(() => {
@@ -169,34 +177,52 @@ useEffect(() => {
     }
   }, [remoteStream]);
 
-  const handleCall = () => {
-    socket.emit("knock", room);
-    webrtcRef.current = new WebRTCConnection(room);
+const handleCall = async () => {
+  socket.emit("knock", room);
 
-    registerWebRTCHandlers(
-      webrtcRef.current,
-      room,
-      setRemoteStream,
-      setIsConnected,
-      setOpponent
-    );
-  };
-        const [turnPhase, setTurnPhase] = useState<TurnPhase>("none");
+  webrtcRef.current = new WebRTCConnection(room);
+  await webrtcRef.current.initLocalStream();
+
+  const stream = webrtcRef.current.localStream;
+  if (stream && localVideoRef.current) {
+    localVideoRef.current.srcObject = stream;
+
+    // 通話が始まるまではマイクを無効化
+    stream.getAudioTracks().forEach((track) => {
+      track.enabled = false;
+    });
+  }
+
+  // ハンドラー登録
+  registerWebRTCHandlers(
+    webrtcRef.current,
+    room,
+    setRemoteStream,
+    setIsConnected,
+    setOpponent
+  );
+};
+
+
+  useEffect(()=>{
+    const stream = webrtcRef.current?.localStream;
+    if(!stream)return;
+
+    stream.getAudioTracks().forEach((track) => {
+        track.enabled = isMyTurn; // ← 自分のターン中だけマイクON
+    });
+  },[isMyTurn])
+
 
   useEffect(() => {
-
       socket.on("turn phase", ({ round, phase }: { round: number; phase: TurnPhase }) => {
       setCurrentRound(round);
       setTurnPhase(phase);
-      console.log(`🎮 Phase update: Round ${round}, Phase ${phase}`);
     });
     return () => {
       socket.off("turn phase");
     };
   }, [] );
-
-
-
 
 
   return (
@@ -208,14 +234,13 @@ useEffect(() => {
     </div>
         <button
           onClick={() => socket.emit("start round", room)}  //ラウンドを開始する処理
-          disabled={!isConnected}
+
           style={{
             padding: "10px 20px",
             backgroundColor: "#f57c00",
             color: "white",
             border: "none",
             borderRadius: 4,
-            cursor: isConnected ? "pointer" : "not-allowed",
             marginBottom: 12,
             marginLeft: 12,
           }}

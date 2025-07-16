@@ -11,9 +11,7 @@ import uploadRouter from "./src/api/accounts/routes/uploadRoutes";
 import path from "path";
 import http from "http";
 import { Server as SocketIOServer } from "socket.io";
-import roundRoutes from "./src/api/round/routes/roundRoutes";
 import setupSocket from "./src/api/socket/call/routes/socketRoutes";
-import createRoomRoutes from './src/api/socket/call/routes/socketRoutes';
 
 // import transcribeRouter from "./src/api/whisper/transcribeRouter";
 const app = express();
@@ -26,9 +24,6 @@ const io = new SocketIOServer(server, {
     methods: ["GET", "POST"],
   },
 });
-
-
-setupSocket(io);
 
 // グローバルミドルウェアの設定
 app.use(
@@ -63,10 +58,7 @@ app.use(
   }
 );
 
-// HTTP test endpoint
-app.get("/socket", (req, res) => {
-  res.send("WebRTC + Socket.IO server is running");
-});
+setupSocket(io);
 
 // サーバー起動
 server.listen(port, () => {

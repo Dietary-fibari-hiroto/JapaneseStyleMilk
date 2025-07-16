@@ -1,13 +1,13 @@
-import { LocalWhisperClient } from "./OpenAIWhisperClient";
+// import { LocalWhisperClient } from "./OpenAIWhisperClient";
 
-export class TranscribeAudioUseCase {
-  private whisperClient: LocalWhisperClient;
+// export class TranscribeAudioUseCase {
+//   private whisperClient: LocalWhisperClient;
 
-  constructor() {
-    this.whisperClient = new LocalWhisperClient();
-  }
+//   constructor() {
+//     this.whisperClient = new LocalWhisperClient();
+//   }
 
-  async execute(filePath: string): Promise<string> {
-    return this.whisperClient.transcribe(filePath);
-  }
-}
+//   async execute(filePath: string): Promise<string> {
+//     return this.whisperClient.transcribe(filePath);
+//   }
+// }
