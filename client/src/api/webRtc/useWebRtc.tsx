@@ -82,17 +82,18 @@ export const useWebRTC = (
     }
   };
 
-  const stopRecording = async (): Promise<Blob | null> => {
-    if (!recorderRef.current) return null;
+  const stopRecording = async () => {
+    if (!recorderRef.current) return;
     try {
       const audioBlob = await recorderRef.current.stop();
+      const url = URL.createObjectURL(audioBlob);
+      setAudioURL(url);
       setIsRecording(false);
-      return audioBlob;
     } catch (e) {
       console.error("録音停止エラー", e);
-      return null;
     }
   };
+
   return {
     localVideoRef,
     remoteVideoRef,
