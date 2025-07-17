@@ -51,6 +51,16 @@ export const useWebRTC = (
       remoteVideoRef.current.srcObject = remoteStream;
     }
   }, [remoteStream]);
+useEffect(() => {
+  if (remoteStream) {
+    console.log("🔊 remoteStream tracks:");
+    remoteStream.getTracks().forEach((track) => {
+      console.log(`kind: ${track.kind}, id: ${track.id}, readyState: ${track.readyState}`);
+    });
+  } else {
+    console.log("remoteStream is null or undefined");
+  }
+}, [remoteStream]);
 
   //Callボタンの呼び出し
   const handleCall = () => {

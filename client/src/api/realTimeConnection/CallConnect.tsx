@@ -54,6 +54,7 @@ export default function CallConnect() {
     socket.on("connect", () => setSocketId(socket.id ?? null));
     return () => {
       socket.off("connect");
+      handleCall();  // ここで自動的に通話開始
     };
   }, []);
 

@@ -63,11 +63,12 @@ export class WebRTCConnection {
     });
 
     // 相手からのメディアストリームを受け取ったときの処理
-    this.peerConnection.ontrack = (event) => {
-      const [remoteStream] = event.streams;
-      // 受信したストリームをコールバックで処理
-      onTrack(remoteStream);
-    };
+this.peerConnection.ontrack = (event) => {
+  const [remoteStream] = event.streams;
+  console.log("Received remote stream:", remoteStream);
+  console.log("Tracks:", remoteStream.getTracks());
+  onTrack(remoteStream);
+};
 
     // ICE候補が見つかったとき、サーバーを通じて相手に送信
     this.peerConnection.onicecandidate = (event) => {
@@ -80,12 +81,14 @@ export class WebRTCConnection {
     };
 
     this.peerConnection.onconnectionstatechange = () => {
-      if (this.peerConnection?.connectionState === "connected") {
-        console.log("通話可能になった!");
-        onConnected?.();
-        console.log("onCOnnect通過");
-      }
-    };
+  console.log("connectionState changed:", this.peerConnection?.connectionState);
+  if (this.peerConnection?.connectionState === "connected") {
+    console.log("通話可能になった!");
+    onConnected?.();
+    console.log("onCOnnect通過");
+  }
+};
+
 
     // 接続状態を開始済みに設定
     this.isStarted = true;
