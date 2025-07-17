@@ -51,6 +51,16 @@ export const useWebRTC = (
       remoteVideoRef.current.srcObject = remoteStream;
     }
   }, [remoteStream]);
+useEffect(() => {
+  if (remoteStream) {
+    console.log("🔊 remoteStream tracks:");
+    remoteStream.getTracks().forEach((track) => {
+      console.log(`kind: ${track.kind}, id: ${track.id}, readyState: ${track.readyState}`);
+    });
+  } else {
+    console.log("remoteStream is null or undefined");
+  }
+}, [remoteStream]);
 
   //Callボタンの呼び出し
   const handleCall = () => {
@@ -82,17 +92,18 @@ export const useWebRTC = (
     }
   };
 
-  const stopRecording = async (): Promise<Blob | null> => {
-    if (!recorderRef.current) return null;
+  const stopRecording = async () => {
+    if (!recorderRef.current) return;
     try {
       const audioBlob = await recorderRef.current.stop();
+      const url = URL.createObjectURL(audioBlob);
+      setAudioURL(url);
       setIsRecording(false);
-      return audioBlob;
     } catch (e) {
       console.error("録音停止エラー", e);
-      return null;
     }
   };
+
   return {
     localVideoRef,
     remoteVideoRef,
