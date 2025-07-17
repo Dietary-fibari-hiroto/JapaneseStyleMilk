@@ -47,7 +47,6 @@ app.use("/api/accounts", accountRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/history", historyRoutes);
 app.use("/api/topics", topicRoutes);
-
 app.use("/api/evaluation", evaluationRoutes);
 app.post("/api/transcribe", uploadMiddleware, transcribe);
 
