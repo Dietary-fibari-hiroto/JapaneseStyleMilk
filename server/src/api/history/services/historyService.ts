@@ -2,6 +2,7 @@ import DebateHistory from '../models/debateHistory';
 import DebateRoom from '../models/debateRoom';
 import DebateTopic from '../models/debateTopic';
 import DebateText from '../models/debateText';
+import TotalEvaluation from '../../accounts/models/totalEvaluation';
 import { LogicEvaluation, CompositionEvaluation, RebuttalEvaluation, EnglishEvaluation, GeneralEvaluation } from '../models/evaluation';
 
 export interface CreateDebateHistoryDTO {
@@ -300,4 +301,15 @@ export class HistoryService {
       },
     };
   }
+  async getWinLossStats(accountId: number) {
+    // accountIdを元にwins,losesを返す
+    const total_es = await TotalEvaluation.findOne({
+      where: { account_id: accountId }
+    });
+    return total_es ? {
+      wins: total_es.wins,
+      loses: total_es.loses,
+    } : null;
+  }
+
 } 
