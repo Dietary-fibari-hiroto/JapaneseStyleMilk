@@ -94,6 +94,8 @@ export function handleStartRound(io: Server, socket: Socket, room: string) {
           // 最大ラウンドならクールダウン2の処理をスキップして即終了
           io.to(room).emit("session ended", { message: "最大ラウンドに到達しました" });
           console.log(`Room ${room} - max round ${maxRounds} reached`);
+          // ルーム状態のリセット
+          roomStates.set(room, { round: 1, phase: "none" });
         }
       }, roundConfig.secondTurn * 1000);
 

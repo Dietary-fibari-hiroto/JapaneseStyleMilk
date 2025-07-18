@@ -33,7 +33,8 @@ export const useWebRTC = (room: string) => {
   const [turnPhase, setTurnPhase] = useState<TurnPhase>("none");
   const [currentRound, setCurrentRound] = useState(1);
   const [isMyTurn, setIsMyTurn] = useState(false);
-const recordingRoundRef = useRef<number>(1);  // 例: useRefでnumber型のrefを作成
+  const recordingRoundRef = useRef<number>(1);  // 例: useRefでnumber型のrefを作成
+  const [isMicMuted, setIsMicMuted] = useState(false);
 
   // 初期アカウントの読み込み
   useEffect(() => {
@@ -75,6 +76,10 @@ const recordingRoundRef = useRef<number>(1);  // 例: useRefでnumber型のref�
       remoteVideoRef.current.srcObject = remoteStream;
     }
   }, [remoteStream]);
+  const currentRoundRef = useRef(currentRound);
+  useEffect(() => {
+    currentRoundRef.current = currentRound;
+  }, [currentRound]);
 
   // ソケットイベント登録
   useEffect(() => {
@@ -115,6 +120,17 @@ const recordingRoundRef = useRef<number>(1);  // 例: useRefでnumber型のref�
 
   const handleCall = () => socket.emit("knock", room);
   const startRound = () => socket.emit("start round", room);
+  
+  const toggleMicMute = useCallback(() => {
+    const stream = webrtcRef.current?.localStream;
+    if (!stream) return;
+
+    stream.getAudioTracks().forEach((track) => {
+      track.enabled = !track.enabled;
+    });
+
+    setIsMicMuted((prev) => !prev);
+  }, []);
 
   const startRecording = useCallback(() => {
     console.log("startRecording() called");
@@ -138,7 +154,7 @@ const recordingRoundRef = useRef<number>(1);  // 例: useRefでnumber型のref�
     } catch (e) {
       console.error("録音開始エラー", e);
     }
-  }, []);
+  }, [self]);
 
   const stopRecording = useCallback(async () => {
         console.log("🛑 stopRecording() called");
@@ -149,13 +165,18 @@ const recordingRoundRef = useRef<number>(1);  // 例: useRefでnumber型のref�
       if (recorderRef.current?.isRecording()) {
         const blob = await recorderRef.current.stop();
         setIsRecording(false);
-        if (!self) return;
+                console.log("HELLO!");
+
+        if (!self){
+          console.log("selfがぬる!");
+          return;
+        }
         if (blob.size === 0) return;
 
         setAudioURL(URL.createObjectURL(blob));
         const result = await transcriptionController.transcribe(
             recordingRoundRef.current,  // sequence_in_turn
-            currentRound,               // turn_number
+            currentRoundRef.current,               // turn_number
             self.id  ?? "unknown",      // user_id
             blob                       // Blob
         );
@@ -166,7 +187,7 @@ const recordingRoundRef = useRef<number>(1);  // 例: useRefでnumber型のref�
     } finally {
       isStoppingRef.current = false;
     }
-  }, [socketId]);
+  }, [socketId,self]);
 
   return {
     localVideoRef,
@@ -182,5 +203,6 @@ const recordingRoundRef = useRef<number>(1);  // 例: useRefでnumber型のref�
     startRound,
     self,
     opponent,
+    toggleMicMute,
   };
 };
