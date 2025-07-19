@@ -19,6 +19,7 @@ export default function CallConnect() {
     startRound,
     self,
     opponent,
+    handleSubmitDebate,
   } = useWebRTC(room);
 
   return (
@@ -43,7 +44,20 @@ export default function CallConnect() {
         >
           START ROUND
         </button>
-
+        <button
+          onClick={handleSubmitDebate}
+          style={{
+            padding: "10px 20px",
+            backgroundColor: "#f57c00",
+            color: "white",
+            border: "none",
+            borderRadius: 4,
+            marginBottom: 12,
+            marginLeft: 12,
+          }}
+        >
+          ディベート送信
+        </button>
         <div style={{ width: 400, border: "1px solid #ccc", borderRadius: 8 }}>
           <video
             ref={localVideoRef}

@@ -45,7 +45,7 @@ export function handleJoin(socket: Socket, room: string) {
   }
 }
 
-const maxRounds = 3;
+const maxRounds = 2;
 const roundConfig = {
   firstTurn:  2,
   cooldown1:  2,

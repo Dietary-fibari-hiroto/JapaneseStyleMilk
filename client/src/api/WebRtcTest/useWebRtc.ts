@@ -8,6 +8,8 @@ import { WebRTCConnection, socket } from "./webrtc";
 import { AudioRecorderService } from "../AudioRecoder/AudioRecoderService";
 import { TranscriptionController } from "../TranscriptionService/TranscriptionController";
 import { OpponentAccount } from "../../types";
+import { postDebateData } from "../postDebateData/postDebateData";
+import { DebateText } from "../postDebateData/postDebateData"; 
 
 type TurnPhase = "none" | "first-turn" | "cooldown-1" | "second-turn" | "cooldown-2" | "done";
 
@@ -18,6 +20,7 @@ export const useWebRTC = (room: string) => {
   const recorderRef = useRef<AudioRecorderService | null>(null);
   const transcriptionController = useRef(new TranscriptionController()).current;
   const isStoppingRef = useRef(false);
+const [debateTexts, setDebateTexts] = useState<DebateText[]>([]);
 
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
   const [audioURL, setAudioURL] = useState<string | null>(null);
@@ -118,6 +121,49 @@ export const useWebRTC = (room: string) => {
     };
   }, [isHost, self]);
 
+  // 新しい発言を追加する関数
+const addDebateText = (
+  turnNumber: number,
+  sequenceInTurn: number,
+  userId: number,
+  text: string
+) => {
+  setDebateTexts(prev => [
+    ...prev,
+    {
+      turn_number: turnNumber,
+      sequence_in_turn: sequenceInTurn,
+      user_id: userId,
+      text,
+    },
+  ]);
+};
+
+socket.on("transcription_result", (data: DebateText) => {
+  if (isHost) {
+    addDebateText(data.turn_number, data.sequence_in_turn, data.user_id,data.text); // ホストだけが保存
+  }
+});
+
+
+  const handleSubmitDebate = () => {
+    // if (!self || !opponent) {
+    //   console.warn("self または opponent が未設定です");
+    //   return;
+    // }
+    const payload = {
+      user_id1: 1,
+      user_id2: 2,
+      debate_history_id: 1,
+      debate_topic: "AIは人間の仕事を奪うか？",
+      debate_texts: debateTexts, // useStateで保持してる配列
+    };
+
+    console.log("📦 送信データ:", JSON.stringify(payload, null, 2));
+    postDebateData(payload);
+
+  };
+
   const handleCall = () => socket.emit("knock", room);
   const startRound = () => socket.emit("start round", room);
   
@@ -178,8 +224,11 @@ export const useWebRTC = (room: string) => {
             recordingRoundRef.current,  // sequence_in_turn
             currentRoundRef.current,               // turn_number
             self.id  ?? "unknown",      // user_id
-            blob                       // Blob
+            blob                       // text
         );
+        addDebateText(result.turn_number, result.sequence_in_turn, result.user_id,result.text);
+    
+        socket.emit("transcription_result", result);
         console.log("文字起こし結果:", result);
       }
     } catch (e) {
@@ -204,5 +253,6 @@ export const useWebRTC = (room: string) => {
     self,
     opponent,
     toggleMicMute,
+    handleSubmitDebate,
   };
 };

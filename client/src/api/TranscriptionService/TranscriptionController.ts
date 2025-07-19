@@ -12,8 +12,8 @@ export class TranscriptionController {
     user_id: number;
     text: string;
   }> {
-    const { text } = await uploadAudio(blob);
-
+    const text  = "await uploadAudio(blob)"
+    // const { text } = await uploadAudio(blob);
     return {
       sequence_in_turn,
       turn_number,
