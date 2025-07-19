@@ -24,6 +24,9 @@ export async function postDebateData(payload: DebatePostPayload) {
     });
 
     if (!response.ok) {
+      // ここでエラー本文を取得
+      const errorText = await response.text();
+      console.error(`HTTP error! status: ${response.status}`, errorText);
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 

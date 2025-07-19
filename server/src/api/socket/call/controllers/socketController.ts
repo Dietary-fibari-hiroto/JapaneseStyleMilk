@@ -34,6 +34,14 @@ export default function registerSocketEvents(io: Server, socket: Socket) {
     socket.to(candidate.room).emit("candidate", candidate);
   });
 
+  socket.on("transcription_result", (data) => {
+    const [_, roomId] = Array.from(socket.rooms); // socket.id以外のルーム
+    if (roomId) {
+      socket.broadcast.to(roomId).emit("transcription_result", data);
+    }
+  });
+
+
   socket.on("start round", (room: string) => {
     console.log(`start round received from ${socket.id} for room ${room}`);
     handleStartRound(io, socket, room);

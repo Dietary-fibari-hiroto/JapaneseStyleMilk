@@ -51,17 +51,17 @@ const [debateTexts, setDebateTexts] = useState<DebateText[]>([]);
     }
   }, []);
 
-  useEffect(() => {
-    const handleOpponentInfo = (opponentData: OpponentAccount) => {
-      setOpponent(opponentData);
-    };
+  // useEffect(() => {
+  //   const handleOpponentInfo = (opponentData: OpponentAccount) => {
+  //     setOpponent(opponentData);
+  //   };
 
-    socket.on("opponent-info", handleOpponentInfo);
+  //   socket.on("opponent-info", handleOpponentInfo);
 
-    return () => {
-      socket.off("opponent-info", handleOpponentInfo);
-    };
-  }, []);
+  //   return () => {
+  //     socket.off("opponent-info", handleOpponentInfo);
+  //   };
+  // }, []);
 
   // WebRTC 初期化とイベント登録
   useEffect(() => {
@@ -128,32 +128,46 @@ const addDebateText = (
   userId: number,
   text: string
 ) => {
-  setDebateTexts(prev => [
-    ...prev,
-    {
-      turn_number: turnNumber,
-      sequence_in_turn: sequenceInTurn,
-      user_id: userId,
-      text,
-    },
-  ]);
+  setDebateTexts((prev) => {
+    const exists = prev.some(
+      (d) =>
+        d.turn_number === turnNumber &&
+        d.sequence_in_turn === sequenceInTurn &&
+        d.user_id === userId &&
+        d.text === text
+    );
+    if (exists) return prev;
+    return [
+      ...prev,
+      {
+        turn_number: turnNumber,
+        sequence_in_turn: sequenceInTurn,
+        user_id: userId,
+        text,
+      },
+    ];
+  });
 };
 
+
 socket.on("transcription_result", (data: DebateText) => {
-  if (isHost) {
-    addDebateText(data.turn_number, data.sequence_in_turn, data.user_id,data.text); // ホストだけが保存
+  if (!self) return;
+
+  const isSender = data.user_id === self.id;
+
+  // 自分が送信した発言であれば重複登録しない
+  if (!isSender) {
+    addDebateText(data.turn_number, data.sequence_in_turn, data.user_id, data.text);
   }
 });
 
 
+
   const handleSubmitDebate = () => {
-    // if (!self || !opponent) {
-    //   console.warn("self または opponent が未設定です");
-    //   return;
-    // }
+
     const payload = {
-      user_id1: 1,
-      user_id2: 2,
+      user_id1: 4,
+      user_id2: 6,
       debate_history_id: 1,
       debate_topic: "AIは人間の仕事を奪うか？",
       debate_texts: debateTexts, // useStateで保持してる配列
@@ -211,7 +225,7 @@ socket.on("transcription_result", (data: DebateText) => {
       if (recorderRef.current?.isRecording()) {
         const blob = await recorderRef.current.stop();
         setIsRecording(false);
-                console.log("HELLO!");
+        console.log("HELLO!");
 
         if (!self){
           console.log("selfがぬる!");

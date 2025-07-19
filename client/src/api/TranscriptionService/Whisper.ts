@@ -4,7 +4,7 @@ export const uploadAudio = async (
   const formData = new FormData();
   formData.append("audio", blob, "audio.webm");
 
-  const response = await fetch("http://58.85.112.119:5000/transcribe", {
+  const response = await fetch("http://localhost:5000/transcribe", {
     method: "POST",
     body: formData,
   });
