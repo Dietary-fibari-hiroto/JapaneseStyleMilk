@@ -1,6 +1,5 @@
-![ロゴ](logo_icon.svg)
 
-
+<img src="logo_icon.svg" alt="ロゴ" width="300" />
 
 # 🗣️ langbate — 英語ディベートで、話す力を鍛える
 
