@@ -73,11 +73,17 @@ export class AccountService {
       where: { account_id: accountId }
     });
   }
-  
+
   async getAccInfo(accountId: number) {
     return Account.findOne({
       where: { id: accountId },
-      attributes: { exclude: ['password','email'] }
+      attributes: { exclude: ['password', 'email'] }
     })
   }
-} 
+
+  async checkEmailExists(email: string) {
+    const user = await Account.findOne({ where: { email } });
+    // 可読性上げたいから!! → Boolean()にした
+    return Boolean(user);
+  }
+}

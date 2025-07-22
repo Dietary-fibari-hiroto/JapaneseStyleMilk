@@ -1,4 +1,4 @@
-import e, { Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { AccountService } from '../services/accountService';
 import { CreateAccountDTO } from '../models/account';
 import Account from '../models/account';
@@ -99,11 +99,11 @@ export class AccountController {
     //req.bodyのemailキーを取得(const {key})
     const {email} = req.body;
     if(!email){
-      return res.status(400).json({message : 'emailを入力してください'})
+      res.status(500).json({message : 'emailが空です'});
     }
     try{
-      const user = await Account.findOne({ where : {email}});
-      res.json({exists: !!user});
+      const user = await this.accountService.checkEmailExists(email);
+      res.json({exists: user});
     }catch(err){
       res.status(500).json({message:'サーバーエラー',err})
     }
