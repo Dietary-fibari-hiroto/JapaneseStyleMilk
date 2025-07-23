@@ -96,10 +96,10 @@ export class AccountController {
   }
 
   async checkEmailExists(req:Request,res:Response){
-    //req.bodyのemailキーを取得(const {key})
+    //req.bodyのemailキーを取得(const {key} = req.body)
     const {email} = req.body;
     if(!email){
-      res.status(500).json({message : 'emailが空です'});
+      res.status(400).json({message : 'emailが空です'});
     }
     try{
       const user = await this.accountService.checkEmailExists(email);
