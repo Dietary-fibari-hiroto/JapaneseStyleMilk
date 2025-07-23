@@ -60,7 +60,6 @@ export class HistoryController {
   async createEvaluations(req: Request, res: Response) {
     try {
       const debateHistoryId = Number(req.params.debate_history_id);
-      const accountId = req.user!.id;
       const evaluationData = req.body;
 
       if (!debateHistoryId) {
@@ -148,6 +147,17 @@ export class HistoryController {
     } catch (error) {
       console.error('評価取得エラー:', error);
       res.status(500).json({ error: '評価の取得に失敗しました' });
+    }
+  }
+ 
+  async getWinLossStats(req: Request, res: Response) {
+    try {
+      const accountId = req.user!.id;
+      const stats = await this.historyService.getWinLossStats(accountId);
+      res.json(stats);
+    } catch (error) {
+      console.error('勝敗統計取得エラー:', error);
+      res.status(500).json({ error: '勝敗統計の取得に失敗しました' });
     }
   }
 } 

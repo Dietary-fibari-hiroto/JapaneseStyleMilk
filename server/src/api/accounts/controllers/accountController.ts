@@ -94,34 +94,18 @@ export class AccountController {
       res.status(500).json({ message: 'サーバーエラー' });
     }
   }
-}
 
-export const getMe = async (req: Request, res: Response) => {
-  if (!req.user || !req.user.id) {
-    return res.status(401).json({ message: '認証情報がありません' });
-  }
-  try {
-    const user = await Account.findByPk(req.user.id, {
-      attributes: { exclude: ['password'] }
-    });
-    if (!user) {
-      return res.status(404).json({ message: 'ユーザーが見つかりません' });
+  async checkEmailExists(req:Request,res:Response){
+    //req.bodyのemailキーを取得(const {key} = req.body)
+    const {email} = req.body;
+    if(!email){
+      res.status(400).json({message : 'emailが空です'});
     }
-    res.json(user);
-  } catch (err) {
-    res.status(500).json({ message: 'サーバーエラー' });
+    try{
+      const user = await this.accountService.checkEmailExists(email);
+      res.json({exists: user});
+    }catch(err){
+      res.status(500).json({message:'サーバーエラー',err})
+    }
   }
-};
-
-export const checkEmailExists = async (req: Request, res: Response) => {
-  const { email } = req.body;
-  if (!email) {
-    return res.status(400).json({ message: 'emailは必須です' });
-  }
-  try {
-    const user = await Account.findOne({ where: { email } });
-    res.json({ exists: !!user });
-  } catch (err) {
-    res.status(500).json({ message: 'サーバーエラー' });
-  }
-};
+}
