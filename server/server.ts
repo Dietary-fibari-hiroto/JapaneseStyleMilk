@@ -12,8 +12,7 @@ import uploadRouter from "./src/api/accounts/routes/uploadRoutes";
 import path from "path";
 import http from "http";
 import { Server as SocketIOServer } from "socket.io";
-import setupSocket from "./src/api/realtimeapi/call/routes";
-import { transcribe, uploadMiddleware } from "./src/api/whisperapi//TranscriptionController";
+import setupSocket from "./src/api/socket/call/routes/socketRoutes";
 const app = express();
 const port = process.env.PORT || 4000;
 
@@ -31,7 +30,7 @@ setupSocket(io);
 // グローバルミドルウェアの設定
 app.use(
   cors({
-    origin: "http://localhost:3000", // フロントの起動と合わせる。（開発用ですべて許可）
+    origin: ["http://localhost:3000", "http://localhost:3001"], // フロントの起動と合わせる。（開発用ですべて許可）
     credentials: true, // 認証情報（cookie等）を許可
   })
 );
@@ -49,7 +48,6 @@ app.use("/api/auth", authRoutes);
 app.use("/api/history", historyRoutes);
 app.use("/api/topics", topicRoutes);
 app.use("/api/evaluation", evaluationRoutes);
-app.post("/api/transcribe", uploadMiddleware, transcribe);
 
 // エラーハンドリング
 app.use(

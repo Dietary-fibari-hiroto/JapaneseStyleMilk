@@ -1,5 +1,5 @@
-import { WebRTCConnection } from "./webrtcApi";
-import { socket } from "./webrtcApi";
+import { WebRTCConnection } from "./webrtc";
+import { socket } from "./webrtc";
 
 //WebRTCインスタンスの初期化
 export const initWebRTC = async (
@@ -76,14 +76,15 @@ export const handleAnswer = async (
 };
 
 //実際にどうやって通信するか（経路）を決める
-export const handleCandidate = async (
-  rtc: WebRTCConnection,
-  candidate: RTCIceCandidateInit
-) => {
-  if (!rtc.peerConnection) return;
-  try {
-    await rtc.peerConnection?.addIceCandidate(new RTCIceCandidate(candidate));
-  } catch (error) {
-    console.log("経路決定エラー:", error, candidate);
+export async function handleCandidate(rtc: WebRTCConnection, candidate: RTCIceCandidateInit) {
+  if (!rtc.peerConnection) {
+    console.warn("peerConnection is null");
+    return;
   }
-};
+  try {
+    await rtc.peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+    console.log("ICE candidate added:", candidate);
+  } catch (err) {
+    console.error("Error adding ICE candidate:", err);
+  }
+}
