@@ -18,7 +18,30 @@ export default function registerSocketEvents(io: Server, socket: Socket) {
   socket.on("join", (room: string, accountId: number) => {
     roomAccounts.set(socket.id, accountId);
     handleJoin(socket, room);
+
+    // すでに入っているクライアントの socketId を取得
+    const clients = Array.from(io.sockets.adapter.rooms.get(room) ?? []);
+    const existingSocketId = clients.find((id) => id !== socket.id);
+    const existingAccountId = existingSocketId
+      ? roomAccounts.get(existingSocketId)
+      : null;
+
+    // 自分にも相手の accountId を送信
+    if (existingAccountId) {
+      socket.emit("peer-joined", {
+        socketId: existingSocketId,
+        accountId: existingAccountId,
+      });
+    }
+
+    // 他のクライアントにも自分の情報を送る
+    socket.to(room).emit("peer-joined", {
+      socketId: socket.id,
+      accountId: accountId,
+    });
   });
+
+
 
   socket.on("offer", (desc: RTCSessionDescriptionInit & { room: string }) => {
     console.log(`[offer] from ${socket.id} to room: ${desc.room}`);

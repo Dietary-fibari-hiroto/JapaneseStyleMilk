@@ -39,6 +39,18 @@ const [debateTexts, setDebateTexts] = useState<DebateText[]>([]);
   const recordingRoundRef = useRef<number>(1);  // 例: useRefでnumber型のrefを作成
   const [isMicMuted, setIsMicMuted] = useState(false);
 
+  const selfRef = useRef<OpponentAccount | null>(null);
+  const opponentRef = useRef<OpponentAccount | null>(null);
+
+  useEffect(() => {
+    selfRef.current = self;
+  }, [self]);
+
+  useEffect(() => {
+    opponentRef.current = opponent;
+  }, [opponent]);
+
+
   // 初期アカウントの読み込み
   useEffect(() => {
     const selfData = localStorage.getItem("langbate_account");
@@ -163,20 +175,23 @@ socket.on("transcription_result", (data: DebateText) => {
 
 
 
-  const handleSubmitDebate = () => {
+const handleSubmitDebate = () => {
+  if (!self || !opponent) {
+    console.warn("⚠️ self または opponent が未定義です");
+    return;
+  }
 
-    const payload = {
-      user_id1: 4,
-      user_id2: 6,
-      debate_history_id: 1,
-      debate_topic: "AIは人間の仕事を奪うか？",
-      debate_texts: debateTexts, // useStateで保持してる配列
-    };
-
-    console.log("📦 送信データ:", JSON.stringify(payload, null, 2));
-    postDebateData(payload);
-
+  const payload = {
+    user_id1: self.id,
+    user_id2: opponent.id,
+    debate_history_id: 1,
+    debate_topic: "AIは人間の仕事を奪うか？",
+    debate_texts: debateTexts,
   };
+
+  console.log("📦 送信データ:", JSON.stringify(payload));
+  postDebateData(payload);
+};
 
   const handleCall = () => socket.emit("knock", room);
   const startRound = () => socket.emit("start round", room);
