@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import Avatar from "../../common/Avatar";
+import { useNavigate } from "react-router-dom";
 
 const CardContainer = styled.button<{}>`
   width: 567px;
@@ -25,18 +26,21 @@ const CardContainer = styled.button<{}>`
 `;
 
 type Props = {
-  debateTitle: string;  //ディベート内容
+  id: number;           // ディベートデータ番号
+  topic: string;        //ディベート表題
   userImg1: string;     //1人目のユーザーの画像
   userImg2: string;     //2人目のユーザーの画像
   date: string;         //日付
-  path: string;         //遷移先パス
 };
 
-const EvaluationCard = ({ debateTitle, userImg1, userImg2, date, path }: Props) => {
+const EvaluationCard = ({ id, topic, userImg1, userImg2, date }: Props) => {
+  const navigate = useNavigate();
+
   return (
     <CardContainer>
-      <div className="container">
+      <div className="container" onClick={()=>navigate("/dashboard/:accountId/evaluation/:historyId")}>
         <div className="flex justify-between">
+          {/* アイコン表示 */}
           <figure className="relative w-[48px]">
             <div className="absolute left-0 z-[3] size-[32px] overflow-hidden rounded-full  bg-black">
               {" "}
@@ -49,7 +53,7 @@ const EvaluationCard = ({ debateTitle, userImg1, userImg2, date, path }: Props) 
           </figure>
           <p className="text-header-xxs text-medium ">{date}</p>
         </div>
-        <p className="text-start text-header-xs txet-medium">{debateTitle}</p>
+        <p className="text-start text-header-xs txet-medium">{topic}</p>
       </div>
     </CardContainer>
   );
