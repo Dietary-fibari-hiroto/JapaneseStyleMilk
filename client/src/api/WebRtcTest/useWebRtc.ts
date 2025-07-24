@@ -63,6 +63,17 @@ const [debateTexts, setDebateTexts] = useState<DebateText[]>([]);
     }
   }, []);
 
+  useEffect(() => {
+    const stream = webrtcRef.current?.localStream;
+    if (!stream) return;
+
+    stream.getAudioTracks().forEach((track) => {
+      track.enabled = isMyTurn;
+    });
+
+    setIsMicMuted(!isMyTurn);
+  }, [isMyTurn]);
+
   // useEffect(() => {
   //   const handleOpponentInfo = (opponentData: OpponentAccount) => {
   //     setOpponent(opponentData);
@@ -76,15 +87,21 @@ const [debateTexts, setDebateTexts] = useState<DebateText[]>([]);
   // }, []);
 
   // WebRTC 初期化とイベント登録
-  useEffect(() => {
-    initWebRTC(room, localVideoRef, setCanCall).then((rtc) => {
-      webrtcRef.current = rtc;
-      registerWebRTCHandlers(rtc, room, setRemoteStream, setIsConnected, setOpponent);
+useEffect(() => {
+  initWebRTC(room, localVideoRef, setCanCall).then((rtc) => {
+    webrtcRef.current = rtc;
+
+    // 通話開始時点でマイクを無効にしておく
+    rtc.localStream?.getAudioTracks().forEach((track) => {
+      track.enabled = false;
     });
+    setIsMicMuted(true);
 
-    return () => unregisterWebRTCHandlers();
-  }, [room]);
+    registerWebRTCHandlers(rtc, room, setRemoteStream, setIsConnected, setOpponent);
+  });
 
+  return () => unregisterWebRTCHandlers();
+}, [room]);
   // リモートストリームを video に設定
   useEffect(() => {
     if (remoteStream && remoteVideoRef.current) {
