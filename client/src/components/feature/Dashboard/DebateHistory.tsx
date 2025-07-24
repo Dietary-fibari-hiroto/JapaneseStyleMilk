@@ -12,7 +12,7 @@ const DebateHistory = ({ name, text, img }: Props) => {
         <Avatar image={img} size={"regular"} />
       </figure>
       <div className="space-y-[8px] text-start">
-        <p className="text-header-r">{name}</p>
+        <p className="text-header-r font-bold">{name}</p>
         <p className="text-body-r w-[705px]">{text} </p>
       </div>
     </div>

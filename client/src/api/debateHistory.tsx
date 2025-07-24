@@ -7,14 +7,19 @@
 
 import axiosInstance from "../utils/axiosInstance";
 
-
-const debateHistory = async() => {
+/**
+ * ディベート履歴取得API
+ * @param id ディベートID
+ * @returns 指定したIDまたは全てのディベート履歴
+ */
+const debateHistory = async( id? : number ) => {
     // トークン取得
     const token = localStorage.getItem('token');
+    console.log(`/history/${id? id:""}`);
     
     try {
         // 履歴取得
-        const res = await axiosInstance.get('/history', {
+        const res = await axiosInstance.get(`/history/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             },
