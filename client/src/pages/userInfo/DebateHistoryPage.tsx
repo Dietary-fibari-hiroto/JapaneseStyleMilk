@@ -214,11 +214,11 @@ const DebateHistoryPage = () => {
       {/* ディベート内容 */}
       <section className="flex flex-col gap-[46px]">
         {
-          history?.debate_texts.map((t) => {
+          history?.debate_texts.map((t, index) => {
             return(
               <>
                 <div className="text-header-l font-semibold">{`Round${t.turn_number}`}</div>
-                <DebateHistory name={""} img="" text={t.text} />
+                <DebateHistory key={index} name={""} img="" text={t.text} />
               </>
             )
           })
