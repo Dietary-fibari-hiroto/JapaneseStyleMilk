@@ -1,5 +1,7 @@
 import { DebateResultDataCard, EvaluationCard, MonthSelector, ScoreCard } from "../../components";
 import DebateHistoryCard from "../../components/feature/Dashboard/DebateHistoryCard";
+import { AccountContext, useAccount } from "../../contexts/AccountContext";
+import { useOpponent } from "../../contexts/OpponentContext";
 
 // 総合評価
 const evaluationItems = [
@@ -195,9 +197,13 @@ const testHistory = [
   }
 ];
 
+const opponents = ["avatar_XL_green.svg", "avatar_XL_white.svg", "avatar_XL_blue.svg", "avatar_XL_orange.svg", "avatar_XL_pink.svg", "avatar_XL_purple.svg"]
+
 const DashBoardPage = () => {
   // 全ディベート履歴取得
   // const history = debateHistory();
+  const accountInfo = useAccount();
+  const opponentInfo = useOpponent();
 
   return(
     <div className="gap-8 absolute top-5">
@@ -236,14 +242,14 @@ const DashBoardPage = () => {
         <div className="w-fit flex flex-col gap-5">
           <p className="text-body-r font-bold">ディベート評価</p>
           <div className="flex flex-col gap-5">
-            { testHistory.map((h) => {
+            { testHistory.map((h, index) => {
                 return(
                   <EvaluationCard 
                     key={h.debate_info.id}
                     id={h.debate_info.id}
                     topic={h.debate_info.topic}
-                    userImg1=""
-                    userImg2=""
+                    userImg1={accountInfo.account?.img_url || "avatar_XL_red.svg"}
+                    userImg2={opponents[index] || "avatar_XL_green.svg"}
                     date={h.debate_info.created_at}
                   />
                 )
