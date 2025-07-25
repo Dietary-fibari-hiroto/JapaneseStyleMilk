@@ -38,7 +38,7 @@ const EvaluationCard = ({ id, topic, userImg1, userImg2, date }: Props) => {
 
   return (
     <CardContainer>
-      <div className="container" onClick={()=>navigate("/dashboard/:accountId/evaluation/:historyId")}>
+      <div className="container" onClick={()=>navigate(`/dashboard/evaluation/${id}`)}>
         <div className="flex justify-between">
           {/* アイコン表示 */}
           <figure className="relative w-[48px]">

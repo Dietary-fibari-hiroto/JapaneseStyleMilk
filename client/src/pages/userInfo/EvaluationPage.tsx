@@ -1,6 +1,11 @@
+import { useAccount } from "../../contexts/AccountContext";
+
 const EvaluationPage = () => {
+  // ユーザー情報取得
+  const user = useAccount();
+
   return (
-    <div className="w-[60%] flex flex-col justufy-start items-start   space-y-[50px] mt-[50px]">
+    <div className="w-[60%] flex flex-col justufy-start items-start space-y-[50px] mt-[50px] pt-8">
       <div className="flex flex-col">
         <p className="text-[32px] font-bold">
           プラスチック製品の使用を禁止すべきか？
@@ -13,7 +18,7 @@ const EvaluationPage = () => {
             総合評価：非常に優れたパフォーマンス
           </p>
           <p className="text-[16px]">
-            [氏名]さんは、論理的な明確さと説得力ある話し方を兼ね備えた見事なパフォーマンスを披露し、勝利に大きく貢献しました。審査員および聴衆に強い印象を残し、非常に高い評価を受けました。
+            {`${user.account?.name}さんは、論理的な明確さと説得力ある話し方を兼ね備えた見事なパフォーマンスを披露し、勝利に大きく貢献しました。審査員および聴衆に強い印象を残し、非常に高い評価を受けました。`}
           </p>
         </div>
         <div className="flex flex-col space-y-[20px]">
