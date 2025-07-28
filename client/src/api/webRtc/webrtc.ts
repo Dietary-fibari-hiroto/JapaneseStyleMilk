@@ -2,7 +2,7 @@
 import { io, Socket } from "socket.io-client";
 
 // 接続先のサーバーURL（IPアドレスとポート番号を指定）
-export const SERVER = "http://localhost:4000";
+export const SERVER = process.env.REACT_APP_RTC_SERVER_IP;
 
 // サーバーにソケット接続を開始（`socket` が通信に使われる）
 export const socket: Socket = io(SERVER);
@@ -63,12 +63,12 @@ export class WebRTCConnection {
     });
 
     // 相手からのメディアストリームを受け取ったときの処理
-this.peerConnection.ontrack = (event) => {
-  const [remoteStream] = event.streams;
-  console.log("Received remote stream:", remoteStream);
-  console.log("Tracks:", remoteStream.getTracks());
-  onTrack(remoteStream);
-};
+    this.peerConnection.ontrack = (event) => {
+      const [remoteStream] = event.streams;
+      console.log("Received remote stream:", remoteStream);
+      console.log("Tracks:", remoteStream.getTracks());
+      onTrack(remoteStream);
+    };
 
     // ICE候補が見つかったとき、サーバーを通じて相手に送信
     this.peerConnection.onicecandidate = (event) => {
@@ -81,14 +81,16 @@ this.peerConnection.ontrack = (event) => {
     };
 
     this.peerConnection.onconnectionstatechange = () => {
-  console.log("connectionState changed:", this.peerConnection?.connectionState);
-  if (this.peerConnection?.connectionState === "connected") {
-    console.log("通話可能になった!");
-    onConnected?.();
-    console.log("onCOnnect通過");
-  }
-};
-
+      console.log(
+        "connectionState changed:",
+        this.peerConnection?.connectionState
+      );
+      if (this.peerConnection?.connectionState === "connected") {
+        console.log("通話可能になった!");
+        onConnected?.();
+        console.log("onCOnnect通過");
+      }
+    };
 
     // 接続状態を開始済みに設定
     this.isStarted = true;
