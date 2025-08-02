@@ -2,11 +2,17 @@ import { useEffect, useState } from "react";
 import testImages from "../../assets/images/test/testImages";
 import Avatar from "./Avatar";
 import { Account } from "../../types";
+import { getAvatarConst } from "../../constants/avatarConst";
 
-const UserCard = ({ img_url = "gray.jpg" }: Pick<Account, "img_url">) => {
+const UserCard = ({ img_url }: Pick<Account, "img_url">) => {
+  const avatarColor = getAvatarConst(img_url);
+
   return (
-    <figure className="max-w-[400px] min-h-[279px] w-[80%] flex-all-center bg-[--surface-avatar-background-avatar_yellow] rounded-[12px]">
-      <Avatar image={img_url} size="xl" />
+    <figure
+      className="max-w-[400px] min-h-[279px] w-[80%] flex-all-center rounded-[12px]"
+      style={{ backgroundColor: `var(--surface-avatar-background-avatar_${avatarColor.bgColor})` }}
+    >
+      <Avatar image={avatarColor.avatar} size="xl" />
     </figure>
   );
 };
@@ -24,10 +30,7 @@ type props = {
   opp_url?: string;
 };
 
-const VersusAvatars = ({
-  img_url = "gray.jpg",
-  opp_url = "gray.jpg",
-}: props) => {
+const VersusAvatars = ({ img_url, opp_url }: props) => {
   // テスト用アニメーション
   const [lineFeed, setLineFeed] = useState(0); // ターン管理
   const wateTime = (seconds: number) =>
@@ -51,8 +54,8 @@ const VersusAvatars = ({
   return (
     <section className="flex-all-center flex-col space-y-[30px]">
       <div className="w-full  flex justify-evenly">
-        <UserCard img_url={img_url} />
-        <UserCard img_url={opp_url} />
+        <UserCard img_url={img_url? img_url : "gray.jpg" } />
+        <UserCard img_url={opp_url? opp_url : "gray.jpg" } />
       </div>
 
       {/* 文字のアニメーションは後で修正必要 */}
