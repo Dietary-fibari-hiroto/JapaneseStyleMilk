@@ -107,12 +107,12 @@ CREATE TABLE debate_rooms(
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     debate_mode_id INT NOT NULL,
     ai_config_id INT NOT NULL,
-    debete_topic_id INT NOT NULL,
+    debate_topic_id INT NOT NULL,
     allow_observation BOOLEAN NOT NULL,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (debate_mode_id) REFERENCES debate_modes(id),
     FOREIGN KEY (ai_config_id) REFERENCES ai_configs(id),
-    FOREIGN KEY (debete_topic_id) REFERENCES debate_topics(id)
+    FOREIGN KEY (debate_topic_id) REFERENCES debate_topics(id)
 )ENGINE=InnoDB;
 
 /*1人あたりのディベート履歴*/
