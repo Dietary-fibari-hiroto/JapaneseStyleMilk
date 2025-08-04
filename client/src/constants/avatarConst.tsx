@@ -19,7 +19,7 @@ const avatarConst:Props = {
     "avatar_XL_purple.svg": { avatar:"avatar_black_purple_bg.svg", bgColor:"purple" },
     "avatar_XL_red.svg": { avatar:"avatar_black_red_bg.svg", bgColor:"red" },
     "avatar_XL_yellow.svg": { avatar:"avatar_black_yellow_bg.svg", bgColor:"yellow" },
-    default: {avatar:"", bgColor:"yellow"}
+    default: {avatar:"avatar_black_yellow_bg.svg", bgColor:"yellow"}
 }
 
 export function getAvatarConst(key: string) {
